@@ -1,212 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Glass Line – Proforma Invoice</title>
 
 <style>
-body{font-family:Arial;font-size:13px;background:#eef1ff}
-input{font-size:12px}
-h3{margin:6px 0}
+body{font-family:Arial;background:#eef2ff;font-size:14px}
+h2{background:#4b4bd6;color:#fff;padding:10px}
 
-.header{
-  background:#fff;
-  border:1px solid #000;
-  padding:8px;
-  margin-bottom:8px;
-}
+table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
+th,td{border:1px solid #333;padding:4px;text-align:center}
+th{background:#dbe2ff}
 
-.top-row{
-  display:flex;
-  align-items:flex-end;
-  gap:20px;
-  border-bottom:2px solid #444;
-  padding-bottom:6px;
-}
+input,select{padding:3px}
+.small{width:45px}
+.mid{width:70px}
+.big{width:120px}
 
-.top-row div{
-  display:flex;
-  flex-direction:column;
-}
-
-.uom{
-  background:#4f46e5;
-  color:#fff;
-  padding:6px 12px;
-  border-radius:6px;
-  text-align:center;
-}
-
-.party-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0;
-  margin-top:8px;
-}
-
-.party{
-  border:1px solid #000;
-  padding:6px;
-}
-
-.party h4{
-  margin:0 0 4px;
-  background:#c7d2fe;
-  padding:4px;
-  text-align:center;
-}
-
-.party input{width:100%;margin-bottom:4px}
-
-table{width:100%;border-collapse:collapse;background:#fff}
-th,td{border:1px solid #000;padding:4px;text-align:center}
-th{background:#dbeafe}
-
-.sizebox input{width:45px}
-.mm input{width:70px}
-
-button{font-size:11px;margin:1px}
-button.active{background:#22c55e;color:#fff}
+.header{display:flex;gap:12px;margin-bottom:8px}
+.box{border:1px solid #333;padding:6px;background:#f9faff;flex:1}
 
 .totalBox{
-  width:280px;
-  float:right;
-  border:1px solid #000;
-  background:#fff;
-  padding:6px;
-  margin-top:8px;
+width:300px;
+border:2px solid #000;
+padding:8px;
+background:#fff;
+float:right;
+margin-top:10px
 }
-textarea{width:100%;height:70px}
 </style>
 </head>
 
 <body>
 
-<h3>Glass Line – Proforma Invoice</h3>
+<h2>Glass Line – Proforma Invoice</h2>
 
+<!-- HEADER -->
 <div class="header">
-
-  <div class="top-row">
-    <div>
-      <label>Date</label>
-      <input type="date" id="date">
-    </div>
-
-    <div>
-      <label>PI No</label>
-      <input>
-    </div>
-
-    <div>
-      <label>+MM Width</label>
-      <input type="number" id="addW" value="0">
-    </div>
-
-    <div>
-      <label>+MM Height</label>
-      <input type="number" id="addH" value="0">
-    </div>
-
-    <div class="uom">
-      <b>UOM</b><br>SQ.MT
-    </div>
+  <div class="box">
+    Date <input type="date" id="date"><br>
+    PI No <input id="piNo">
   </div>
 
-  <div class="party-row">
-    <div class="party">
-      <h4>Bill To</h4>
-      <input placeholder="Name">
-      <input placeholder="Address">
-      <input placeholder="City">
-      <input placeholder="Mobile">
-      <input placeholder="GSTIN">
-    </div>
-
-    <div class="party">
-      <h4>Ship To</h4>
-      <input placeholder="Name">
-      <input placeholder="Address">
-      <input placeholder="City">
-      <input placeholder="Mobile">
-      <input placeholder="GSTIN">
-    </div>
+  <div class="box">
+    +MM Width <input id="plusW" class="mid" value="0"><br>
+    +MM Height <input id="plusH" class="mid" value="0">
   </div>
 
+  <div class="box">
+    <b>UOM</b><br> SQ.MT
+  </div>
 </div>
 
+<!-- BILL / SHIP -->
+<div class="header">
+  <div class="box">
+    <b>Bill To</b><br>
+    <input class="big" placeholder="Name"><br>
+    <input class="big" placeholder="Address"><br>
+    <input class="mid" placeholder="GSTIN">
+  </div>
+
+  <div class="box">
+    <b>Ship To</b><br>
+    <input class="big" placeholder="Name"><br>
+    <input class="big" placeholder="Address"><br>
+    <input class="mid" placeholder="GSTIN">
+  </div>
+</div>
+
+<!-- ITEMS -->
 <table>
 <thead>
 <tr>
 <th rowspan="2">Item</th>
-<th colspan="2">Actual Size (Inch)</th>
+<th colspan="3">Actual Size (Inch)</th>
 <th colspan="2">Actual MM</th>
 <th colspan="2">Chargeable MM</th>
-<th rowspan="2">Fab</th>
 <th rowspan="2">Qty</th>
 <th rowspan="2">Area</th>
 <th rowspan="2">Rate</th>
 <th rowspan="2">Amount</th>
+<th rowspan="2">Fab</th>
+<th rowspan="2">Hole / Cut</th>
 </tr>
+
 <tr>
-<th>W</th><th>H</th>
+<th>In</th><th>Frac</th><th>MM</th>
 <th>W</th><th>H</th>
 <th>W</th><th>H</th>
 </tr>
 </thead>
 
-<tbody id="itemsBody">
+<tbody>
 <tr>
-<td><input value="12MM GLA"></td>
+<td>12MM GLASS</td>
 
-<td class="sizebox">
-<input class="win" placeholder="In">
-<input class="wnum" placeholder="Num">
-<input class="wden" value="8">
+<td><input class="wIn small"></td>
+<td>
+<select class="wFrac small">
+<option value="0">0</option>
+<option value="0.125">1/8</option>
+<option value="0.25">2/8</option>
+<option value="0.375">3/8</option>
+<option value="0.5">4/8</option>
+<option value="0.625">5/8</option>
+<option value="0.75">6/8</option>
+<option value="0.875">7/8</option>
+</select>
 </td>
+<td><input class="wMM mid" placeholder="MM"></td>
 
-<td class="sizebox">
-<input class="hin" placeholder="In">
-<input class="hnum" placeholder="Num">
-<input class="hden" value="8">
-</td>
+<td class="actW">0</td>
+<td class="actH">0</td>
 
-<td class="mm">
-<input class="wmm" readonly>
-</td>
-<td class="mm">
-<input class="hmm" readonly>
-</td>
+<td class="chgW">0</td>
+<td class="chgH">0</td>
 
-<td class="cw">0</td>
-<td class="ch">0</td>
+<td><input class="qty small" value="1"></td>
+<td class="area">0</td>
+<td><input class="rate mid"></td>
+<td class="amt">0</td>
 
 <td>
-<button class="hole">Hole</button>
-<button class="cut">Cut</button>
-<button class="bhole">Big Hole</button>
-<button class="bcut">Big Cut</button>
+<select>
+<option>CSK</option>
+<option>SP</option>
+<option>BX-CUT</option>
+<option>C-CUT</option>
+</select>
 </td>
 
-<td><input class="qty" value="1"></td>
-<td class="area">0</td>
-<td><input class="rate"></td>
-<td class="amount">0</td>
+<td>
+Hole <input class="hole small" value="0"><br>
+Cut <input class="cut small" value="0"><br>
+Big H <input class="bhole small" value="0"><br>
+Big C <input class="bcut small" value="0">
+</td>
 </tr>
 </tbody>
 </table>
 
+<!-- TOTAL -->
 <div class="totalBox">
-Sub Total: <span id="subTotal">0</span><br><br>
-Hole <input id="holeCharge" value="0"><br>
-Cutout <input id="cutoutCharge" value="0"><br>
-GST % <input id="gst" value="18"><br><br>
-<b>GRAND TOTAL ₹ <span id="grandTotal">0</span></b>
+Sub Total ₹ <span id="sub">0</span><br><br>
+Hole Total <span id="holeT">0</span><br>
+Cut Total <span id="cutT">0</span><br>
+GST % <input id="gst" class="small" value="18"><br><br>
+<b>GRAND TOTAL ₹ <span id="grand">0</span></b>
 </div>
-
-<div style="clear:both"></div>
-
-<h4>Terms & Conditions</h4>
-<textarea></textarea>
 
 <script src="app.js"></script>
 </body>
