@@ -4,27 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlassERP Pro - Complete Glass Manufacturing ERP Solution</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-        }
-        
         * {
             margin: 0;
             padding: 0;
@@ -32,63 +16,103 @@
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
-            font-weight: 600;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
         }
         
         /* Header Styles */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1a2530 100%);
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: rgba(44, 62, 80, 0.95);
+            padding: 20px 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
         
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white !important;
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-container {
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
         
-        .navbar-brand i {
-            color: var(--secondary-color);
-            margin-right: 10px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
             font-size: 2rem;
+            color: #3498db;
         }
         
-        .nav-link {
-            color: white !important;
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo-text span {
+            color: #3498db;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
             font-weight: 500;
-            margin: 0 10px;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 5px;
         }
         
-        .nav-link:hover {
-            color: var(--secondary-color) !important;
+        .nav-links a:hover {
+            color: #3498db;
+            background: rgba(255, 255, 255, 0.1);
             transform: translateY(-2px);
         }
         
+        .login-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
         /* Hero Section */
-        .hero-section {
+        .hero {
             background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), 
                         url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 180px 0 100px;
+            padding: 200px 0 100px;
+            text-align: center;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -96,17 +120,19 @@
         
         .hero-content {
             max-width: 800px;
+            margin: 0 auto;
         }
         
-        .hero-title {
+        .hero h1 {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 20px;
+            line-height: 1.2;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
-        .hero-subtitle {
-            font-size: 1.5rem;
+        .hero p {
+            font-size: 1.3rem;
             margin-bottom: 30px;
             opacity: 0.9;
         }
@@ -114,126 +140,131 @@
         .hero-buttons {
             display: flex;
             gap: 20px;
+            justify-content: center;
             flex-wrap: wrap;
+            margin-top: 40px;
         }
         
-        .btn-hero {
-            padding: 15px 30px;
+        .btn {
+            padding: 15px 35px;
             font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
+            text-decoration: none;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .btn-primary-hero {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
             border: none;
         }
         
-        .btn-primary-hero:hover {
+        .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
         }
         
-        .btn-outline-hero {
+        .btn-outline {
             background: transparent;
             border: 2px solid white;
             color: white;
         }
         
-        .btn-outline-hero:hover {
+        .btn-outline:hover {
             background: white;
-            color: var(--primary-color);
+            color: #2c3e50;
             transform: translateY(-3px);
         }
         
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f39c12;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
         /* Features Section */
-        .features-section {
+        .features {
             padding: 100px 0;
-            background: var(--light-color);
+            background: #f8f9fa;
         }
         
         .section-title {
             text-align: center;
             font-size: 2.5rem;
+            color: #2c3e50;
             margin-bottom: 50px;
-            color: var(--primary-color);
             position: relative;
         }
         
-        .section-title:after {
+        .section-title::after {
             content: '';
             position: absolute;
             width: 100px;
             height: 4px;
-            background: var(--secondary-color);
+            background: #3498db;
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
             border-radius: 2px;
         }
         
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
         .feature-card {
             background: white;
+            padding: 40px 30px;
             border-radius: 15px;
-            padding: 30px;
-            height: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 30px;
+            text-align: center;
         }
         
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-color: var(--secondary-color);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
         
         .feature-icon {
             font-size: 3rem;
-            color: var(--secondary-color);
+            color: #3498db;
             margin-bottom: 20px;
         }
         
-        .feature-title {
+        .feature-card h3 {
             font-size: 1.5rem;
+            color: #2c3e50;
             margin-bottom: 15px;
-            color: var(--primary-color);
-        }
-        
-        /* Modules Section */
-        .modules-section {
-            padding: 100px 0;
-            background: white;
-        }
-        
-        .module-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--secondary-color);
-            transition: all 0.3s ease;
-        }
-        
-        .module-card:hover {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
-            color: white;
-            transform: translateX(10px);
-        }
-        
-        .module-card:hover h4 {
-            color: white;
-        }
-        
-        .module-card h4 {
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            margin-bottom: 10px;
         }
         
         /* Performance Bill Preview */
-        .preview-section {
+        .preview {
             padding: 100px 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -245,10 +276,12 @@
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             color: #333;
+            max-width: 900px;
+            margin: 0 auto;
         }
         
         .bill-header {
-            background: var(--primary-color);
+            background: #2c3e50;
             color: white;
             padding: 20px;
             border-radius: 8px;
@@ -258,6 +291,7 @@
         .bill-table {
             width: 100%;
             border-collapse: collapse;
+            margin: 20px 0;
         }
         
         .bill-table th {
@@ -273,9 +307,16 @@
         }
         
         /* Pricing Section */
-        .pricing-section {
+        .pricing {
             padding: 100px 0;
-            background: var(--light-color);
+            background: #f8f9fa;
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
         }
         
         .pricing-card {
@@ -286,68 +327,70 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
         }
         
         .pricing-card.featured {
             transform: scale(1.05);
-            border: 2px solid var(--secondary-color);
+            border: 2px solid #3498db;
         }
         
         .pricing-card:hover {
             transform: translateY(-10px);
         }
         
-        .pricing-card.featured:hover {
-            transform: translateY(-10px) scale(1.05);
-        }
-        
-        .pricing-header {
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 30px;
-        }
-        
         .price {
             font-size: 3rem;
             font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .price span {
-            font-size: 1rem;
-            color: #666;
+            color: #2c3e50;
+            margin: 20px 0;
         }
         
         /* Contact Section */
-        .contact-section {
+        .contact {
             padding: 100px 0;
             background: white;
         }
         
         .contact-form {
-            background: var(--light-color);
+            background: #f8f9fa;
             padding: 40px;
             border-radius: 15px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
-        .form-control {
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+        .form-group {
             margin-bottom: 20px;
         }
         
-        .form-control:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
         }
         
         /* Footer */
         .footer {
-            background: var(--primary-color);
+            background: #2c3e50;
             color: white;
             padding: 70px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
         }
         
         .footer-logo {
@@ -356,17 +399,16 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
+            gap: 10px;
         }
         
-        .footer-links h5 {
-            color: white;
+        .footer-links h4 {
             margin-bottom: 20px;
             font-size: 1.2rem;
         }
         
         .footer-links ul {
             list-style: none;
-            padding: 0;
         }
         
         .footer-links li {
@@ -376,12 +418,11 @@
         .footer-links a {
             color: #bbb;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease;
         }
         
         .footer-links a:hover {
-            color: var(--secondary-color);
-            padding-left: 5px;
+            color: #3498db;
         }
         
         .social-icons {
@@ -404,167 +445,160 @@
         }
         
         .social-icon:hover {
-            background: var(--secondary-color);
+            background: #3498db;
             transform: translateY(-3px);
         }
         
         .copyright {
             text-align: center;
             padding-top: 30px;
-            margin-top: 50px;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: #bbb;
             font-size: 0.9rem;
         }
         
-        /* Powered By Section */
+        /* Powered By */
         .powered-by {
-            background: #1a2530;
+            background: #1a252f;
             padding: 15px 0;
             text-align: center;
             color: white;
         }
         
         .powered-by-text {
-            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--secondary-color);
-            display: flex;
+            color: #3498db;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
         
-        .powered-by-text span {
+        .powered-by-badge {
+            background: rgba(52, 152, 219, 0.2);
             color: white;
             padding: 5px 15px;
-            background: rgba(52, 152, 219, 0.2);
             border-radius: 5px;
-            border: 1px solid var(--secondary-color);
+            border: 1px solid #3498db;
         }
         
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-title {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
                 font-size: 2.5rem;
             }
             
-            .hero-subtitle {
-                font-size: 1.2rem;
+            .hero p {
+                font-size: 1.1rem;
             }
             
             .section-title {
                 font-size: 2rem;
             }
             
-            .navbar-nav {
-                text-align: center;
-                background: rgba(44, 62, 80, 0.95);
-                padding: 20px;
-                border-radius: 10px;
-                margin-top: 10px;
+            .features-grid,
+            .pricing-cards {
+                grid-template-columns: 1fr;
             }
             
-            .hero-buttons {
-                justify-content: center;
+            .pricing-card.featured {
+                transform: none;
             }
         }
         
-        /* Animation Classes */
-        .fade-in {
-            animation: fadeIn 1s ease-in-out;
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Glass Effect */
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(44, 62, 80, 0.95);
+                padding: 20px;
+                gap: 15px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
                 <i class="fas fa-industry"></i>
-                GlassERP<span style="color: #3498db;">Pro</span>
-            </a>
+                <div class="logo-text">GlassERP<span>Pro</span></div>
+            </div>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#modules">Modules</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#preview">Preview</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light btn-sm ms-2" href="/login">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                    </li>
-                </ul>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#preview">Preview</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+                <a href="/login" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero-section">
+    <section class="hero" id="home">
         <div class="container">
-            <div class="hero-content fade-in">
-                <h1 class="hero-title">Complete Glass Manufacturing ERP Solution</h1>
-                <p class="hero-subtitle">
+            <div class="hero-content">
+                <h1>Complete Glass Manufacturing ERP Solution</h1>
+                <p>
                     Streamline your glass manufacturing business with our comprehensive ERP software. 
                     Manage production, inventory, billing, and more with beautiful, intuitive interfaces.
                 </p>
+                
                 <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary-hero btn-hero">
+                    <a href="#contact" class="btn btn-primary">
                         <i class="fas fa-play-circle"></i> Start Free Trial
                     </a>
-                    <a href="#preview" class="btn btn-outline-hero btn-hero">
+                    <a href="#preview" class="btn btn-outline">
                         <i class="fas fa-eye"></i> Live Demo
                     </a>
                 </div>
-                <div class="row mt-5">
-                    <div class="col-md-3 col-6 text-center">
-                        <h3 class="text-warning">500+</h3>
-                        <p>Companies Trust</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Companies Trust</div>
                     </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <h3 class="text-warning">24/7</h3>
-                        <p>Support</p>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
                     </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <h3 class="text-warning">99.9%</h3>
-                        <p>Uptime</p>
+                    <div class="stat-item">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Uptime</div>
                     </div>
-                    <div class="col-md-3 col-6 text-center">
-                        <h3 class="text-warning">45+</h3>
-                        <p>Modules</p>
+                    <div class="stat-item">
+                        <div class="stat-number">45+</div>
+                        <div class="stat-label">Modules</div>
                     </div>
                 </div>
             </div>
@@ -572,165 +606,53 @@
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features-section">
+    <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Why Choose GlassERP Pro?</h2>
-            <div class="row">
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h4 class="feature-title">Real-time Analytics</h4>
-                        <p>Get real-time insights into production, sales, inventory, and financial performance with interactive dashboards.</p>
+            <h2 class="section-title">Why Choose GlassERP Pro?</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
                     </div>
+                    <h3>Real-time Analytics</h3>
+                    <p>Get real-time insights into production, sales, inventory, and financial performance.</p>
                 </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        <h4 class="feature-title">Production Management</h4>
-                        <p>Manage complete glass manufacturing workflow from raw material to finished goods with quality control.</p>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
                     </div>
+                    <h3>Production Management</h3>
+                    <p>Manage complete glass manufacturing workflow from raw material to finished goods.</p>
                 </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <h4 class="feature-title">Smart Billing</h4>
-                        <p>Create professional performance bills with automatic calculations, dimensions, and GST compliance.</p>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-boxes"></i>
-                        </div>
-                        <h4 class="feature-title">Inventory Control</h4>
-                        <p>Track raw materials, work-in-progress, and finished goods with real-time stock alerts and reports.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h4 class="feature-title">Mobile Ready</h4>
-                        <p>Access your ERP from any device - desktop, tablet, or mobile with responsive design and mobile app.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-cloud"></i>
-                        </div>
-                        <h4 class="feature-title">Cloud Based</h4>
-                        <p>No installation required. Access your data securely from anywhere with automatic backups and updates.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Modules Section -->
-    <section id="modules" class="modules-section">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Complete Module Suite</h2>
-            <div class="row">
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="module-card">
-                        <h4><i class="fas fa-industry me-2"></i> Production</h4>
-                        <p>Process planning, scheduling, quality control, and machine monitoring.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="module-card">
-                        <h4><i class="fas fa-warehouse me-2"></i> Inventory</h4>
-                        <p>Raw material, WIP, finished goods tracking with barcode support.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="module-card">
-                        <h4><i class="fas fa-shopping-cart me-2"></i> Sales</h4>
-                        <p>Quotations, order management, invoicing, and CRM integration.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="module-card">
-                        <h4><i class="fas fa-file-invoice me-2"></i> Performance Bill</h4>
-                        <p>Professional bills with dimensions, calculations, and GST compliance.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="module-card">
-                        <h4><i class="fas fa-money-bill-wave me-2"></i> Accounting</h4>
-                        <p>General ledger, accounts payable/receivable, and financial reports.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                    <div class="module-card">
-                        <h4><i class="fas fa-truck me-2"></i> Purchase</h4>
-                        <p>Supplier management, purchase orders, and material receipt.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="700">
-                    <div class="module-card">
-                        <h4><i class="fas fa-users me-2"></i> HR & Payroll</h4>
-                        <p>Employee management, attendance, salary processing, and PF/ESI.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="800">
-                    <div class="module-card">
-                        <h4><i class="fas fa-chart-bar me-2"></i> Reports</h4>
-                        <p>Customizable reports, analytics dashboards, and business intelligence.</p>
-                    </div>
+                    <h3>Smart Billing</h3>
+                    <p>Create professional performance bills with automatic calculations and GST compliance.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Performance Bill Preview -->
-    <section id="preview" class="preview-section">
+    <section class="preview" id="preview">
         <div class="container">
-            <h2 class="section-title text-white" data-aos="fade-up">Performance Bill Preview</h2>
-            <p class="text-center text-white mb-5" data-aos="fade-up" data-aos-delay="100">
-                Professional billing system exactly as shown in your requirement
-            </p>
+            <h2 class="section-title" style="color: white;">Performance Bill Preview</h2>
             
-            <div class="bill-preview" data-aos="zoom-in" data-aos-delay="200">
+            <div class="bill-preview">
                 <div class="bill-header">
-                    <div class="row">
-                        <div class="col-6">
-                            <h4 class="mb-0">Performance Bill</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0; color: white;">Performance Bill</h3>
                             <small>Glass Manufacturing Company</small>
                         </div>
-                        <div class="col-6 text-end">
-                            <h5 class="mb-0">PERF-001</h5>
+                        <div style="text-align: right;">
+                            <h4 style="margin: 0; color: white;">PERF-001</h4>
                             <small>Date: 15-01-2024</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h6>Bill To:</h6>
-                        <p class="mb-1"><strong>ABC Construction Pvt Ltd</strong></p>
-                        <p class="mb-1">123 Industrial Area, Phase 2</p>
-                        <p class="mb-1">Mumbai, Maharashtra - 400072</p>
-                        <p class="mb-1">GSTIN: 27AABC1234M1Z5</p>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="mb-1"><strong>VOM:</strong> 15.25 Sq.mt.</p>
-                                <p class="mb-1"><strong>Even Cut:</strong> Yes</p>
-                            </div>
-                            <div class="col-6">
-                                <p class="mb-1"><strong>Unit:</strong> MM</p>
-                                <p class="mb-1"><strong>Discount:</strong> 5%</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -778,42 +700,57 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6" class="text-end"><strong>Total:</strong></td>
-                            <td><strong>₹29,430</strong></td>
+                            <td colspan="6" style="text-align: right; font-weight: bold;">Total:</td>
+                            <td style="font-weight: bold;">₹29,430</td>
                         </tr>
                         <tr>
-                            <td colspan="6" class="text-end">Hole Charges:</td>
+                            <td colspan="6" style="text-align: right;">Hole Charges:</td>
                             <td>₹500</td>
                         </tr>
                         <tr>
-                            <td colspan="6" class="text-end">GST @18%:</td>
+                            <td colspan="6" style="text-align: right;">GST @18%:</td>
                             <td>₹5,387.40</td>
                         </tr>
                         <tr>
-                            <td colspan="6" class="text-end"><strong>Grand Total:</strong></td>
-                            <td><strong class="text-success">₹35,317.40</strong></td>
+                            <td colspan="6" style="text-align: right; font-weight: bold;">Grand Total:</td>
+                            <td style="font-weight: bold; color: #27ae60;">₹35,317.40</td>
                         </tr>
                     </tfoot>
                 </table>
                 
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <h6>Payment Method:</h6>
-                        <div class="d-flex align-items-center">
-                            <div class="bg-light p-2 rounded me-3">
-                                <i class="fas fa-qrcode fa-2x"></i>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                    <div>
+                        <strong>Payment Method:</strong>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                <i class="fas fa-qrcode" style="font-size: 24px; color: #3498db;"></i>
                             </div>
                             <div>
-                                <p class="mb-0"><strong>QR Code Payment</strong></p>
+                                <div style="font-weight: bold;">QR Code Payment</div>
                                 <small>Scan to pay instantly</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary">
+                    <div>
+                        <button style="
+                            background: #3498db;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            margin-right: 10px;
+                        ">
                             <i class="fas fa-print"></i> Print Bill
                         </button>
-                        <button class="btn btn-success">
+                        <button style="
+                            background: #27ae60;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        ">
                             <i class="fas fa-download"></i> Download PDF
                         </button>
                     </div>
@@ -823,132 +760,114 @@
     </section>
 
     <!-- Pricing Section -->
-    <section id="pricing" class="pricing-section">
+    <section class="pricing" id="pricing">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Simple & Transparent Pricing</h2>
-            <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">
-                Choose the perfect plan for your business. All plans include 14-day free trial.
-            </p>
+            <h2 class="section-title">Simple & Transparent Pricing</h2>
             
-            <div class="row">
-                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <h4>Starter</h4>
-                            <p class="text-muted">For Small Workshops</p>
-                            <div class="price">₹4,999<span>/month</span></div>
-                        </div>
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Up to 5 Users</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Basic Modules</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 10GB Storage</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Email Support</li>
-                            <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Advanced Reports</li>
-                        </ul>
-                        <a href="#contact" class="btn btn-outline-primary w-100">Start Free Trial</a>
-                    </div>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <p>For Small Workshops</p>
+                    <div class="price">₹4,999<span style="font-size: 1rem; color: #666;">/month</span></div>
+                    <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                        <li style="margin: 10px 0;">✓ Up to 5 Users</li>
+                        <li style="margin: 10px 0;">✓ Basic Modules</li>
+                        <li style="margin: 10px 0;">✓ 10GB Storage</li>
+                        <li style="margin: 10px 0;">✗ Advanced Reports</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline" style="color: #2c3e50; border-color: #2c3e50;">Start Free Trial</a>
                 </div>
                 
-                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="pricing-card featured">
-                        <div class="badge bg-warning text-dark position-absolute" style="top: -10px; right: 20px; padding: 5px 15px;">
-                            Most Popular
-                        </div>
-                        <div class="pricing-header">
-                            <h4>Professional</h4>
-                            <p class="text-muted">For Medium Enterprises</p>
-                            <div class="price">₹14,999<span>/month</span></div>
-                        </div>
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Up to 20 Users</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> All Modules</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 50GB Storage</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority Support</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Advanced Analytics</li>
-                        </ul>
-                        <a href="#contact" class="btn btn-primary w-100">Start Free Trial</a>
+                <div class="pricing-card featured">
+                    <div style="
+                        background: #f39c12;
+                        color: white;
+                        padding: 5px 15px;
+                        border-radius: 20px;
+                        position: absolute;
+                        top: -10px;
+                        right: 20px;
+                        font-size: 0.8rem;
+                    ">
+                        Most Popular
                     </div>
+                    <h3>Professional</h3>
+                    <p>For Medium Enterprises</p>
+                    <div class="price">₹14,999<span style="font-size: 1rem; color: #666;">/month</span></div>
+                    <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                        <li style="margin: 10px 0;">✓ Up to 20 Users</li>
+                        <li style="margin: 10px 0;">✓ All Modules</li>
+                        <li style="margin: 10px 0;">✓ 50GB Storage</li>
+                        <li style="margin: 10px 0;">✓ Advanced Analytics</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary">Start Free Trial</a>
                 </div>
                 
-                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="400">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <h4>Enterprise</h4>
-                            <p class="text-muted">For Large Manufacturers</p>
-                            <div class="price">₹39,999<span>/month</span></div>
-                        </div>
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited Users</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom Modules</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 200GB Storage</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 24/7 Phone Support</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dedicated Account Manager</li>
-                        </ul>
-                        <a href="#contact" class="btn btn-outline-primary w-100">Contact Sales</a>
-                    </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <p>For Large Manufacturers</p>
+                    <div class="price">₹39,999<span style="font-size: 1rem; color: #666;">/month</span></div>
+                    <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                        <li style="margin: 10px 0;">✓ Unlimited Users</li>
+                        <li style="margin: 10px 0;">✓ Custom Modules</li>
+                        <li style="margin: 10px 0;">✓ 200GB Storage</li>
+                        <li style="margin: 10px 0;">✓ 24/7 Support</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline" style="color: #2c3e50; border-color: #2c3e50;">Contact Sales</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
+    <section class="contact" id="contact">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Get Started Today</h2>
-            <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">
-                Request a demo or start your free trial. No credit card required.
-            </p>
+            <h2 class="section-title">Get Started Today</h2>
             
-            <div class="row">
-                <div class="col-lg-6 mb-4" data-aos="fade-right" data-aos-delay="200">
-                    <div class="contact-form">
-                        <h4 class="mb-4">Request Free Demo</h4>
-                        <form id="demoForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Your Name" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email Address" required>
-                                </div>
-                            </div>
-                            <input type="tel" class="form-control" placeholder="Phone Number">
-                            <input type="text" class="form-control" placeholder="Company Name">
-                            <select class="form-control" required>
-                                <option value="">Select Employee Count</option>
-                                <option value="1-10">1-10 Employees</option>
-                                <option value="11-50">11-50 Employees</option>
-                                <option value="51-200">51-200 Employees</option>
-                                <option value="200+">200+ Employees</option>
-                            </select>
-                            <textarea class="form-control" rows="4" placeholder="Additional Requirements"></textarea>
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-paper-plane me-2"></i> Request Free Demo
-                            </button>
-                        </form>
+            <div class="contact-form">
+                <h3 style="text-align: center; margin-bottom: 30px;">Request Free Demo</h3>
+                
+                <form id="demoForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" required>
                     </div>
-                </div>
-                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
-                    <div class="ps-lg-5">
-                        <h4 class="mb-4">Contact Information</h4>
-                        <div class="mb-4">
-                            <h5><i class="fas fa-map-marker-alt text-primary me-3"></i> Our Office</h5>
-                            <p class="ms-4">Karnal<br>Karnal, Haryana - 132001</p>
-                        </div>
-                        <div class="mb-4">
-                            <h5><i class="fas fa-phone text-primary me-3"></i> Phone Support</h5>
-                            <p class="ms-4">+91 8950655977<br>+91 9306068637</p>
-                        </div>
-                        <div class="mb-4">
-                            <h5><i class="fas fa-envelope text-primary me-3"></i> Email</h5>
-                            <p class="ms-4">jperp1001@gmail.com<br>jperp1001@gmail.com</p>
-                        </div>
-                        <div class="mb-4">
-                            <h5><i class="fas fa-clock text-primary me-3"></i> Business Hours</h5>
-                            <p class="ms-4">Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 2:00 PM</p>
-                        </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
                     </div>
-                </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employees">Number of Employees</label>
+                        <select id="employees">
+                            <option value="">Select</option>
+                            <option value="1-10">1-10 Employees</option>
+                            <option value="11-50">11-50 Employees</option>
+                            <option value="51-200">51-200 Employees</option>
+                            <option value="200+">200+ Employees</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Additional Requirements</label>
+                        <textarea id="message" rows="4"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Request Free Demo
+                    </button>
+                </form>
             </div>
         </div>
     </section>
@@ -956,72 +875,49 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
+            <div class="footer-content">
+                <div>
                     <div class="footer-logo">
-                        <i class="fas fa-industry me-2"></i>
+                        <i class="fas fa-industry"></i>
                         GlassERP<span style="color: #3498db;">Pro</span>
                     </div>
-                    <p>Complete ERP solution for glass manufacturing industry. Streamline operations, increase productivity, and grow your business.</p>
+                    <p>Complete ERP solution for glass manufacturing industry. Streamline operations, increase productivity.</p>
                     <div class="social-icons">
                         <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <div class="footer-links">
-                        <h5>Product</h5>
-                        <ul>
-                            <li><a href="#features">Features</a></li>
-                            <li><a href="#modules">Modules</a></li>
-                            <li><a href="#pricing">Pricing</a></li>
-                            <li><a href="#preview">Demo</a></li>
-                            <li><a href="#">Updates</a></li>
-                        </ul>
-                    </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#preview">Demo</a></li>
+                        <li><a href="#">Updates</a></li>
+                    </ul>
                 </div>
                 
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <div class="footer-links">
-                        <h5>Company</h5>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Blog</a></li>
-                            <li><a href="#">Press</a></li>
-                            <li><a href="#">Partners</a></li>
-                        </ul>
-                    </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
                 </div>
                 
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <div class="footer-links">
-                        <h5>Support</h5>
-                        <ul>
-                            <li><a href="#">Help Center</a></li>
-                            <li><a href="#">Documentation</a></li>
-                            <li><a href="#">API Reference</a></li>
-                            <li><a href="#">Community</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <div class="footer-links">
-                        <h5>Legal</h5>
-                        <ul>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                            <li><a href="#">Cookie Policy</a></li>
-                            <li><a href="#">GDPR</a></li>
-                            <li><a href="#">SLA</a></li>
-                        </ul>
-                    </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
                 </div>
             </div>
             
@@ -1031,43 +927,41 @@
         </div>
     </footer>
 
-    <!-- Powered By Section -->
+    <!-- Powered By -->
     <div class="powered-by">
         <div class="container">
             <p class="powered-by-text">
                 Powered by 
-                <span>S.A.P.U.T</span>
-                <i class="fas fa-code ml-2"></i>
+                <span class="powered-by-badge">S.A.P.U.T</span>
+                <i class="fas fa-code"></i>
             </p>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AOS Animation -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <!-- Custom JS -->
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
         });
         
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.padding = '10px 0';
-                navbar.style.background = 'rgba(44, 62, 80, 0.95)';
-            } else {
-                navbar.style.padding = '15px 0';
-                navbar.style.background = 'linear-gradient(135deg, var(--primary-color) 0%, #1a2530 100%)';
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
             }
         });
         
-        // Smooth scrolling
+        // Form Submission
+        document.getElementById('demoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you! Our team will contact you within 24 hours.');
+            e.target.reset();
+        });
+        
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1080,47 +974,22 @@
                         top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
+                    
+                    // Close mobile menu if open
+                    navLinks.classList.remove('active');
                 }
             });
         });
         
-        // Form submission
-        document.getElementById('demoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you! Our team will contact you within 24 hours.');
-            this.reset();
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(44, 62, 80, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(44, 62, 80, 0.95)';
+            }
         });
-        
-        // Counter animation
-        function animateCounter(element, target, duration) {
-            let start = 0;
-            const increment = target / (duration / 16);
-            const timer = setInterval(() => {
-                start += increment;
-                if (start >= target) {
-                    element.textContent = target + '+';
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(start);
-                }
-            }, 16);
-        }
-        
-        // Animate counters when in view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const counters = entry.target.querySelectorAll('h3.text-warning');
-                    counters.forEach(counter => {
-                        const target = parseInt(counter.textContent);
-                        animateCounter(counter, target, 2000);
-                    });
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        const heroSection = document.querySelector('.hero-section');
-        observer.observe(heroSection);
     </script>
 </body>
 </html>
