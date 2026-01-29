@@ -1,55 +1,59 @@
-function today(){
-  let d=new Date();
-  return d.toLocaleDateString();
-}
+// ===== AUTO DATE =====
+document.getElementById("date").valueAsDate = new Date();
 
-document.getElementById("todayDate").innerText=today();
-document.getElementById("piNo").innerText="PI-"+Date.now();
+// ===== AUTO PI NUMBER =====
+let lastPI = localStorage.getItem("glass_pi_no");
+if (!lastPI) lastPI = 0;
+let newPI = parseInt(lastPI) + 1;
+localStorage.setItem("glass_pi_no", newPI);
+document.getElementById("piNo").value = String(newPI).padStart(3,"0");
 
-document.body.addEventListener("input",calculate);
+// ===== CALCULATION =====
+document.body.addEventListener("input", calculate);
 
-function inchToMM(inch,frac){
-  return (parseFloat(inch||0)+parseFloat(frac||0))*25.4;
+function inchToMM(inch, frac){
+  return (parseFloat(inch||0) + parseFloat(frac||0)) * 25.4;
 }
 
 function calculate(){
-let row=document.querySelector("#itemBody tr");
+  const r = document.querySelector("tbody tr");
 
-let inch=row.querySelector(".inch").value;
-let frac=row.querySelector(".frac").value;
-let mm=inchToMM(inch,frac);
+  let wMM = parseFloat(r.querySelector(".wMM").value);
+  let wIn = r.querySelector(".wIn").value;
+  let wFrac = r.querySelector(".wFrac").value;
 
-row.querySelector(".mm").innerText=mm.toFixed(2);
+  let actualW = wMM ? wMM : inchToMM(wIn, wFrac);
+  let actualH = actualW; // same logic (width/height separate later)
 
-let plusW=parseFloat(document.getElementById("plusW").value||0);
-let plusH=parseFloat(document.getElementById("plusH").value||0);
+  r.querySelector(".actW").innerText = actualW.toFixed(2);
+  r.querySelector(".actH").innerText = actualH.toFixed(2);
 
-let cW=mm+plusW;
-let cH=mm+plusH;
+  let plusW = parseFloat(document.getElementById("plusW").value||0);
+  let plusH = parseFloat(document.getElementById("plusH").value||0);
 
-row.querySelector(".cmmW").innerText=cW.toFixed(2);
-row.querySelector(".cmmH").innerText=cH.toFixed(2);
+  let chgW = actualW + plusW;
+  let chgH = actualH + plusH;
 
-let qty=parseFloat(row.querySelector(".qty").value||1);
-let area=(cW*cH/1000000)*qty;
+  r.querySelector(".chgW").innerText = chgW.toFixed(2);
+  r.querySelector(".chgH").innerText = chgH.toFixed(2);
 
-row.querySelector(".area").innerText=area.toFixed(3);
+  let qty = parseFloat(r.querySelector(".qty").value||1);
+  let area = (chgW * chgH * qty) / 1000000;
+  r.querySelector(".area").innerText = area.toFixed(3);
 
-let rate=parseFloat(row.querySelector(".rate").value||0);
-let amt=area*rate;
+  let rate = parseFloat(r.querySelector(".rate").value||0);
+  let amt = area * rate;
+  r.querySelector(".amt").innerText = amt.toFixed(2);
 
-row.querySelector(".amount").innerText=amt.toFixed(2);
+  document.getElementById("sub").innerText = amt.toFixed(2);
 
-let sub=amt;
-document.getElementById("subTotal").innerText=sub.toFixed(2);
+  let holes = parseInt(r.querySelector(".hole").value||0);
+  let cuts  = parseInt(r.querySelector(".cut").value||0);
 
-let hole=parseFloat(document.getElementById("holeCharge").value||0);
-let cut=parseFloat(document.getElementById("cutCharge").value||0);
-let freight=parseFloat(document.getElementById("freight").value||0);
-let gst=parseFloat(document.getElementById("gst").value||0);
+  document.getElementById("holeT").innerText = holes;
+  document.getElementById("cutT").innerText = cuts;
 
-let grand=sub+hole+cut+freight;
-grand+=grand*(gst/100);
-
-document.getElementById("grandTotal").innerText=grand.toFixed(2);
+  let gst = parseFloat(document.getElementById("gst").value||0);
+  let grand = amt + (amt * gst / 100);
+  document.getElementById("grand").innerText = grand.toFixed(2);
 }
