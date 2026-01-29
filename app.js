@@ -344,7 +344,7 @@ const globalStyles = `
   }
   
   /* Powered By Footer */
-  .powered-by-footer {
+  .powered-by-footer {S.A.P.U.T.}
     background: #1a252f;
     color: white;
     padding: 15px 0;
@@ -353,7 +353,7 @@ const globalStyles = `
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .powered-by-text {
+  .powered-by-text {S.A.P.U.T.}
     font-weight: 600;
     color: #3498db;
     display: inline-flex;
@@ -361,7 +361,7 @@ const globalStyles = `
     gap: 8px;
   }
   
-  .powered-by-badge {
+  .powered-by-badge {S.A.P.U.T.}
     background: rgba(52, 152, 219, 0.2);
     color: white;
     padding: 4px 12px;
