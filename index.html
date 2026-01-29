@@ -1,69 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Glass Line – New Proforma</title>
+<title>Glass Line – Proforma Invoice</title>
 
 <style>
-body{font-family:Arial;font-size:13px;background:#f5f5f5}
+body{font-family:Arial;font-size:13px;background:#eef1ff}
+input{font-size:12px}
 h3{margin:6px 0}
-.box{border:1px solid #000;background:#fff;padding:8px;margin-bottom:8px}
-.flex{display:flex;gap:10px}
-.col{flex:1}
+
+.header{
+  background:#fff;
+  border:1px solid #000;
+  padding:8px;
+  margin-bottom:8px;
+}
+
+.top-row{
+  display:flex;
+  align-items:flex-end;
+  gap:20px;
+  border-bottom:2px solid #444;
+  padding-bottom:6px;
+}
+
+.top-row div{
+  display:flex;
+  flex-direction:column;
+}
+
+.uom{
+  background:#4f46e5;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+  text-align:center;
+}
+
+.party-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  margin-top:8px;
+}
+
+.party{
+  border:1px solid #000;
+  padding:6px;
+}
+
+.party h4{
+  margin:0 0 4px;
+  background:#c7d2fe;
+  padding:4px;
+  text-align:center;
+}
+
+.party input{width:100%;margin-bottom:4px}
+
 table{width:100%;border-collapse:collapse;background:#fff}
 th,td{border:1px solid #000;padding:4px;text-align:center}
-th{background:#eaeaea}
-input{width:60px}
-.small input{width:80px}
-.totalBox{width:300px;border:1px solid #000;padding:8px;float:right;background:#fff}
+th{background:#dbeafe}
+
+.sizebox input{width:45px}
+.mm input{width:70px}
+
+button{font-size:11px;margin:1px}
+button.active{background:#22c55e;color:#fff}
+
+.totalBox{
+  width:280px;
+  float:right;
+  border:1px solid #000;
+  background:#fff;
+  padding:6px;
+  margin-top:8px;
+}
 textarea{width:100%;height:70px}
 </style>
-
 </head>
+
 <body>
 
-<h3>Glass Line – New Proforma</h3>
+<h3>Glass Line – Proforma Invoice</h3>
 
-<!-- HEADER -->
-<div class="box flex">
-  <div class="col small">
-    Date: <input id="date" readonly><br><br>
-    Proforma No: <input value="001"><br><br>
+<div class="header">
 
-    <b>+MM</b><br>
-    Width <input id="addW" value="0"><br>
-    Height <input id="addH" value="0">
+  <div class="top-row">
+    <div>
+      <label>Date</label>
+      <input type="date" id="date">
+    </div>
+
+    <div>
+      <label>PI No</label>
+      <input>
+    </div>
+
+    <div>
+      <label>+MM Width</label>
+      <input type="number" id="addW" value="0">
+    </div>
+
+    <div>
+      <label>+MM Height</label>
+      <input type="number" id="addH" value="0">
+    </div>
+
+    <div class="uom">
+      <b>UOM</b><br>SQ.MT
+    </div>
   </div>
 
-  <div class="col">
-    <b>Bill To</b><br>
-    Name <input><br>
-    Address <input><br>
-    City <input> State <input><br>
-    Mobile <input><br>
-    GSTIN <input>
+  <div class="party-row">
+    <div class="party">
+      <h4>Bill To</h4>
+      <input placeholder="Name">
+      <input placeholder="Address">
+      <input placeholder="City">
+      <input placeholder="Mobile">
+      <input placeholder="GSTIN">
+    </div>
+
+    <div class="party">
+      <h4>Ship To</h4>
+      <input placeholder="Name">
+      <input placeholder="Address">
+      <input placeholder="City">
+      <input placeholder="Mobile">
+      <input placeholder="GSTIN">
+    </div>
   </div>
 
-  <div class="col">
-    <b>Ship To</b><br><br>
-    SAME AS BILL TO
-  </div>
 </div>
 
-<!-- ITEMS -->
 <table>
 <thead>
 <tr>
 <th rowspan="2">Item</th>
-<th colspan="2">Actual (Inch + Sut)</th>
+<th colspan="2">Actual Size (Inch)</th>
+<th colspan="2">Actual MM</th>
 <th colspan="2">Chargeable MM</th>
+<th rowspan="2">Fab</th>
 <th rowspan="2">Qty</th>
-<th rowspan="2">Area Sqmt</th>
+<th rowspan="2">Area</th>
 <th rowspan="2">Rate</th>
 <th rowspan="2">Amount</th>
-<th rowspan="2">Remark</th>
 </tr>
 <tr>
+<th>W</th><th>H</th>
 <th>W</th><th>H</th>
 <th>W</th><th>H</th>
 </tr>
@@ -71,46 +156,54 @@ textarea{width:100%;height:70px}
 
 <tbody id="itemsBody">
 <tr>
-<td><input value="12 MM GLA"></td>
+<td><input value="12MM GLA"></td>
 
-<td>
+<td class="sizebox">
 <input class="win" placeholder="In">
-<input class="wsut" placeholder="S">
+<input class="wnum" placeholder="Num">
+<input class="wden" value="8">
 </td>
 
-<td>
+<td class="sizebox">
 <input class="hin" placeholder="In">
-<input class="hsut" placeholder="S">
+<input class="hnum" placeholder="Num">
+<input class="hden" value="8">
+</td>
+
+<td class="mm">
+<input class="wmm" readonly>
+</td>
+<td class="mm">
+<input class="hmm" readonly>
 </td>
 
 <td class="cw">0</td>
 <td class="ch">0</td>
 
+<td>
+<button class="hole">Hole</button>
+<button class="cut">Cut</button>
+<button class="bhole">Big Hole</button>
+<button class="bcut">Big Cut</button>
+</td>
+
 <td><input class="qty" value="1"></td>
 <td class="area">0</td>
 <td><input class="rate"></td>
 <td class="amount">0</td>
-<td><input></td>
 </tr>
 </tbody>
 </table>
 
-<br>
-
 <div class="totalBox">
-Total: <span id="subTotal">0</span><br><br>
-Hole <input id="hole" value="0"><br>
-Cutout <input id="cutout" value="0"><br>
-Document <input id="doc" value="0"><br>
-Freight <input id="freight" value="0"><br>
+Sub Total: <span id="subTotal">0</span><br><br>
+Hole <input id="holeCharge" value="0"><br>
+Cutout <input id="cutoutCharge" value="0"><br>
 GST % <input id="gst" value="18"><br><br>
 <b>GRAND TOTAL ₹ <span id="grandTotal">0</span></b>
 </div>
 
 <div style="clear:both"></div>
-
-<h4>Payment Method</h4>
-Account No ________ IFSC ________
 
 <h4>Terms & Conditions</h4>
 <textarea></textarea>
