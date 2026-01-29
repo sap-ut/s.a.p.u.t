@@ -1,87 +1,72 @@
-/* ========= CONSTANTS ========= */
 const INCH_TO_MM = 25.4;
-const SUT_PER_INCH = 8;
-const SQFT_TO_SQMT = 0.092903;
+const SUT = 8;
 
-/* ========= AUTO DATE ========= */
-document.addEventListener("DOMContentLoaded", () => {
-  const d = new Date();
-  const dd = String(d.getDate()).padStart(2,'0');
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  const yy = d.getFullYear();
-  document.getElementById("piDate").value = `${dd}-${mm}-${yy}`;
-});
-
-/* ========= HELPERS ========= */
-function inchSutToInch(i, s) {
-  return (Number(i)||0) + (Number(s)||0)/SUT_PER_INCH;
+function inchSutToMM(inch, sut) {
+  return ((+inch || 0) + ((+sut || 0) / SUT)) * INCH_TO_MM;
 }
 
-/* ========= ROW CALC ========= */
 function calculateRow(row) {
-  if (!row) return;
 
-  const win  = row.querySelector(".win").value;
+  const win = row.querySelector(".win").value;
   const wsut = row.querySelector(".wsut").value;
-  const hin  = row.querySelector(".hin").value;
+  const hin = row.querySelector(".hin").value;
   const hsut = row.querySelector(".hsut").value;
 
-  const qty  = Number(row.querySelector(".qty").value || 1);
-  const rate = Number(row.querySelector(".rate").value || 0);
-  const addMM = Number(document.getElementById("addMM").value || 0);
+  const qty = +row.querySelector(".qty").value || 1;
+  const rate = +row.querySelector(".rate").value || 0;
+  const addMM = +document.getElementById("paimaishMM").value || 0;
 
-  // Actual MM
-  const wActual = inchSutToInch(win, wsut) * INCH_TO_MM;
-  const hActual = inchSutToInch(hin, hsut) * INCH_TO_MM;
+  const wMM = inchSutToMM(win, wsut);
+  const hMM = inchSutToMM(hin, hsut);
 
-  // Chargeable MM (ONLY THIS ROW)
-  const wCharge = wActual + addMM;
-  const hCharge = hActual + addMM;
+  const cw = wMM + addMM;
+  const ch = hMM + addMM;
 
-  const chargeCells = row.querySelectorAll(".chargemm");
-  chargeCells[0].innerText = wCharge.toFixed(1);
-  chargeCells[1].innerText = hCharge.toFixed(1);
+  row.querySelector(".cw").innerText = cw.toFixed(1);
+  row.querySelector(".ch").innerText = ch.toFixed(1);
 
-  // Area (chargeable)
-  const sqft = (wCharge / 304.8) * (hCharge / 304.8);
-  const sqmt = sqft * SQFT_TO_SQMT;
+  const areaSqmt = (cw / 1000) * (ch / 1000);
+  const amount = areaSqmt * rate * qty;
 
-  const amount = sqmt * rate * qty;
-
-  row.querySelector(".area").innerText = sqmt.toFixed(3);
+  row.querySelector(".area").innerText = areaSqmt.toFixed(3);
   row.querySelector(".amount").innerText = amount.toFixed(2);
 
-  calculateTotals();
+  calculateTotal();
 }
 
-/* ========= TOTAL ========= */
-function calculateTotals() {
-  let total = 0;
-  document.querySelectorAll(".amount").forEach(td=>{
-    total += Number(td.innerText||0);
+function calculateTotal() {
+  let sub = 0;
+  document.querySelectorAll(".amount").forEach(a => {
+    sub += +a.innerText || 0;
   });
 
-  document.getElementById("subTotal").innerText = total.toFixed(2);
+  const hole = +document.getElementById("hole").value || 0;
+  const cutout = +document.getElementById("cutout").value || 0;
+  const freight = +document.getElementById("freight").value || 0;
+  const gst = +document.getElementById("gst").value || 0;
 
-  const hole = +holeCharge.value||0;
-  const cut  = +cutoutCharge.value||0;
-  const doc  = +docCharge.value||0;
-  const fr   = +freight.value||0;
-  const gstp = +gst.value||0;
+  const gstAmt = (sub + hole + cutout + freight) * gst / 100;
+  const grand = sub + hole + cutout + freight + gstAmt;
 
-  const beforeGST = total + hole + cut + doc + fr;
-  const gstAmt = beforeGST * gstp / 100;
-
-  document.getElementById("grandTotal").innerText =
-    (beforeGST + gstAmt).toFixed(2);
+  document.getElementById("subTotal").innerText = sub.toFixed(2);
+  document.getElementById("grandTotal").innerText = grand.toFixed(2);
 }
 
-/* ========= EVENTS ========= */
-document.addEventListener("input", e => {
-  const row = e.target.closest("tr");
-  if (row && row.parentElement.id === "itemsBody") {
-    calculateRow(row);
-  } else {
-    calculateTotals();
-  }
+function bindRow(row) {
+  row.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("input", () => calculateRow(row));
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Auto Date
+  const d = new Date();
+  document.getElementById("invoiceDate").value =
+    d.toLocaleDateString("en-GB");
+
+  document.querySelectorAll("#itemsBody tr").forEach(bindRow);
+
+  document.querySelectorAll("#hole,#cutout,#freight,#gst,#paimaishMM")
+    .forEach(i => i.addEventListener("input", calculateTotal));
 });
