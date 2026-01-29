@@ -2,57 +2,66 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Glass Line – Proforma Invoice</title>
+<title>Glass Line – New Proforma</title>
 
 <style>
-body{font-family:Arial;font-size:14px}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #000;padding:4px;text-align:center;vertical-align:middle}
+body{font-family:Arial;font-size:13px;background:#f5f5f5}
+h3{margin:6px 0}
+.box{border:1px solid #000;background:#fff;padding:8px;margin-bottom:8px}
+.flex{display:flex;gap:10px}
+.col{flex:1}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border:1px solid #000;padding:4px;text-align:center}
+th{background:#eaeaea}
 input{width:60px}
-.header input{width:180px}
-.checkbox-group label{margin-right:6px;font-size:12px}
-.totalBox{width:320px;float:right;border:1px solid #000;padding:10px}
+.small input{width:80px}
+.totalBox{width:300px;border:1px solid #000;padding:8px;float:right;background:#fff}
+textarea{width:100%;height:70px}
 </style>
-</head>
 
+</head>
 <body>
 
-<h2>Glass Line – Proforma Invoice</h2>
+<h3>Glass Line – New Proforma</h3>
 
 <!-- HEADER -->
-<table class="header">
-<tr>
-<td>Invoice No</td>
-<td><input></td>
-<td>Date</td>
-<td><input id="invoiceDate"></td>
-</tr>
-<tr>
-<td>Party Name</td>
-<td colspan="3"><input style="width:95%"></td>
-</tr>
-</table>
+<div class="box flex">
+  <div class="col small">
+    Date: <input id="date" readonly><br><br>
+    Proforma No: <input value="001"><br><br>
 
-<br>
+    <b>+MM</b><br>
+    Width <input id="addW" value="0"><br>
+    Height <input id="addH" value="0">
+  </div>
 
-<!-- PAIMAISH -->
-<b>Paimaish / Chargeable Add (MM):</b>
-<input id="paimaishMM" value="0">
+  <div class="col">
+    <b>Bill To</b><br>
+    Name <input><br>
+    Address <input><br>
+    City <input> State <input><br>
+    Mobile <input><br>
+    GSTIN <input>
+  </div>
 
-<br><br>
+  <div class="col">
+    <b>Ship To</b><br><br>
+    SAME AS BILL TO
+  </div>
+</div>
 
-<!-- ITEMS TABLE -->
+<!-- ITEMS -->
 <table>
 <thead>
 <tr>
 <th rowspan="2">Item</th>
-<th colspan="2">Actual Size (Inch + Sut)</th>
-<th colspan="2">Chargeable Size (MM)</th>
-<th rowspan="2">Other Fab</th>
+<th colspan="2">Actual (Inch + Sut)</th>
+<th colspan="2">Chargeable MM</th>
 <th rowspan="2">Qty</th>
-<th rowspan="2">Area (Sqmt)</th>
+<th rowspan="2">Area Sqmt</th>
 <th rowspan="2">Rate</th>
 <th rowspan="2">Amount</th>
+<th rowspan="2">Remark</th>
 </tr>
 <tr>
 <th>W</th><th>H</th>
@@ -62,53 +71,49 @@ input{width:60px}
 
 <tbody id="itemsBody">
 <tr>
-
-<td>12 MM GLA</td>
+<td><input value="12 MM GLA"></td>
 
 <td>
 <input class="win" placeholder="In">
-<input class="wsut" placeholder="Sut">
+<input class="wsut" placeholder="S">
 </td>
 
 <td>
 <input class="hin" placeholder="In">
-<input class="hsut" placeholder="Sut">
+<input class="hsut" placeholder="S">
 </td>
 
 <td class="cw">0</td>
 <td class="ch">0</td>
 
-<td class="checkbox-group">
-<label><input type="checkbox">CSK</label>
-<label><input type="checkbox">SP</label>
-<label><input type="checkbox">BX</label>
-<label><input type="checkbox">C</label>
-</td>
-
 <td><input class="qty" value="1"></td>
 <td class="area">0</td>
 <td><input class="rate"></td>
 <td class="amount">0</td>
-
+<td><input></td>
 </tr>
 </tbody>
 </table>
 
 <br>
 
-<!-- TOTAL BOX -->
 <div class="totalBox">
-Subtotal: ₹ <span id="subTotal">0</span><br><br>
-
-Hole Charges <input id="hole"><br>
-Cutout Charges <input id="cutout"><br>
-Freight <input id="freight"><br>
+Total: <span id="subTotal">0</span><br><br>
+Hole <input id="hole" value="0"><br>
+Cutout <input id="cutout" value="0"><br>
+Document <input id="doc" value="0"><br>
+Freight <input id="freight" value="0"><br>
 GST % <input id="gst" value="18"><br><br>
-
-<b>GRAND TOTAL: ₹ <span id="grandTotal">0</span></b>
+<b>GRAND TOTAL ₹ <span id="grandTotal">0</span></b>
 </div>
 
-<br style="clear:both">
+<div style="clear:both"></div>
+
+<h4>Payment Method</h4>
+Account No ________ IFSC ________
+
+<h4>Terms & Conditions</h4>
+<textarea></textarea>
 
 <script src="app.js"></script>
 </body>
