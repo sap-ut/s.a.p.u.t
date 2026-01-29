@@ -3,9 +3,18 @@ const INCH_TO_MM = 25.4;
 const SUT_PER_INCH = 8;
 const SQFT_TO_SQMT = 0.092903;
 
+/* ========= AUTO DATE ========= */
+document.addEventListener("DOMContentLoaded", () => {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+  document.getElementById("piDate").value = `${dd}-${mm}-${yy}`;
+});
+
 /* ========= HELPERS ========= */
-function inchSutToInch(inch, sut) {
-  return (Number(inch) || 0) + (Number(sut) || 0) / SUT_PER_INCH;
+function inchSutToInch(i, s) {
+  return (Number(i)||0) + (Number(s)||0)/SUT_PER_INCH;
 }
 
 /* ========= ROW CALC ========= */
@@ -19,21 +28,24 @@ function calculateRow(row) {
 
   const qty  = Number(row.querySelector(".qty").value || 1);
   const rate = Number(row.querySelector(".rate").value || 0);
+  const addMM = Number(document.getElementById("addMM").value || 0);
 
-  // inch → mm
-  const wMM = inchSutToInch(win, wsut) * INCH_TO_MM;
-  const hMM = inchSutToInch(hin, hsut) * INCH_TO_MM;
+  // Actual MM
+  const wActual = inchSutToInch(win, wsut) * INCH_TO_MM;
+  const hActual = inchSutToInch(hin, hsut) * INCH_TO_MM;
 
-  // Chargeable MM (abhi actual = chargeable)
+  // Chargeable MM (ONLY THIS ROW)
+  const wCharge = wActual + addMM;
+  const hCharge = hActual + addMM;
+
   const chargeCells = row.querySelectorAll(".chargemm");
-  chargeCells[0].innerText = wMM.toFixed(1);
-  chargeCells[1].innerText = hMM.toFixed(1);
+  chargeCells[0].innerText = wCharge.toFixed(1);
+  chargeCells[1].innerText = hCharge.toFixed(1);
 
-  // Area
-  const sqft = (wMM / 304.8) * (hMM / 304.8);
+  // Area (chargeable)
+  const sqft = (wCharge / 304.8) * (hCharge / 304.8);
   const sqmt = sqft * SQFT_TO_SQMT;
 
-  // Amount
   const amount = sqmt * rate * qty;
 
   row.querySelector(".area").innerText = sqmt.toFixed(3);
@@ -42,44 +54,34 @@ function calculateRow(row) {
   calculateTotals();
 }
 
-/* ========= TOTALS ========= */
+/* ========= TOTAL ========= */
 function calculateTotals() {
-  let subTotal = 0;
-
-  document.querySelectorAll(".amount").forEach(td => {
-    subTotal += Number(td.innerText || 0);
+  let total = 0;
+  document.querySelectorAll(".amount").forEach(td=>{
+    total += Number(td.innerText||0);
   });
 
-  document.getElementById("subTotal").innerText = subTotal.toFixed(2);
+  document.getElementById("subTotal").innerText = total.toFixed(2);
 
-  const hole    = Number(document.getElementById("holeCharge").value || 0);
-  const cutout  = Number(document.getElementById("cutoutCharge").value || 0);
-  const doc     = Number(document.getElementById("docCharge").value || 0);
-  const freight = Number(document.getElementById("freight").value || 0);
-  const gstP    = Number(document.getElementById("gst").value || 0);
+  const hole = +holeCharge.value||0;
+  const cut  = +cutoutCharge.value||0;
+  const doc  = +docCharge.value||0;
+  const fr   = +freight.value||0;
+  const gstp = +gst.value||0;
 
-  const beforeGST = subTotal + hole + cutout + doc + freight;
-  const gstAmt = beforeGST * gstP / 100;
+  const beforeGST = total + hole + cut + doc + fr;
+  const gstAmt = beforeGST * gstp / 100;
 
   document.getElementById("grandTotal").innerText =
     (beforeGST + gstAmt).toFixed(2);
 }
 
 /* ========= EVENTS ========= */
-document.addEventListener("DOMContentLoaded", () => {
-
-  // table inputs
-  document.querySelectorAll("#itemsBody input").forEach(inp => {
-    inp.addEventListener("input", () => {
-      calculateRow(inp.closest("tr"));
-    });
-  });
-
-  // right side charges
-  document.querySelectorAll(
-    "#holeCharge,#cutoutCharge,#docCharge,#freight,#gst"
-  ).forEach(inp => {
-    inp.addEventListener("input", calculateTotals);
-  });
-
+document.addEventListener("input", e => {
+  const row = e.target.closest("tr");
+  if (row && row.parentElement.id === "itemsBody") {
+    calculateRow(row);
+  } else {
+    calculateTotals();
+  }
 });
