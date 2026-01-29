@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <title>Glass Line – Proforma Invoice</title>
+
 <style>
 body{font-family:Arial;font-size:14px}
 table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #000;padding:4px;text-align:center}
-input{width:70px}
-.rightBox input{width:100px}
-textarea{width:100%;height:80px}
-.totalBox{width:300px;float:right;border:1px solid #000;padding:8px}
+th,td{border:1px solid #000;padding:4px;text-align:center;vertical-align:middle}
+input{width:60px}
+.header input{width:180px}
+.checkbox-group label{margin-right:6px;font-size:12px}
+.totalBox{width:320px;float:right;border:1px solid #000;padding:10px}
 </style>
 </head>
 
@@ -18,18 +19,40 @@ textarea{width:100%;height:80px}
 
 <h2>Glass Line – Proforma Invoice</h2>
 
+<!-- HEADER -->
+<table class="header">
+<tr>
+<td>Invoice No</td>
+<td><input></td>
+<td>Date</td>
+<td><input id="invoiceDate"></td>
+</tr>
+<tr>
+<td>Party Name</td>
+<td colspan="3"><input style="width:95%"></td>
+</tr>
+</table>
+
+<br>
+
+<!-- PAIMAISH -->
+<b>Paimaish / Chargeable Add (MM):</b>
+<input id="paimaishMM" value="0">
+
+<br><br>
+
 <!-- ITEMS TABLE -->
 <table>
 <thead>
 <tr>
 <th rowspan="2">Item</th>
-<th colspan="2">Actual MM (Inch + Sut)</th>
-<th colspan="2">Chargeable MM</th>
+<th colspan="2">Actual Size (Inch + Sut)</th>
+<th colspan="2">Chargeable Size (MM)</th>
+<th rowspan="2">Other Fab</th>
 <th rowspan="2">Qty</th>
-<th rowspan="2">Area Sqmt</th>
+<th rowspan="2">Area (Sqmt)</th>
 <th rowspan="2">Rate</th>
 <th rowspan="2">Amount</th>
-<th rowspan="2">Remark</th>
 </tr>
 <tr>
 <th>W</th><th>H</th>
@@ -39,39 +62,46 @@ textarea{width:100%;height:80px}
 
 <tbody id="itemsBody">
 <tr>
+
 <td>12 MM GLA</td>
 
 <td>
-<input class="win" placeholder="Inch">
+<input class="win" placeholder="In">
 <input class="wsut" placeholder="Sut">
 </td>
 
 <td>
-<input class="hin" placeholder="Inch">
+<input class="hin" placeholder="In">
 <input class="hsut" placeholder="Sut">
 </td>
 
-<td class="chargemm">0 × 0</td>
-<td class="chargemm">0 × 0</td>
+<td class="cw">0</td>
+<td class="ch">0</td>
+
+<td class="checkbox-group">
+<label><input type="checkbox">CSK</label>
+<label><input type="checkbox">SP</label>
+<label><input type="checkbox">BX</label>
+<label><input type="checkbox">C</label>
+</td>
 
 <td><input class="qty" value="1"></td>
 <td class="area">0</td>
 <td><input class="rate"></td>
 <td class="amount">0</td>
-<td><input></td>
+
 </tr>
 </tbody>
 </table>
 
 <br>
 
-<!-- RIGHT TOTAL BOX -->
-<div class="totalBox rightBox">
-Total: <span id="subTotal">0</span><br><br>
+<!-- TOTAL BOX -->
+<div class="totalBox">
+Subtotal: ₹ <span id="subTotal">0</span><br><br>
 
-Hole Charges <input id="holeCharge"><br>
-Cutout Charges <input id="cutoutCharge"><br>
-Document Charges <input id="docCharge"><br>
+Hole Charges <input id="hole"><br>
+Cutout Charges <input id="cutout"><br>
 Freight <input id="freight"><br>
 GST % <input id="gst" value="18"><br><br>
 
@@ -79,13 +109,6 @@ GST % <input id="gst" value="18"><br><br>
 </div>
 
 <br style="clear:both">
-
-<!-- PAYMENT -->
-<h4>Payment Method</h4>
-Account No: ________ &nbsp;&nbsp; IFSC: ________
-
-<h4>Terms & Conditions</h4>
-<textarea></textarea>
 
 <script src="app.js"></script>
 </body>
