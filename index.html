@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlassERP Pro - Complete Glass Manufacturing ERP Solution</title>
-    <!-- Font Awesome -->
+    <title>Proforma Invoice with Inches - GlassERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,689 +13,591 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            overflow-x: hidden;
-        }
-        
-        /* Login Modal Styles */
-        .login-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .login-modal.active {
-            display: flex;
-        }
-        
-        .login-container {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            animation: modalSlide 0.3s ease;
-        }
-        
-        @keyframes modalSlide {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .login-header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
-            text-align: center;
+            min-height: 100vh;
         }
         
-        .login-header h2 {
-            margin: 0;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header h2 {
+            color: #3498db;
             font-size: 1.8rem;
         }
         
-        .login-header p {
-            margin: 5px 0 0;
-            opacity: 0.9;
+        /* Unit Selection */
+        .unit-selection {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         
-        .login-body {
-            padding: 30px;
-        }
-        
-        .login-form .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .login-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .login-form input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border 0.3s ease;
-        }
-        
-        .login-form input:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 600;
+        .unit-btn {
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            background: white;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
             transition: all 0.3s ease;
-            margin-top: 10px;
         }
         
-        .login-btn:hover {
+        .unit-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .unit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
         
-        .login-footer {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        /* Dimension Input Styles */
+        .dimension-section {
+            margin-bottom: 30px;
         }
         
-        .login-footer a {
-            color: #3498db;
-            text-decoration: none;
+        .dimension-input {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
-        .login-footer a:hover {
-            text-decoration: underline;
+        .dimension-group {
+            flex: 1;
+            min-width: 250px;
         }
         
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
+        .dimension-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .input-with-unit {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-with-unit input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .input-with-unit select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            min-width: 100px;
+        }
+        
+        /* Inches Specific */
+        .inches-input {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .fraction-select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        /* Table Styles */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .items-table th {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .items-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .items-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .size-display {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        /* Examples Section */
+        .examples {
+            background: #e8f4fc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .examples h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.3s ease;
+            gap: 10px;
         }
         
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .example-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
         
-        .demo-login {
-            background: #f39c12;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            transition: all 0.3s ease;
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
         }
         
-        .demo-login:hover {
-            background: #e67e22;
-            transform: translateY(-2px);
+        /* Conversion Display */
+        .conversion-box {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #f39c12;
         }
         
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .success-message {
-            color: #27ae60;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            text-align: center;
-            display: none;
-        }
-        
-        /* Header Styles */
-        .navbar {
-            background: rgba(44, 62, 80, 0.95);
-            padding: 20px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .nav-container {
+        .conversion-result {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
         }
         
-        .logo {
+        /* Action Buttons */
+        .action-buttons {
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            font-size: 2rem;
-            color: #3498db;
-        }
-        
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .logo-text span {
-            color: #3498db;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            padding: 8px 15px;
-            border-radius: 5px;
-        }
-        
-        .nav-links a:hover {
-            color: #3498db;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .login-btn-nav {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .login-btn-nav:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-        }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), 
-                        url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 200px 0 100px;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
+            margin-top: 30px;
             flex-wrap: wrap;
-            margin-top: 40px;
         }
         
-        .btn {
-            padding: 15px 35px;
-            font-size: 1.1rem;
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
             font-weight: 600;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.3s ease;
+            font-size: 1rem;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
-            border: none;
-            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
         }
         
-        .btn-primary {
+        .btn-save {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+        
+        .btn-print {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
         }
         
-        .btn-primary:hover {
+        .btn-convert {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+        
+        .action-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
         
-        .btn-outline {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
         }
         
-        .btn-outline:hover {
-            background: white;
-            color: #2c3e50;
-            transform: translateY(-3px);
-        }
-        
-        /* ... (Rest of the CSS remains same as before) ... */
-        
-        /* Add these styles at the end */
-        .user-menu {
-            display: none;
-            align-items: center;
-            gap: 15px;
-            color: white;
-        }
-        
-        .user-menu.active {
-            display: flex;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: #3498db;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .logout-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        .logout-btn:hover {
-            background: #c0392b;
+        .footer strong {
+            color: #3498db;
         }
     </style>
 </head>
 <body>
-    <!-- Login Modal -->
-    <div class="login-modal" id="loginModal">
-        <div class="login-container">
-            <div class="login-header">
-                <button class="close-btn" id="closeLogin">
-                    <i class="fas fa-times"></i>
-                </button>
-                <h2><i class="fas fa-sign-in-alt"></i> GlassERP Login</h2>
-                <p>Access your ERP dashboard</p>
+    <div class="container">
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-file-invoice-dollar"></i> PROFORMA INVOICE</h1>
+                <h2>Glass Manufacturing Company</h2>
             </div>
             
-            <div class="login-body">
-                <form class="login-form" id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail"><i class="fas fa-envelope"></i> Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                        <div class="error-message" id="emailError"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                        <div class="error-message" id="passwordError"></div>
-                    </div>
-                    
-                    <button type="submit" class="login-btn" id="submitLogin">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </button>
-                    
-                    <button type="button" class="demo-login" id="demoLogin">
-                        <i class="fas fa-magic"></i> Try Demo Account
-                    </button>
-                    
-                    <div class="success-message" id="successMessage">
-                        Login successful! Redirecting...
-                    </div>
-                </form>
+            <!-- Unit Selection -->
+            <div class="unit-selection">
+                <h3 style="color: #2c3e50; margin-right: 20px;">
+                    <i class="fas fa-ruler"></i> Select Measurement Unit:
+                </h3>
+                <button class="unit-btn active" onclick="setUnit('inches')">
+                    <i class="fas fa-ruler-vertical"></i> Inches
+                </button>
+                <button class="unit-btn" onclick="setUnit('mm')">
+                    <i class="fas fa-ruler"></i> Millimeters
+                </button>
+                <button class="unit-btn" onclick="setUnit('feet')">
+                    <i class="fas fa-ruler-combined"></i> Feet
+                </button>
+            </div>
+            
+            <!-- Inches Input Section -->
+            <div class="dimension-section" id="inchesSection">
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">
+                    <i class="fas fa-expand-arrows-alt"></i> Enter Dimensions in Inches
+                </h3>
                 
-                <div class="login-footer">
-                    <p>Don't have an account? <a href="#" id="showRegister">Sign up here</a></p>
-                    <p><a href="#" id="forgotPassword">Forgot password?</a></p>
+                <!-- Width Input -->
+                <div class="dimension-group">
+                    <label class="dimension-label">
+                        <i class="fas fa-arrows-alt-h"></i> Width
+                    </label>
+                    <div class="inches-input">
+                        <input type="number" id="widthFeet" placeholder="Feet" value="4" min="0">
+                        <span style="font-weight: bold;">ft</span>
+                        <input type="number" id="widthInches" placeholder="Inches" value="0" min="0" max="11">
+                        <select id="widthFraction" class="fraction-select">
+                            <option value="0">0"</option>
+                            <option value="0.125">1/8"</option>
+                            <option value="0.25">1/4"</option>
+                            <option value="0.375">3/8"</option>
+                            <option value="0.5" selected>1/2"</option>
+                            <option value="0.625">5/8"</option>
+                            <option value="0.75">3/4"</option>
+                            <option value="0.875">7/8"</option>
+                        </select>
+                    </div>
                 </div>
+                
+                <!-- Height Input -->
+                <div class="dimension-group">
+                    <label class="dimension-label">
+                        <i class="fas fa-arrows-alt-v"></i> Height
+                    </label>
+                    <div class="inches-input">
+                        <input type="number" id="heightFeet" placeholder="Feet" value="3" min="0">
+                        <span style="font-weight: bold;">ft</span>
+                        <input type="number" id="heightInches" placeholder="Inches" value="0" min="0" max="11">
+                        <select id="heightFraction" class="fraction-select">
+                            <option value="0">0"</option>
+                            <option value="0.125">1/8"</option>
+                            <option value="0.25" selected>1/4"</option>
+                            <option value="0.375">3/8"</option>
+                            <option value="0.5">1/2"</option>
+                            <option value="0.625">5/8"</option>
+                            <option value="0.75">3/4"</option>
+                            <option value="0.875">7/8"</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Display Current Size -->
+                <div class="conversion-box">
+                    <h3><i class="fas fa-calculator"></i> Current Size</h3>
+                    <div class="conversion-result">
+                        <div>
+                            <strong>In Inches:</strong>
+                            <span id="totalInches" class="size-display">48.5" × 36.25"</span>
+                        </div>
+                        <div>
+                            <strong>In Millimeters:</strong>
+                            <span id="totalMM" class="size-display">1231.9 mm × 920.75 mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Items Table -->
+            <div class="dimension-section">
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">
+                    <i class="fas fa-list-alt"></i> Glass Items
+                </h3>
+                
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Size (Inches)</th>
+                            <th>Size (Millimeters)</th>
+                            <th>Qty</th>
+                            <th>Area (Sq.ft)</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Clear Glass 6mm</td>
+                            <td class="size-display">48½" × 36¼"</td>
+                            <td class="size-display">1231.9 × 920.75 mm</td>
+                            <td>10</td>
+                            <td>121.25</td>
+                            <td>₹450</td>
+                            <td>₹54,562.50</td>
+                        </tr>
+                        <tr>
+                            <td>Toughened Glass 10mm</td>
+                            <td class="size-display">36" × 24"</td>
+                            <td class="size-display">914.4 × 609.6 mm</td>
+                            <td>15</td>
+                            <td>90.00</td>
+                            <td>₹650</td>
+                            <td>₹58,500.00</td>
+                        </tr>
+                        <tr>
+                            <td>Laminated Glass</td>
+                            <td class="size-display">42¾" × 30½"</td>
+                            <td class="size-display">1085.85 × 774.7 mm</td>
+                            <td>20</td>
+                            <td>88.75</td>
+                            <td>₹850</td>
+                            <td>₹75,437.50</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Examples Section -->
+            <div class="examples">
+                <h3><i class="fas fa-lightbulb"></i> Common Inches Formats Examples</h3>
+                <div class="example-list">
+                    <div class="example-item">
+                        <strong>48½"</strong><br>
+                        = 48 inches + ½ inch<br>
+                        = 48.5 inches
+                    </div>
+                    <div class="example-item">
+                        <strong>36¼"</strong><br>
+                        = 36 inches + ¼ inch<br>
+                        = 36.25 inches
+                    </div>
+                    <div class="example-item">
+                        <strong>4' 0½"</strong><br>
+                        = 4 feet + 0.5 inch<br>
+                        = 48.5 inches
+                    </div>
+                    <div class="example-item">
+                        <strong>3' 0¼"</strong><br>
+                        = 3 feet + 0.25 inch<br>
+                        = 36.25 inches
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn btn-save" onclick="calculateTotal()">
+                    <i class="fas fa-calculator"></i> Calculate Total
+                </button>
+                <button class="action-btn btn-convert" onclick="convertAll()">
+                    <i class="fas fa-exchange-alt"></i> Convert to MM
+                </button>
+                <button class="action-btn btn-print" onclick="printInvoice()">
+                    <i class="fas fa-print"></i> Print Proforma
+                </button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p>© 2024 GlassERP Pro - Professional Proforma Invoice System</p>
+                <p>Powered by <strong>S.A.P.U.T</strong> | Supports Inches, MM, Feet Conversions</p>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-industry"></i>
-                <div class="logo-text">GlassERP<span>Pro</span></div>
-            </div>
-            
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#preview">Preview</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#contact">Contact</a>
-                
-                <!-- Login Button (Shows when not logged in) -->
-                <button class="login-btn-nav" id="openLogin">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                
-                <!-- User Menu (Shows when logged in) -->
-                <div class="user-menu" id="userMenu">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <span id="userName">User</span>
-                    <button class="logout-btn" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Complete Glass Manufacturing ERP Solution</h1>
-                <p>
-                    Streamline your glass manufacturing business with our comprehensive ERP software. 
-                    Manage production, inventory, billing, and more with beautiful, intuitive interfaces.
-                </p>
-                
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" id="heroLoginBtn">
-                        <i class="fas fa-sign-in-alt"></i> Login to Dashboard
-                    </button>
-                    <a href="#preview" class="btn btn-outline">
-                        <i class="fas fa-eye"></i> Live Demo
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ... (Rest of the HTML remains same as before for other sections) ... -->
-
     <script>
-        // Login System
-        const loginModal = document.getElementById('loginModal');
-        const openLoginBtn = document.getElementById('openLogin');
-        const heroLoginBtn = document.getElementById('heroLoginBtn');
-        const closeLoginBtn = document.getElementById('closeLogin');
-        const loginForm = document.getElementById('loginForm');
-        const demoLoginBtn = document.getElementById('demoLogin');
-        const userMenu = document.getElementById('userMenu');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userName = document.getElementById('userName');
-        const userAvatar = document.getElementById('userAvatar');
-
-        // Check if user is already logged in
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('glassERPLoggedIn');
-            const userEmail = localStorage.getItem('glassERPUserEmail');
+        // Set Active Unit
+        function setUnit(unit) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
-            if (isLoggedIn === 'true' && userEmail) {
-                // Show user menu
-                document.querySelector('.login-btn-nav').style.display = 'none';
-                userMenu.classList.add('active');
-                
-                // Set user info
-                const name = userEmail.split('@')[0];
-                userName.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-                userAvatar.textContent = name.charAt(0).toUpperCase();
-            }
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Show conversion
+            updateDisplay();
         }
-
-        // Open login modal
-        function openLoginModal() {
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+        
+        // Update Display
+        function updateDisplay() {
+            // Get values
+            const widthFeet = parseFloat(document.getElementById('widthFeet').value) || 0;
+            const widthInches = parseFloat(document.getElementById('widthInches').value) || 0;
+            const widthFraction = parseFloat(document.getElementById('widthFraction').value) || 0;
+            
+            const heightFeet = parseFloat(document.getElementById('heightFeet').value) || 0;
+            const heightInches = parseFloat(document.getElementById('heightInches').value) || 0;
+            const heightFraction = parseFloat(document.getElementById('heightFraction').value) || 0;
+            
+            // Calculate totals in inches
+            const totalWidthInches = (widthFeet * 12) + widthInches + widthFraction;
+            const totalHeightInches = (heightFeet * 12) + heightInches + heightFraction;
+            
+            // Convert to mm (1 inch = 25.4 mm)
+            const totalWidthMM = totalWidthInches * 25.4;
+            const totalHeightMM = totalHeightInches * 25.4;
+            
+            // Format fractions for display
+            const widthFractionText = getFractionText(widthFraction);
+            const heightFractionText = getFractionText(heightFraction);
+            
+            // Display
+            document.getElementById('totalInches').innerHTML = 
+                `${totalWidthInches.toFixed(2)}" × ${totalHeightInches.toFixed(2)}"`;
+            
+            document.getElementById('totalMM').innerHTML = 
+                `${totalWidthMM.toFixed(2)} mm × ${totalHeightMM.toFixed(2)} mm`;
+            
+            // Also update table example
+            updateTableExample(widthFeet, widthInches, widthFraction, 
+                             heightFeet, heightInches, heightFraction);
         }
-
-        // Close login modal
-        function closeLoginModal() {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            
-            // Clear form
-            loginForm.reset();
-            document.getElementById('emailError').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
+        
+        // Get fraction as text
+        function getFractionText(decimal) {
+            const fractions = {
+                0: '', 0.0625: '1/16"', 0.125: '⅛"', 0.1875: '3/16"',
+                0.25: '¼"', 0.3125: '5/16"', 0.375: '⅜"', 0.4375: '7/16"',
+                0.5: '½"', 0.5625: '9/16"', 0.625: '⅝"', 0.6875: '11/16"',
+                0.75: '¾"', 0.8125: '13/16"', 0.875: '⅞"', 0.9375: '15/16"'
+            };
+            return fractions[decimal] || '';
         }
-
-        // Login function
-        function loginUser(email, password) {
-            // For demo purposes - In real app, this would call your backend API
+        
+        // Update table with current values
+        function updateTableExample(wFeet, wInches, wFrac, hFeet, hInches, hFrac) {
+            const widthFractionText = getFractionText(wFrac);
+            const heightFractionText = getFractionText(hFrac);
             
-            // Demo credentials
-            const demoUsers = [
-                { email: 'admin@glasserp.com', password: 'admin123', name: 'Admin User' },
-                { email: 'manager@glasserp.com', password: 'manager123', name: 'Manager' },
-                { email: 'demo@glasserp.com', password: 'demo123', name: 'Demo User' }
-            ];
+            const inchesDisplay = `${(wFeet*12 + wInches)}${widthFractionText} × ${(hFeet*12 + hInches)}${heightFractionText}`;
             
-            // Check credentials
-            const user = demoUsers.find(u => u.email === email && u.password === password);
-            
-            if (user || (email === 'test@test.com' && password === 'test123')) {
-                // Successful login
-                localStorage.setItem('glassERPLoggedIn', 'true');
-                localStorage.setItem('glassERPUserEmail', email);
-                localStorage.setItem('glassERPUserName', user ? user.name : 'Test User');
-                
-                // Show success message
-                document.getElementById('successMessage').style.display = 'block';
-                
-                // Update UI
-                setTimeout(() => {
-                    closeLoginModal();
-                    checkLoginStatus();
+            // Update first row in table
+            const firstRow = document.querySelector('.items-table tbody tr:first-child');
+            if (firstRow) {
+                const sizeCells = firstRow.querySelectorAll('.size-display');
+                if (sizeCells.length >= 2) {
+                    sizeCells[0].textContent = inchesDisplay;
                     
-                    // Show welcome message
-                    alert(`Welcome ${user ? user.name : 'User'}! Login successful.`);
+                    // Calculate mm
+                    const totalWidthMM = ((wFeet * 12) + wInches + wFrac) * 25.4;
+                    const totalHeightMM = ((hFeet * 12) + hInches + hFrac) * 25.4;
+                    sizeCells[1].textContent = `${totalWidthMM.toFixed(1)} × ${totalHeightMM.toFixed(1)} mm`;
                     
-                    // In real app, redirect to dashboard
-                    // window.location.href = '/dashboard.html';
-                }, 1500);
-                
-                return true;
-            } else {
-                // Failed login
-                document.getElementById('emailError').textContent = 'Invalid email or password';
-                document.getElementById('emailError').style.display = 'block';
-                return false;
+                    // Calculate area in sq.ft
+                    const areaSqFt = (((wFeet * 12) + wInches + wFrac) * 
+                                      ((hFeet * 12) + hInches + hFrac)) / 144;
+                    const areaCell = firstRow.cells[4];
+                    if (areaCell) {
+                        areaCell.textContent = areaSqFt.toFixed(2);
+                    }
+                    
+                    // Calculate amount
+                    const rate = 450; // ₹450 per sq.ft
+                    const amount = areaSqFt * rate;
+                    const amountCell = firstRow.cells[6];
+                    if (amountCell) {
+                        amountCell.textContent = `₹${amount.toFixed(2)}`;
+                    }
+                }
             }
         }
-
-        // Logout function
-        function logoutUser() {
-            localStorage.removeItem('glassERPLoggedIn');
-            localStorage.removeItem('glassERPUserEmail');
-            localStorage.removeItem('glassERPUserName');
-            
-            // Reset UI
-            userMenu.classList.remove('active');
-            document.querySelector('.login-btn-nav').style.display = 'block';
-            
-            alert('Logged out successfully!');
+        
+        // Calculate total
+        function calculateTotal() {
+            updateDisplay();
+            alert('Total calculated successfully! Check the table for updated values.');
         }
-
-        // Event Listeners
-        openLoginBtn.addEventListener('click', openLoginModal);
-        heroLoginBtn.addEventListener('click', openLoginModal);
-        closeLoginBtn.addEventListener('click', closeLoginModal);
-        logoutBtn.addEventListener('click', logoutUser);
-
-        // Close modal when clicking outside
-        loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                closeLoginModal();
-            }
+        
+        // Convert all to MM
+        function convertAll() {
+            updateDisplay();
+            alert('All measurements converted to millimeters!');
+        }
+        
+        // Print invoice
+        function printInvoice() {
+            window.print();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to inputs
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateDisplay);
+                input.addEventListener('change', updateDisplay);
+            });
+            
+            // Initial update
+            updateDisplay();
         });
-
-        // Demo login
-        demoLoginBtn.addEventListener('click', () => {
-            document.getElementById('loginEmail').value = 'demo@glasserp.com';
-            document.getElementById('loginPassword').value = 'demo123';
-            
-            // Auto submit after a delay
-            setTimeout(() => {
-                loginForm.dispatchEvent(new Event('submit'));
-            }, 500);
-        });
-
-        // Form submission
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            
-            // Reset errors
-            document.getElementById('emailError').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
-            
-            // Simple validation
-            let isValid = true;
-            
-            if (!email) {
-                document.getElementById('emailError').textContent = 'Email is required';
-                document.getElementById('emailError').style.display = 'block';
-                isValid = false;
-            } else if (!/\S+@\S+\.\S+/.test(email)) {
-                document.getElementById('emailError').textContent = 'Invalid email format';
-                document.getElementById('emailError').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!password) {
-                document.getElementById('passwordError').textContent = 'Password is required';
-                document.getElementById('passwordError').style.display = 'block';
-                isValid = false;
-            } else if (password.length < 6) {
-                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
-                document.getElementById('passwordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            if (isValid) {
-                // Try to login
-                loginUser(email, password);
-            }
-        });
-
-        // Forgot password
-        document.getElementById('forgotPassword').addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = prompt('Enter your email to reset password:');
-            if (email) {
-                alert(`Password reset link sent to ${email} (This is a demo)`);
-            }
-        });
-
-        // Show register
-        document.getElementById('showRegister').addEventListener('click', (e) => {
-            e.preventDefault();
-            closeLoginModal();
-            alert('Registration page will be available soon!');
-        });
-
-        // Check login status on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            checkLoginStatus();
-            
-            // Auto login for demo (remove in production)
-            // Uncomment this line for auto demo login
-            // setTimeout(() => demoLoginBtn.click(), 1000);
-        });
-
-        // ... (Rest of the JavaScript for other features remains same) ...
     </script>
 </body>
 </html>
