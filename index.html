@@ -1,149 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Glass Line ERP</title>
-
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
-
+  <title>Glass Line ERP – PI</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1 class="title">Glass Line ERP</h1>
+<h3>Glass Line – Proforma Invoice</h3>
 
-  <!-- SIZE INPUT SECTION -->
-  <div class="card">
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th colspan="4">Size (Inch + Sut)</th>
+      <th>Add<br>MM</th>
+      <th>Actual Size (MM)</th>
+      <th>Chargable Size (MM)</th>
+      <th>Area<br>(SQMT)</th>
+      <th>Qty</th>
+      <th>Rate</th>
+      <th>Amount</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>W In</th>
+      <th>W Sut</th>
+      <th>H In</th>
+      <th>H Sut</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
 
-    <h3>Actual Size</h3>
+  <tbody id="itemsBody">
+    <tr>
+      <td>
+        <input type="text" placeholder="Item name">
+      </td>
 
-    <div class="row">
-      <div>
-        <label>Width (MM)</label>
-        <input type="number" id="widthMM" placeholder="Width in mm">
-      </div>
-      <div>
-        <label>Height (MM)</label>
-        <input type="number" id="heightMM" placeholder="Height in mm">
-      </div>
-    </div>
+      <!-- WIDTH -->
+      <td><input class="win"  type="number"></td>
+      <td><input class="wsut" type="number"></td>
 
-    <div class="row">
-      <div>
-        <label>Width (Inch)</label>
-        <input type="number" id="widthInch" placeholder="Width in inch">
-      </div>
-      <div>
-        <label>Height (Inch)</label>
-        <input type="number" id="heightInch" placeholder="Height in inch">
-      </div>
-    </div>
+      <!-- HEIGHT -->
+      <td><input class="hin"  type="number"></td>
+      <td><input class="hsut" type="number"></td>
 
-  </div>
+      <!-- ADD MM -->
+      <td>
+        <input class="addmm" type="number" value="0">
+      </td>
 
-  <!-- CHARGABLE SIZE -->
-  <div class="card">
+      <!-- AUTO OUTPUT -->
+      <td class="actualmm">0</td>
+      <td class="chargemm">0</td>
+      <td class="area">0</td>
 
-    <h3>Chargable Size (MM)</h3>
+      <!-- QTY / RATE -->
+      <td><input class="qty"  type="number" value="1"></td>
+      <td><input class="rate" type="number"></td>
 
-    <div class="row">
-      <div>
-        <label>Add Width (MM)</label>
-        <input type="number" id="addWidthMM" value="0">
-      </div>
-      <div>
-        <label>Add Height (MM)</label>
-        <input type="number" id="addHeightMM" value="0">
-      </div>
-    </div>
+      <!-- AMOUNT -->
+      <td class="amount">0</td>
+    </tr>
+  </tbody>
+</table>
 
-  </div>
-
-  <!-- QUANTITY & RATE -->
-  <div class="card">
-
-    <div class="row">
-      <div>
-        <label>Quantity</label>
-        <input type="number" id="qty" value="1">
-      </div>
-      <div>
-        <label>Rate (per Sqm)</label>
-        <input type="number" id="rate" placeholder="Manual rate">
-      </div>
-    </div>
-
-  </div>
-
-  <!-- FABRICATION OPTIONS -->
-  <div class="card">
-
-    <h3>Fabrication</h3>
-
-    <div class="row">
-      <div>
-        <label>Hole</label>
-        <select id="holeType">
-          <option value="0">No Hole</option>
-          <option value="small">Small Hole</option>
-          <option value="big">Big Hole</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Cutout</label>
-        <select id="cutoutType">
-          <option value="0">No Cutout</option>
-          <option value="SP">SP</option>
-          <option value="CSK">CSK</option>
-          <option value="BX">BX-CUT</option>
-          <option value="CC">C-CUT</option>
-        </select>
-      </div>
-    </div>
-
-    <div>
-      <label>Other Fabrication (₹)</label>
-      <input type="number" id="otherFab" value="0">
-    </div>
-
-  </div>
-
-  <!-- EXTRA CHARGES -->
-  <div class="card">
-
-    <h3>Extra Charges</h3>
-
-    <div class="row">
-      <div>
-        <label>GST (%)</label>
-        <input type="number" id="gst" value="18">
-      </div>
-      <div>
-        <label>Other Charges (₹)</label>
-        <input type="number" id="extraCharges" value="0">
-      </div>
-    </div>
-
-  </div>
-
-  <!-- CALCULATE -->
-  <button onclick="calculate()">Calculate</button>
-
-  <!-- RESULT -->
-  <div class="card result">
-
-    <p><b>Actual Size (MM):</b> <span id="actualMM">0</span></p>
-    <p><b>Actual Size (Inch):</b> <span id="actualInch">0</span></p>
-    <p><b>Chargable Area (Sqm):</b> <span id="chargableArea">0</span></p>
-
-    <h2>Total Amount ₹ <span id="total">0</span></h2>
-
-  </div>
-
-  <script src="app.js"></script>
-
+<script src="app.js"></script>
 </body>
 </html>
-  
