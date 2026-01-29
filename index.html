@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glass Line ERP</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <h1 class="title">Glass Line ERP</h1>
+
+  <!-- SIZE INPUT SECTION -->
+  <div class="card">
+
+    <h3>Actual Size</h3>
+
+    <div class="row">
+      <div>
+        <label>Width (MM)</label>
+        <input type="number" id="widthMM" placeholder="Width in mm">
+      </div>
+      <div>
+        <label>Height (MM)</label>
+        <input type="number" id="heightMM" placeholder="Height in mm">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Width (Inch)</label>
+        <input type="number" id="widthInch" placeholder="Width in inch">
+      </div>
+      <div>
+        <label>Height (Inch)</label>
+        <input type="number" id="heightInch" placeholder="Height in inch">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARGABLE SIZE -->
+  <div class="card">
+
+    <h3>Chargable Size (MM)</h3>
+
+    <div class="row">
+      <div>
+        <label>Add Width (MM)</label>
+        <input type="number" id="addWidthMM" value="0">
+      </div>
+      <div>
+        <label>Add Height (MM)</label>
+        <input type="number" id="addHeightMM" value="0">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QUANTITY & RATE -->
+  <div class="card">
+
+    <div class="row">
+      <div>
+        <label>Quantity</label>
+        <input type="number" id="qty" value="1">
+      </div>
+      <div>
+        <label>Rate (per Sqm)</label>
+        <input type="number" id="rate" placeholder="Manual rate">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FABRICATION OPTIONS -->
+  <div class="card">
+
+    <h3>Fabrication</h3>
+
+    <div class="row">
+      <div>
+        <label>Hole</label>
+        <select id="holeType">
+          <option value="0">No Hole</option>
+          <option value="small">Small Hole</option>
+          <option value="big">Big Hole</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Cutout</label>
+        <select id="cutoutType">
+          <option value="0">No Cutout</option>
+          <option value="SP">SP</option>
+          <option value="CSK">CSK</option>
+          <option value="BX">BX-CUT</option>
+          <option value="CC">C-CUT</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label>Other Fabrication (₹)</label>
+      <input type="number" id="otherFab" value="0">
+    </div>
+
+  </div>
+
+  <!-- EXTRA CHARGES -->
+  <div class="card">
+
+    <h3>Extra Charges</h3>
+
+    <div class="row">
+      <div>
+        <label>GST (%)</label>
+        <input type="number" id="gst" value="18">
+      </div>
+      <div>
+        <label>Other Charges (₹)</label>
+        <input type="number" id="extraCharges" value="0">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CALCULATE -->
+  <button onclick="calculate()">Calculate</button>
+
+  <!-- RESULT -->
+  <div class="card result">
+
+    <p><b>Actual Size (MM):</b> <span id="actualMM">0</span></p>
+    <p><b>Actual Size (Inch):</b> <span id="actualInch">0</span></p>
+    <p><b>Chargable Area (Sqm):</b> <span id="chargableArea">0</span></p>
+
+    <h2>Total Amount ₹ <span id="total">0</span></h2>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
+  
