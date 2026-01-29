@@ -1,77 +1,73 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Glass Line ERP – PI</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glass Line Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  .inch-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  .inch-box {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+  }
+  .result {
+    margin-top: 10px;
+  }
+</style>
 </head>
 <body>
 
-<h3>Glass Line – Proforma Invoice</h3>
+<h3>Inch Sizes</h3>
+<div class="inch-row">
+  <input type="number" id="inch16" class="inch-box" value="16" placeholder="16 inch">
+  <input type="number" id="inch4sut" class="inch-box" value="6" placeholder="4 sut">
+  <input type="number" id="inch8sut" class="inch-box" value="8" placeholder="8/16 sut">
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th colspan="4">Size (Inch + Sut)</th>
-      <th>Add<br>MM</th>
-      <th>Actual Size (MM)</th>
-      <th>Chargable Size (MM)</th>
-      <th>Area<br>(SQMT)</th>
-      <th>Qty</th>
-      <th>Rate</th>
-      <th>Amount</th>
-    </tr>
-    <tr>
-      <th></th>
-      <th>W In</th>
-      <th>W Sut</th>
-      <th>H In</th>
-      <th>H Sut</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+<div class="result">
+  <div>Actual Size (mm): <span id="actualSize">0</span></div>
+  <div>Chargeable Size (mm): <span id="chargeableSize">0</span></div>
+</div>
 
-  <tbody id="itemsBody">
-    <tr>
-      <td>
-        <input type="text" placeholder="Item name">
-      </td>
+<script>
+  // Inch to mm conversion
+  function inchToMm(inch) {
+    return inch * 25.4;
+  }
 
-      <!-- WIDTH -->
-      <td><input class="win"  type="number"></td>
-      <td><input class="wsut" type="number"></td>
+  // Update calculation function
+  function updateSizes() {
+    const inch16 = parseFloat(document.getElementById('inch16').value) || 0;
+    const inch4sut = parseFloat(document.getElementById('inch4sut').value) || 0;
+    const inch8sut = parseFloat(document.getElementById('inch8sut').value) || 0;
 
-      <!-- HEIGHT -->
-      <td><input class="hin"  type="number"></td>
-      <td><input class="hsut" type="number"></td>
+    // **Actual size calculation** (match tumhare module logic)
+    const actualSize = inchToMm(inch16) + inchToMm(inch4sut) + inchToMm(inch8sut);
 
-      <!-- ADD MM -->
-      <td>
-        <input class="addmm" type="number" value="0">
-      </td>
+    // **Chargeable size calculation** (example logic: only 16 inch + 8 sut chargeable)
+    const chargeableSize = inchToMm(inch16) + inchToMm(inch8sut);
 
-      <!-- AUTO OUTPUT -->
-      <td class="actualmm">0</td>
-      <td class="chargemm">0</td>
-      <td class="area">0</td>
+    document.getElementById('actualSize').innerText = actualSize.toFixed(2);
+    document.getElementById('chargeableSize').innerText = chargeableSize.toFixed(2);
+  }
 
-      <!-- QTY / RATE -->
-      <td><input class="qty"  type="number" value="1"></td>
-      <td><input class="rate" type="number"></td>
+  // Event listeners
+  document.getElementById('inch16').addEventListener('input', updateSizes);
+  document.getElementById('inch4sut').addEventListener('input', updateSizes);
+  document.getElementById('inch8sut').addEventListener('input', updateSizes);
 
-      <!-- AMOUNT -->
-      <td class="amount">0</td>
-    </tr>
-  </tbody>
-</table>
+  // Initial calculation
+  updateSizes();
+</script>
 
-<script src="app.js"></script>
 </body>
 </html>
