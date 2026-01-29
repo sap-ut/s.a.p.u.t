@@ -1,31 +1,92 @@
 body {
-  font-family: Arial;
-  background: #f4f4f4;
-  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
+  color: #222;
 }
 
-.card {
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
   background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
 }
 
+th {
+  background: linear-gradient(#2f80ed, #1c5fc4);
+  color: #fff;
+  padding: 6px;
+  font-weight: 600;
+  border: 1px solid #1c5fc4;
+}
+
+td {
+  border: 1px solid #d0d7e2;
+  padding: 4px;
+  text-align: center;
+}
+
+/* INPUT BASE */
 input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  height: 24px;
+  font-size: 13px;
+  padding: 2px 4px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #b0b8c4;
+  background: #fdfefe;
+  transition: 0.2s;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
+input:focus {
+  outline: none;
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 1px #2f80ed;
 }
 
-.result {
-  font-size: 16px;
+/* SIZE INPUTS */
+.win, .hin {
+  width: 45px;
+  background: #fffbe6;
+}
+
+.wsut, .hsut {
+  width: 35px;
+  background: #e8f1ff;
+}
+
+/* QTY & RATE */
+.qty {
+  width: 40px;
+  background: #e6fff3;
+}
+
+.rate {
+  width: 60px;
+  background: #f3e8ff;
+}
+
+/* AUTO VALUES */
+.amount {
+  color: #0a7d2f;
+  font-weight: 700;
+}
+
+.area {
+  color: #0b5ed7;
+  font-weight: 600;
+}
+
+.actualmm {
+  color: #555;
+}
+
+.chargemm {
+  color: #b42318;
+  font-weight: 600;
+}
+
+/* ROW HOVER */
+tr:hover td {
+  background: #f0f7ff;
 }
