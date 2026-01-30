@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.A.P.U.T. - Proforma Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Same CSS as before, just adding new styles */
+        .size-rows-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .size-row {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        /* Keep all previous CSS styles */
+        :root { --primary: #4A90E2; --secondary: #50C9C3; }
+        body { background: #f5f7fa; font-family: 'Segoe UI'; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .pi-container { background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); padding: 25px; }
+        .pi-header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
+        .company-name { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .pi-title { color: #666; font-size: 1.2rem; }
+        .pi-number { background: var(--primary); color: white; padding: 8px 20px; border-radius: 6px; font-weight: 600; }
+        .customer-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 25px; }
+        .customer-box { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+        .customer-box h6 { color: var(--primary); margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--primary); }
+        .form-control-sm { padding: 6px 10px; font-size: 0.9rem; }
+        .size-input-section { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
+        .size-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .input-group-sm { margin-bottom: 10px; }
+        .input-group-text { background: #e9ecef; font-size: 0.85rem; }
+        .table-container { overflow-x: auto; margin-bottom: 25px; }
+        .pi-table { width: 100%; border-collapse: collapse; }
+        .pi-table th { background: var(--primary); color: white; padding: 12px 15px; text-align: left; font-weight: 600; }
+        .pi-table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        .pi-table tbody tr:hover { background: #f8f9fa; }
+        .calc-btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .calc-btn:hover { background: #357ABD; transform: translateY(-2px); }
+        .total-section { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 25px; }
+        .total-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; }
+        .total-row:last-child { border-bottom: none; font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+        .action-buttons { display: flex; gap: 15px; margin-top: 25px; justify-content: center; }
+        .btn-action { padding: 10px 30px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; }
+        .btn-print { background: var(--primary); color: white; }
+        .btn-save { background: var(--secondary); color: white; }
+        .btn-new { background: #666; color: white; }
+        .footer-note { text-align: center; margin-top: 30px; color: #666; font-size: 0.9rem; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="pi-container">
+        <!-- Header -->
+        <div class="pi-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="company-name">S.A.P.U.T. GLASS MANUFACTURING</div>
+                    <div class="pi-title">PROFORMA INVOICE</div>
+                    <div class="mt-2">
+                        <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                        <small class="text-muted">Karnal, Haryana - 132001 | Mobile: 1111111111 | Email: jperp1001@gmail.com</small>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="pi-number" id="piNumber">PI-2023-001</div>
+                    <div class="mt-2">
+                        <input type="date" class="form-control form-control-sm" id="piDate" style="width: 150px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="customer-section">
+            <div class="customer-box">
+                <h6>BILL TO</h6>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="customerName" placeholder="Customer Name" value="Raj Glass House">
+                </div>
+                <div class="mb-2">
+                    <textarea class="form-control form-control-sm" id="customerAddress" rows="2" placeholder="Address">123, Main Market, Delhi</textarea>
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="customerGST" placeholder="GST No.">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="customerPhone" placeholder="Phone">
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-primary" onclick="saputApp.copyToShip()">
+                        <i class="fas fa-copy"></i> Copy to Ship To
+                    </button>
+                    <button class="btn btn-sm btn-outline-success ms-2" onclick="saputApp.newCustomer()">
+                        <i class="fas fa-plus"></i> New Customer
+                    </button>
+                </div>
+            </div>
+            
+            <div class="customer-box">
+                <h6>SHIP TO</h6>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="shipName" placeholder="Ship To Name">
+                </div>
+                <div class="mb-2">
+                    <textarea class="form-control form-control-sm" id="shipAddress" rows="2" placeholder="Shipping Address"></textarea>
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="shipGST" placeholder="GST No.">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="shipPhone" placeholder="Phone">
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="sameAsBill" onclick="saputApp.toggleShipAddress()">
+                    <label class="form-check-label" for="sameAsBill">
+                        Same as Bill To
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Size Input Section with Multiple Rows -->
+        <div class="size-input-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 style="color: var(--primary);">
+                    <i class="fas fa-ruler-combined me-2"></i>ENTER GLASS SIZES (Multiple Items)
+                </h6>
+                <button class="btn btn-primary btn-sm" id="addRowBtn">
+                    <i class="fas fa-plus-circle me-1"></i> Add New Row
+                </button>
+            </div>
+            
+            <div class="size-rows-container" id="sizeRowsContainer">
+                <!-- Rows will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="table-container">
+            <table class="pi-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="15%">Size (Inches)</th>
+                        <th width="15%">Size (mm)</th>
+                        <th width="10%">Qty</th>
+                        <th width="15%">Area (sq.ft)</th>
+                        <th width="15%">Rate</th>
+                        <th width="15%">Amount</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTable">
+                    <!-- Items will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="total-section">
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="total-row">
+                <span>GST (18%):</span>
+                <span id="gstAmount">₹0.00</span>
+            </div>
+            <div class="total-row">
+                <span>Discount:</span>
+                <span>
+                    <input type="number" id="discount" value="0" min="0" max="100" style="width: 60px; padding: 2px;"> %
+                    <span id="discountAmount">₹0.00</span>
+                </span>
+            </div>
+            <div class="total-row">
+                <span>GRAND TOTAL:</span>
+                <span id="grandTotal">₹0.00</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-action btn-print">
+                <i class="fas fa-print me-2"></i> Print
+            </button>
+            <button class="btn-action btn-save">
+                <i class="fas fa-save me-2"></i> Save
+            </button>
+            <button class="btn-action btn-new">
+                <i class="fas fa-file me-2"></i> New
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <p class="mb-2">
+                <strong>S.A.P.U.T. GLASS MANUFACTURING</strong><br>
+                Karnal, Haryana - 132001 | Mobile: 1111111111 | Email: jperp1001@gmail.com
+            </p>
+            <p class="mb-0">
+                <small>Powered by S.A.P.U.T. Solutions | This is a Proforma Invoice</small>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
