@@ -1,0 +1,43 @@
+/* ... previous styles ... */
+
+.party-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.party-table tr:hover {
+    background-color: #e9ecef;
+}
+
+.party-table tr.table-primary {
+    background-color: #cfe2ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.quotation-container {
+    font-size: 14px;
+}
+
+.quotation-container table th {
+    background-color: #f8f9fa;
+}
+
+@media print {
+    .quotation-container {
+        font-size: 12px;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Modal sizes */
+.modal-xl {
+    max-width: 90%;
+}
+
+.btn-xs {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+}
