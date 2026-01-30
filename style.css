@@ -1,0 +1,83 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.header-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.company-name {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.proforma-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.invoice-details {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.fabrication-box {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+}
+
+.fabrication-box .card-header {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.fabrication-box .form-control-sm {
+    height: 30px;
+    font-size: 12px;
+}
+
+.table th {
+    font-size: 12px;
+    padding: 8px;
+}
+
+.table td {
+    font-size: 12px;
+    padding: 8px;
+}
+
+.btn-sm {
+    font-size: 11px;
+    padding: 3px 8px;
+}
+
+#mainTable input {
+    width: 100%;
+    padding: 4px;
+    font-size: 12px;
+}
+
+.modal-body table {
+    font-size: 12px;
+}
+
+/* For PDF print */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .header-section {
+        background: #667eea !important;
+        -webkit-print-color-adjust: exact;
+    }
+}
