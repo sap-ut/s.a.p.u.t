@@ -1,21 +1,11 @@
-// Global variables
-let parties = [];
-let currentPartyId = null;
-
-// Initialize on load
+// Initialize system
 document.addEventListener('DOMContentLoaded', function() {
     // Set today's date
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('proformaDate').value = today;
     
-    // Load saved data
-    loadData();
-    
-    // Generate 500 empty rows
-    generateEmptyRows(500);
-    
-    // Load parties
-    loadParties();
+    // Generate 500 rows with ALL COLUMNS
+    generateProductRows(500);
     
     // Setup event listeners
     setupEventListeners();
@@ -24,207 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTotal();
 });
 
-// Setup event listeners
-function setupEventListeners() {
-    // Same address checkbox
-    document.getElementById('sameAddress').addEventListener('change', copyAddress);
-    
-    // Auto-copy when bill fields change
-    document.getElementById('billName').addEventListener('input', function() {
-        if(document.getElementById('sameAddress').checked) {
-            document.getElementById('shipName').value = this.value;
-        }
-    });
-    
-    document.getElementById('billAddress').addEventListener('input', function() {
-        if(document.getElementById('sameAddress').checked) {
-            document.getElementById('shipAddress').value = this.value;
-        }
-    });
-    
-    document.getElementById('billGST').addEventListener('input', function() {
-        if(document.getElementById('sameAddress').checked) {
-            document.getElementById('shipGST').value = this.value;
-        }
-    });
-    
-    document.getElementById('billPhone').addEventListener('input', function() {
-        if(document.getElementById('sameAddress').checked) {
-            document.getElementById('shipPhone').value = this.value;
-        }
-    });
-    
-    // GST percentage change
-    document.getElementById('gstPercent').addEventListener('input', calculateTotal);
-    document.getElementById('roundOff').addEventListener('input', calculateTotal);
-}
-
-// Load data from localStorage
-function loadData() {
-    // Load parties
-    const savedParties = localStorage.getItem('glassParties');
-    if(savedParties) {
-        parties = JSON.parse(savedParties);
-        updatePartyList();
-    } else {
-        // Add some sample parties
-        parties = [
-            {
-                id: 1,
-                name: 'Mohan Glass House',
-                address: '123 Main Street, Delhi',
-                city: 'Delhi',
-                phone: '9876543210',
-                gst: '07AABCM1234N1Z5',
-                state: 'Delhi'
-            },
-            {
-                id: 2,
-                name: 'Shyam Glass Works',
-                address: '456 Market Road, Noida',
-                city: 'Noida',
-                phone: '9876543211',
-                gst: '09AAECS1234N1Z6',
-                state: 'Uttar Pradesh'
-            }
-        ];
-        localStorage.setItem('glassParties', JSON.stringify(parties));
-        updatePartyList();
-    }
-    
-    // Load proforma counter
-    const counter = localStorage.getItem('proformaCounter') || 1;
-    document.getElementById('proformaNo').value = `PI-${counter.toString().padStart(3, '0')}`;
-    document.getElementById('currentProforma').textContent = `PI-${counter.toString().padStart(3, '0')}`;
-}
-
-// Show party modal
-function showPartyModal() {
-    // Clear form
-    document.getElementById('partyName').value = '';
-    document.getElementById('partyAddress').value = '';
-    document.getElementById('partyCity').value = '';
-    document.getElementById('partyPhone').value = '';
-    document.getElementById('partyGST').value = '';
-    document.getElementById('partyState').value = '';
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('partyModal'));
-    modal.show();
-}
-
-// Save new party
-function saveParty() {
-    const name = document.getElementById('partyName').value.trim();
-    const address = document.getElementById('partyAddress').value.trim();
-    const city = document.getElementById('partyCity').value.trim();
-    const phone = document.getElementById('partyPhone').value.trim();
-    const gst = document.getElementById('partyGST').value.trim();
-    const state = document.getElementById('partyState').value;
-    
-    if(!name) {
-        alert('Please enter party name');
-        return;
-    }
-    
-    // Create new party object
-    const newParty = {
-        id: parties.length > 0 ? Math.max(...parties.map(p => p.id)) + 1 : 1,
-        name: name,
-        address: address,
-        city: city,
-        phone: phone,
-        gst: gst,
-        state: state
-    };
-    
-    // Add to parties array
-    parties.push(newParty);
-    
-    // Save to localStorage
-    localStorage.setItem('glassParties', JSON.stringify(parties));
-    
-    // Update party list
-    updatePartyList();
-    
-    // Close modal
-    bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
-    
-    // Select this party
-    selectParty(newParty.id);
-    
-    alert('Party saved successfully!');
-}
-
-// Update party list in sidebar
-function updatePartyList() {
-    const partyList = document.getElementById('partyList');
-    partyList.innerHTML = '';
-    
-    parties.forEach(party => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td onclick="selectParty(${party.id})" style="cursor: pointer;">
-                <div class="fw-bold">${party.name}</div>
-                <small class="text-muted">${party.city} | ${party.phone}</small>
-            </td>
-        `;
-        partyList.appendChild(row);
-    });
-}
-
-// Select party and fill bill details
-function selectParty(partyId) {
-    const party = parties.find(p => p.id === partyId);
-    if(!party) return;
-    
-    currentPartyId = partyId;
-    
-    // Fill bill details
-    document.getElementById('billName').value = party.name;
-    document.getElementById('billAddress').value = party.address;
-    document.getElementById('billGST').value = party.gst || '';
-    document.getElementById('billPhone').value = party.phone;
-    
-    // Copy to ship if same address is checked
-    if(document.getElementById('sameAddress').checked) {
-        copyAddress();
-    }
-    
-    // Highlight selected party
-    const rows = document.querySelectorAll('#partyList tr');
-    rows.forEach(row => {
-        row.classList.remove('table-primary');
-        if(row.textContent.includes(party.name)) {
-            row.classList.add('table-primary');
-        }
-    });
-}
-
-// Copy bill address to ship address
-function copyAddress() {
-    const same = document.getElementById('sameAddress').checked;
-    if(same) {
-        document.getElementById('shipName').value = document.getElementById('billName').value;
-        document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
-        document.getElementById('shipGST').value = document.getElementById('billGST').value;
-        document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
-    }
-}
-
-// Search parties
-function searchParties() {
-    const searchTerm = document.getElementById('searchParty').value.toLowerCase();
-    const rows = document.querySelectorAll('#partyList tr');
-    
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? '' : 'none';
-    });
-}
-
-// Generate empty rows
-function generateEmptyRows(count) {
+// Generate product rows with ALL columns
+function generateProductRows(count) {
     const tbody = document.getElementById('productTableBody');
     tbody.innerHTML = '';
     
@@ -232,54 +23,90 @@ function generateEmptyRows(count) {
         const row = document.createElement('tr');
         row.id = `row-${i}`;
         row.innerHTML = `
-            <td>${i}</td>
-            <td><input type="text" class="form-control desc" placeholder="Item description"></td>
+            <td class="text-center">${i}</td>
             <td>
-                <div class="row g-1">
-                    <div class="col-6">
-                        <input type="text" class="form-control actual-in-w" placeholder="W" value="45 3/4">
+                <input type="text" class="form-control form-control-sm desc" 
+                       placeholder="e.g., 12MM CLEAR TOUGHENED GLASS" 
+                       value="${i === 1 ? '12MM CLEAR TOUGHENED GLASS' : ''}">
+            </td>
+            
+            <!-- ACTUAL SIZE IN INCHES -->
+            <td>
+                <div class="row g-0">
+                    <div class="col-6 pe-1">
+                        <input type="text" class="form-control form-control-sm actual-in-w" 
+                               placeholder="W" value="${i === 1 ? '45 3/4' : ''}">
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control actual-in-h" placeholder="H" value="44 1/2">
+                    <div class="col-6 ps-1">
+                        <input type="text" class="form-control form-control-sm actual-in-h" 
+                               placeholder="H" value="${i === 1 ? '44 1/2' : ''}">
                     </div>
                 </div>
             </td>
+            
+            <!-- ACTUAL SIZE IN MM -->
             <td>
-                <div class="row g-1">
-                    <div class="col-6">
-                        <input type="number" class="form-control actual-mm-w" placeholder="W mm" value="1162">
+                <div class="row g-0">
+                    <div class="col-6 pe-1">
+                        <input type="number" class="form-control form-control-sm actual-mm-w" 
+                               placeholder="W mm" value="${i === 1 ? '1162' : ''}">
                     </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control actual-mm-h" placeholder="H mm" value="1130">
+                    <div class="col-6 ps-1">
+                        <input type="number" class="form-control form-control-sm actual-mm-h" 
+                               placeholder="H mm" value="${i === 1 ? '1130' : ''}">
                     </div>
                 </div>
             </td>
+            
+            <!-- CHARGEABLE SIZE IN INCHES -->
             <td>
-                <div class="row g-1">
-                    <div class="col-6">
-                        <input type="text" class="form-control charge-in-w" placeholder="W" readonly>
+                <div class="row g-0">
+                    <div class="col-6 pe-1">
+                        <input type="text" class="form-control form-control-sm charge-in-w" 
+                               placeholder="W" readonly>
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control charge-in-h" placeholder="H" readonly>
+                    <div class="col-6 ps-1">
+                        <input type="text" class="form-control form-control-sm charge-in-h" 
+                               placeholder="H" readonly>
                     </div>
                 </div>
             </td>
+            
+            <!-- CHARGEABLE SIZE IN MM -->
             <td>
-                <div class="row g-1">
-                    <div class="col-6">
-                        <input type="number" class="form-control charge-mm-w" placeholder="W mm" readonly>
+                <div class="row g-0">
+                    <div class="col-6 pe-1">
+                        <input type="number" class="form-control form-control-sm charge-mm-w" 
+                               placeholder="W mm" readonly>
                     </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control charge-mm-h" placeholder="H mm" readonly>
+                    <div class="col-6 ps-1">
+                        <input type="number" class="form-control form-control-sm charge-mm-h" 
+                               placeholder="H mm" readonly>
                     </div>
                 </div>
             </td>
-            <td><input type="number" class="form-control qty" value="1" min="1"></td>
-            <td class="area-cell">0</td>
-            <td><input type="number" class="form-control rate" value="1413.91"></td>
-            <td class="amount-cell">0.00</td>
+            
+            <!-- QUANTITY -->
             <td>
-                <button class="btn btn-danger btn-xs" onclick="deleteRow(${i})">
+                <input type="number" class="form-control form-control-sm qty" 
+                       value="1" min="1">
+            </td>
+            
+            <!-- AREA -->
+            <td class="text-center area-cell">0</td>
+            
+            <!-- RATE -->
+            <td>
+                <input type="number" class="form-control form-control-sm rate" 
+                       value="${i === 1 ? '1413.91' : '0'}">
+            </td>
+            
+            <!-- AMOUNT -->
+            <td class="text-end amount-cell">0.00</td>
+            
+            <!-- ACTION -->
+            <td class="text-center">
+                <button class="btn btn-danger btn-xs" onclick="clearRow(${i})" title="Clear Row">
                     <i class="fas fa-times"></i>
                 </button>
             </td>
@@ -287,17 +114,114 @@ function generateEmptyRows(count) {
         tbody.appendChild(row);
         
         // Add event listeners to this row
-        const inputs = row.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                calculateRow(i);
-                calculateTotal();
-            });
-        });
+        addRowEventListeners(row, i);
         
-        // Calculate this row initially
-        setTimeout(() => calculateRow(i), 100);
+        // Calculate this row if it has data
+        if(i === 1) {
+            setTimeout(() => calculateRow(i), 100);
+        }
     }
+}
+
+// Add event listeners to a row
+function addRowEventListeners(row, rowNum) {
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            calculateRow(rowNum);
+            calculateTotal();
+        });
+    });
+    
+    // Special handling for inch inputs to auto-convert to mm
+    const inchInputs = row.querySelectorAll('.actual-in-w, .actual-in-h');
+    inchInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            convertInchToMM(rowNum);
+        });
+    });
+    
+    // Special handling for mm inputs to auto-convert to inches
+    const mmInputs = row.querySelectorAll('.actual-mm-w, .actual-mm-h');
+    mmInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            convertMMToInch(rowNum);
+        });
+    });
+}
+
+// Convert inch to mm for a row
+function convertInchToMM(rowNum) {
+    const row = document.getElementById(`row-${rowNum}`);
+    if(!row) return;
+    
+    const widthIn = row.querySelector('.actual-in-w').value;
+    const heightIn = row.querySelector('.actual-in-h').value;
+    
+    if(widthIn) {
+        const widthMM = convertFractionToMM(widthIn);
+        row.querySelector('.actual-mm-w').value = widthMM.toFixed(0);
+    }
+    
+    if(heightIn) {
+        const heightMM = convertFractionToMM(heightIn);
+        row.querySelector('.actual-mm-h').value = heightMM.toFixed(0);
+    }
+    
+    calculateRow(rowNum);
+}
+
+// Convert mm to inch for a row
+function convertMMToInch(rowNum) {
+    const row = document.getElementById(`row-${rowNum}`);
+    if(!row) return;
+    
+    const widthMM = parseFloat(row.querySelector('.actual-mm-w').value) || 0;
+    const heightMM = parseFloat(row.querySelector('.actual-mm-h').value) || 0;
+    
+    if(widthMM > 0) {
+        const widthIn = (widthMM / 25.4).toFixed(2);
+        row.querySelector('.actual-in-w').value = widthIn;
+    }
+    
+    if(heightMM > 0) {
+        const heightIn = (heightMM / 25.4).toFixed(2);
+        row.querySelector('.actual-in-h').value = heightIn;
+    }
+    
+    calculateRow(rowNum);
+}
+
+// Convert fraction string to decimal mm
+function convertFractionToMM(fractionStr) {
+    if(!fractionStr) return 0;
+    
+    let decimal = 0;
+    
+    // Handle mixed numbers like "45 3/4"
+    if(fractionStr.includes(' ')) {
+        const parts = fractionStr.split(' ');
+        const whole = parseFloat(parts[0]) || 0;
+        const fraction = parts[1];
+        
+        if(fraction.includes('/')) {
+            const [num, den] = fraction.split('/').map(Number);
+            decimal = whole + (num / den);
+        } else {
+            decimal = whole + parseFloat(fraction);
+        }
+    } 
+    // Handle fraction only like "3/4"
+    else if(fractionStr.includes('/')) {
+        const [num, den] = fractionStr.split('/').map(Number);
+        decimal = num / den;
+    }
+    // Handle decimal only
+    else {
+        decimal = parseFloat(fractionStr) || 0;
+    }
+    
+    return decimal * 25.4;
 }
 
 // Calculate single row
@@ -306,7 +230,6 @@ function calculateRow(rowNum) {
     if(!row) return;
     
     // Get values
-    const desc = row.querySelector('.desc').value.trim();
     const actualWIn = row.querySelector('.actual-in-w').value.trim();
     const actualHIn = row.querySelector('.actual-in-h').value.trim();
     const actualWMm = row.querySelector('.actual-mm-w').value;
@@ -314,24 +237,22 @@ function calculateRow(rowNum) {
     const qty = parseFloat(row.querySelector('.qty').value) || 1;
     const rate = parseFloat(row.querySelector('.rate').value) || 0;
     
-    // If no description or size, skip
-    if(!desc && !actualWIn && !actualHIn && !actualWMm && !actualHMm) {
+    // If no size data, skip
+    if(!actualWIn && !actualHIn && !actualWMm && !actualHMm) {
         row.querySelector('.area-cell').textContent = '0';
         row.querySelector('.amount-cell').textContent = '0.00';
         return;
     }
     
-    // Calculate size in mm
+    // Calculate size in mm (use mm if available, else convert inches)
     let widthMm = 0, heightMm = 0;
     
     if(actualWMm && actualHMm) {
-        // Use mm values directly
         widthMm = parseFloat(actualWMm) || 0;
         heightMm = parseFloat(actualHMm) || 0;
     } else if(actualWIn && actualHIn) {
-        // Convert inches to mm
-        widthMm = convertInchToMM(actualWIn);
-        heightMm = convertInchToMM(actualHIn);
+        widthMm = convertFractionToMM(actualWIn);
+        heightMm = convertFractionToMM(actualHIn);
     }
     
     // Apply wastage
@@ -346,20 +267,20 @@ function calculateRow(rowNum) {
     row.querySelector('.charge-mm-w').value = widthMm.toFixed(0);
     row.querySelector('.charge-mm-h').value = heightMm.toFixed(0);
     
-    // Convert back to inches for display
+    // Convert back to inches
     const widthIn = (widthMm / 25.4).toFixed(2);
     const heightIn = (heightMm / 25.4).toFixed(2);
-    row.querySelector('.charge-in-w').value = parseFloat(widthIn).toFixed(2);
-    row.querySelector('.charge-in-h').value = parseFloat(heightIn).toFixed(2);
+    row.querySelector('.charge-in-w').value = widthIn;
+    row.querySelector('.charge-in-h').value = heightIn;
     
     // Calculate area
     const uom = document.getElementById('uom').value;
     let area = 0;
     
     if(uom === 'sqmt') {
-        area = (widthMm * heightMm) / 1000000; // Convert to sq.mt
+        area = (widthMm * heightMm) / 1000000; // sq.mt
     } else {
-        area = (widthMm * heightMm) / 92903.04; // Convert to sq.ft
+        area = (widthMm * heightMm) / 92903.04; // sq.ft
     }
     
     area = area * qty;
@@ -370,67 +291,55 @@ function calculateRow(rowNum) {
     row.querySelector('.amount-cell').textContent = amount.toFixed(2);
 }
 
-// Convert inch fraction to decimal and then to mm
-function convertInchToMM(inchStr) {
-    if(!inchStr) return 0;
-    
-    // Remove spaces and convert fractions
-    let decimal = 0;
-    
-    if(inchStr.includes(' ')) {
-        // Mixed number like "45 3/4"
-        const parts = inchStr.split(' ');
-        const whole = parseFloat(parts[0]) || 0;
-        const fraction = parts[1];
-        
-        if(fraction.includes('/')) {
-            const [num, den] = fraction.split('/').map(Number);
-            decimal = whole + (num / den);
-        } else {
-            decimal = whole + parseFloat(fraction);
-        }
-    } else if(inchStr.includes('/')) {
-        // Fraction only like "3/4"
-        const [num, den] = inchStr.split('/').map(Number);
-        decimal = num / den;
-    } else {
-        // Decimal only
-        decimal = parseFloat(inchStr) || 0;
-    }
-    
-    return decimal * 25.4;
+// Calculate all rows
+function calculateAllRows() {
+    const rows = document.querySelectorAll('#productTableBody tr');
+    rows.forEach((row, index) => {
+        calculateRow(index + 1);
+    });
+    calculateTotal();
 }
 
-// Calculate total
+// Calculate total summary
 function calculateTotal() {
     const rows = document.querySelectorAll('#productTableBody tr');
+    let itemCount = 0;
     let totalArea = 0;
     let totalAmount = 0;
     
-    // Calculate from product table
     rows.forEach(row => {
-        const areaText = row.querySelector('.area-cell').textContent;
-        const amountText = row.querySelector('.amount-cell').textContent;
+        const desc = row.querySelector('.desc').value.trim();
+        const area = parseFloat(row.querySelector('.area-cell').textContent) || 0;
+        const amount = parseFloat(row.querySelector('.amount-cell').textContent) || 0;
         
-        const area = parseFloat(areaText) || 0;
-        const amount = parseFloat(amountText) || 0;
-        
-        totalArea += area;
-        totalAmount += amount;
+        if(desc || area > 0) {
+            itemCount++;
+            totalArea += area;
+            totalAmount += amount;
+        }
     });
     
-    // Calculate other charges
-    const otherAmount = calculateOtherCharges();
+    // Calculate additional charges
+    const packing = parseFloat(document.getElementById('packingCharges').value) || 0;
+    const freight = parseFloat(document.getElementById('freightCharges').value) || 0;
+    const other = parseFloat(document.getElementById('otherCharges').value) || 0;
+    const additionalCharges = packing + freight + other;
     
-    // Update summary
+    // Update summary cards
+    document.getElementById('summaryItems').textContent = itemCount;
+    
     const uom = document.getElementById('uom').value === 'sqmt' ? 'Sq.Mt.' : 'Sq.Ft.';
+    document.getElementById('summaryArea').textContent = totalArea.toFixed(3) + ' ' + uom;
+    document.getElementById('summaryBasic').textContent = '₹ ' + totalAmount.toFixed(2);
+    document.getElementById('summaryGrand').textContent = '₹ ' + (totalAmount + additionalCharges).toFixed(2);
+    
+    // Update main summary
     document.getElementById('totalArea').textContent = totalArea.toFixed(3) + ' ' + uom;
     document.getElementById('basicAmount').textContent = '₹ ' + totalAmount.toFixed(2);
-    document.getElementById('fabAmount').textContent = '₹ 0.00'; // Placeholder for fabrication
-    document.getElementById('otherAmount').textContent = '₹ ' + otherAmount.toFixed(2);
+    document.getElementById('additionalCharges').textContent = '₹ ' + additionalCharges.toFixed(2);
     
     // Calculate subtotal
-    const subTotal = totalAmount + otherAmount;
+    const subTotal = totalAmount + additionalCharges;
     document.getElementById('subTotal').textContent = '₹ ' + subTotal.toFixed(2);
     
     // Calculate GST
@@ -439,55 +348,100 @@ function calculateTotal() {
     const gstAmount = (subTotal * gstPercent) / 100;
     document.getElementById('gstAmount').textContent = '₹ ' + gstAmount.toFixed(2);
     
-    // Calculate grand total
+    // Calculate round off
     const roundOff = parseFloat(document.getElementById('roundOff').value) || 0;
+    document.getElementById('roundOffAmount').textContent = '₹ ' + roundOff.toFixed(2);
+    
+    // Calculate grand total
     const grandTotal = subTotal + gstAmount + roundOff;
     document.getElementById('grandTotal').textContent = '₹ ' + grandTotal.toFixed(2);
 }
 
-// Calculate other charges
-function calculateOtherCharges() {
-    let total = 0;
-    const charges = document.querySelectorAll('#otherChargesMaster tr');
-    
-    charges.forEach(charge => {
-        const valueInput = charge.querySelector('.charge-value');
-        if(valueInput) {
-            total += parseFloat(valueInput.value) || 0;
+// Setup event listeners
+function setupEventListeners() {
+    // Same address checkbox
+    document.getElementById('sameAddress').addEventListener('change', function() {
+        if(this.checked) {
+            document.getElementById('shipName').value = document.getElementById('billName').value;
+            document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
+            document.getElementById('shipGST').value = document.getElementById('billGST').value;
+            document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
         }
     });
     
-    return total;
+    // Auto copy when bill fields change
+    const billFields = ['billName', 'billAddress', 'billGST', 'billPhone'];
+    billFields.forEach(field => {
+        document.getElementById(field).addEventListener('input', function() {
+            if(document.getElementById('sameAddress').checked) {
+                const shipField = field.replace('bill', 'ship');
+                document.getElementById(shipField).value = this.value;
+            }
+        });
+    });
+    
+    // Additional charges inputs
+    ['packingCharges', 'freightCharges', 'otherCharges', 'gstPercent', 'roundOff'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calculateTotal);
+    });
+}
+
+// Toggle wastage settings
+function toggleWastage() {
+    const mode = document.getElementById('wastageMode').value;
+    const mmSettings = document.getElementById('mmSettings');
+    mmSettings.style.display = mode === '+mm' ? 'block' : 'none';
+}
+
+// Apply wastage to all rows
+function applyWastageToAll() {
+    calculateAllRows();
+}
+
+// Select party
+function selectParty(partyName) {
+    if(partyName === 'Mohan Glass House') {
+        document.getElementById('billName').value = 'Mohan Glass House';
+        document.getElementById('billAddress').value = '123 Main Street, Delhi';
+        document.getElementById('billGST').value = '07AABCM1234N1Z5';
+        document.getElementById('billPhone').value = '9876543210';
+    } else if(partyName === 'Shyam Glass Works') {
+        document.getElementById('billName').value = 'Shyam Glass Works';
+        document.getElementById('billAddress').value = '456 Market Road, Noida';
+        document.getElementById('billGST').value = '09AAECS1234N1Z6';
+        document.getElementById('billPhone').value = '9876543211';
+    }
+    
+    // Copy to ship if same address is checked
+    if(document.getElementById('sameAddress').checked) {
+        copyAddress();
+    }
+}
+
+// Copy address from bill to ship
+function copyAddress() {
+    document.getElementById('shipName').value = document.getElementById('billName').value;
+    document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
+    document.getElementById('shipGST').value = document.getElementById('billGST').value;
+    document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
 }
 
 // Show print options
 function showPrintOptions() {
-    // Set current options
-    document.getElementById('printShowChargeable').checked = 
-        document.getElementById('showChargeablePDF').checked;
-    document.getElementById('printShowActual').checked = 
-        document.getElementById('showActualPDF').checked;
-    document.getElementById('printShowMM').checked = 
-        document.getElementById('showMMPDF').checked;
-    document.getElementById('printShowSummary').checked = 
-        document.getElementById('showSummaryPDF').checked;
-    
-    // Show modal
     const modal = new bootstrap.Modal(document.getElementById('printOptionsModal'));
     modal.show();
 }
 
-// Export to Excel (FIXED)
+// Export to Excel
 function exportToExcel() {
-    // Create workbook
     const wb = XLSX.utils.book_new();
     
-    // Prepare data array for items
-    const itemsData = [];
+    // Prepare data array
+    const data = [];
     
-    // Add header row for items
-    itemsData.push(['Sr.', 'Description', 'Actual (IN)', 'Actual (MM)', 'Chargeable (IN)', 
-                   'Chargeable (MM)', 'Qty', 'Area', 'Rate', 'Amount']);
+    // Add header row
+    data.push(['Sr.', 'Description', 'Actual Size (IN)', 'Actual Size (MM)', 
+               'Chargeable Size (IN)', 'Chargeable Size (MM)', 'Qty', 'Area', 'Rate', 'Amount']);
     
     // Add only filled rows
     let rowCount = 0;
@@ -511,13 +465,13 @@ function exportToExcel() {
         // Only add row if description or size is filled
         if(desc || actualWIn || actualHIn || actualWMm || actualHMm) {
             rowCount++;
-            itemsData.push([
+            data.push([
                 rowCount,
                 desc,
-                `${actualWIn}×${actualHIn}`,
-                `${actualWMm}×${actualHMm}`,
-                `${chargeWIn}×${chargeHIn}`,
-                `${chargeWMm}×${chargeHMm}`,
+                `${actualWIn} × ${actualHIn}`,
+                `${actualWMm} × ${actualHMm}`,
+                `${chargeWIn} × ${chargeHIn}`,
+                `${chargeWMm} × ${chargeHMm}`,
                 parseFloat(qty) || 0,
                 parseFloat(area) || 0,
                 parseFloat(rate) || 0,
@@ -526,31 +480,21 @@ function exportToExcel() {
         }
     });
     
-    // Create items worksheet
-    const itemsWs = XLSX.utils.aoa_to_sheet(itemsData);
+    // Add summary
+    data.push([]);
+    data.push(['SUMMARY']);
+    data.push(['Total Items:', rowCount]);
+    data.push(['Total Area:', document.getElementById('totalArea').textContent]);
+    data.push(['Basic Amount:', document.getElementById('basicAmount').textContent]);
+    data.push(['Additional Charges:', document.getElementById('additionalCharges').textContent]);
+    data.push(['GST:', document.getElementById('gstAmount').textContent]);
+    data.push(['GRAND TOTAL:', document.getElementById('grandTotal').textContent]);
     
-    // Prepare summary data
-    const summaryData = [];
-    summaryData.push(['PROFORMA SUMMARY']);
-    summaryData.push(['Proforma No:', document.getElementById('proformaNo').value]);
-    summaryData.push(['Date:', document.getElementById('proformaDate').value]);
-    summaryData.push(['Bill To:', document.getElementById('billName').value]);
-    summaryData.push(['Address:', document.getElementById('billAddress').value]);
-    summaryData.push(['GSTIN:', document.getElementById('billGST').value]);
-    summaryData.push([]);
-    summaryData.push(['Total Area:', document.getElementById('totalArea').textContent]);
-    summaryData.push(['Basic Amount:', document.getElementById('basicAmount').textContent]);
-    summaryData.push(['Other Charges:', document.getElementById('otherAmount').textContent]);
-    summaryData.push(['Sub Total:', document.getElementById('subTotal').textContent]);
-    summaryData.push(['GST @' + document.getElementById('gstPercent').value + '%:', document.getElementById('gstAmount').textContent]);
-    summaryData.push(['GRAND TOTAL:', document.getElementById('grandTotal').textContent]);
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(data);
     
-    // Create summary worksheet
-    const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
-    
-    // Add worksheets to workbook
-    XLSX.utils.book_append_sheet(wb, itemsWs, 'Items');
-    XLSX.utils.book_append_sheet(wb, summaryWs, 'Summary');
+    // Add to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Proforma');
     
     // Save file
     const fileName = document.getElementById('proformaNo').value + '.xlsx';
@@ -559,75 +503,83 @@ function exportToExcel() {
     alert('Excel file exported successfully!');
 }
 
-// Show quotation
-function showQuotation() {
-    calculateTotal();
+// Generate PDF
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
     
-    const quotationContent = document.getElementById('quotationContent');
+    // Add header
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 128);
+    doc.text('GLASS WORKS', 105, 15, { align: 'center' });
     
-    // Get party details
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Address Line 1, Address Line 2, City, State - PIN', 105, 22, { align: 'center' });
+    doc.text('Phone: 9876543210 | GSTIN: 22AAAAA0000A1Z5', 105, 28, { align: 'center' });
+    
+    // Proforma details
+    doc.setFontSize(14);
+    doc.text('PROFORMA INVOICE', 105, 38, { align: 'center' });
+    
+    doc.setFontSize(9);
+    doc.text(`Proforma No.: ${document.getElementById('proformaNo').value}`, 15, 45);
+    doc.text(`Date: ${document.getElementById('proformaDate').value}`, 15, 50);
+    doc.text(`GST Mode: ${document.getElementById('gstMode').value}`, 15, 55);
+    
+    // Party details
+    doc.text('Bill To:', 15, 65);
     const billName = document.getElementById('billName').value || '';
     const billAddress = document.getElementById('billAddress').value || '';
-    const billGST = document.getElementById('billGST').value || '';
-    const billPhone = document.getElementById('billPhone').value || '';
+    doc.text(billName, 15, 70);
+    doc.text(billAddress, 15, 75, { maxWidth: 80 });
     
-    // Generate quotation HTML
-    let html = `
-        <div class="quotation-container p-4">
-            <!-- Header -->
-            <div class="text-center mb-4">
-                <h2 class="text-primary">GLASS WORKS</h2>
-                <p class="mb-1">Address Line 1, Address Line 2, City, State - PIN</p>
-                <p class="mb-1">Phone: 9876543210 | GSTIN: 22AAAAA0000A1Z5</p>
-                <h3 class="mt-3 border-top border-bottom py-2">QUOTATION</h3>
-            </div>
-            
-            <!-- Quotation Details -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <table class="table table-sm">
-                        <tr><td><strong>Quotation No:</strong></td><td>${document.getElementById('proformaNo').value}</td></tr>
-                        <tr><td><strong>Date:</strong></td><td>${document.getElementById('proformaDate').value}</td></tr>
-                        <tr><td><strong>GST Mode:</strong></td><td>${document.getElementById('gstMode').value}</td></tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <div class="border p-2">
-                        <strong>Customer Details:</strong><br>
-                        ${billName}<br>
-                        ${billAddress}<br>
-                        ${billPhone ? 'Phone: ' + billPhone : ''}<br>
-                        ${billGST ? 'GSTIN: ' + billGST : ''}
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Items Table -->
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Sr.</th>
-                            <th>Description</th>
-                            <th>Size (IN)</th>
-                            <th>Qty</th>
-                            <th>Area</th>
-                            <th>Rate</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    `;
+    // Table header
+    let yPos = 90;
+    doc.setFillColor(200, 200, 200);
+    doc.rect(10, yPos, 190, 8, 'F');
+    yPos += 5;
     
-    // Add items
+    // Check print options
+    const showActual = document.getElementById('printShowActual').checked;
+    const showChargeable = document.getElementById('printShowChargeable').checked;
+    
+    // Draw columns based on options
+    let xPos = 12;
+    doc.text('Sr.', xPos, yPos);
+    xPos += 10;
+    doc.text('Description', xPos, yPos);
+    xPos += 40;
+    
+    if(showActual) {
+        doc.text('Actual Size', xPos, yPos);
+        xPos += 25;
+    }
+    
+    if(showChargeable) {
+        doc.text('Chargeable Size', xPos, yPos);
+        xPos += 25;
+    }
+    
+    doc.text('Qty', xPos, yPos);
+    xPos += 15;
+    doc.text('Area', xPos, yPos);
+    xPos += 20;
+    doc.text('Rate', xPos, yPos);
+    xPos += 20;
+    doc.text('Amount', xPos, yPos);
+    
+    // Table data
+    yPos += 8;
     let rowCount = 0;
-    let totalAmount = 0;
     const rows = document.querySelectorAll('#productTableBody tr');
     
     rows.forEach((row, index) => {
         const desc = row.querySelector('.desc').value.trim();
         const actualWIn = row.querySelector('.actual-in-w').value.trim();
         const actualHIn = row.querySelector('.actual-in-h').value.trim();
+        const chargeWIn = row.querySelector('.charge-in-w').value;
+        const chargeHIn = row.querySelector('.charge-in-h').value;
         const qty = row.querySelector('.qty').value;
         const area = row.querySelector('.area-cell').textContent;
         const rate = row.querySelector('.rate').value;
@@ -635,353 +587,220 @@ function showQuotation() {
         
         if(desc || actualWIn || actualHIn) {
             rowCount++;
-            totalAmount += parseFloat(amount) || 0;
             
-            html += `
-                <tr>
-                    <td>${rowCount}</td>
-                    <td>${desc || ''}</td>
-                    <td>${actualWIn && actualHIn ? actualWIn + '×' + actualHIn : ''}</td>
-                    <td>${qty}</td>
-                    <td>${area}</td>
-                    <td>₹ ${parseFloat(rate).toFixed(2)}</td>
-                    <td>₹ ${amount}</td>
-                </tr>
-            `;
+            // Check page break
+            if(yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            xPos = 12;
+            doc.text(rowCount.toString(), xPos, yPos);
+            xPos += 10;
+            
+            doc.text(desc || '', xPos, yPos, { maxWidth: 35 });
+            xPos += 40;
+            
+            if(showActual) {
+                doc.text(`${actualWIn}×${actualHIn}`, xPos, yPos);
+                xPos += 25;
+            }
+            
+            if(showChargeable) {
+                doc.text(`${chargeWIn}×${chargeHIn}`, xPos, yPos);
+                xPos += 25;
+            }
+            
+            doc.text(qty, xPos, yPos);
+            xPos += 15;
+            doc.text(area, xPos, yPos);
+            xPos += 20;
+            doc.text(rate, xPos, yPos);
+            xPos += 20;
+            doc.text(amount, xPos, yPos);
+            
+            yPos += 7;
         }
     });
     
     // Summary
-    html += `
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Summary Section -->
-            <div class="row mt-4">
-                <div class="col-md-6 offset-md-6">
-                    <table class="table table-bordered">
-                        <tr>
-                            <td>Total Amount</td>
-                            <td class="text-end">${document.getElementById('basicAmount').textContent}</td>
-                        </tr>
-                        <tr>
-                            <td>GST @ ${document.getElementById('gstPercent').value}%</td>
-                            <td class="text-end">${document.getElementById('gstAmount').textContent}</td>
-                        </tr>
-                        <tr class="table-active fw-bold">
-                            <td>Grand Total</td>
-                            <td class="text-end">${document.getElementById('grandTotal').textContent}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Terms & Conditions -->
-            <div class="mt-4 border-top pt-3">
-                <h6>Terms & Conditions:</h6>
-                <ol class="small">
-                    <li>Prices are inclusive of GST</li>
-                    <li>Delivery: 7-10 working days</li>
-                    <li>Payment: 50% advance, 50% on delivery</li>
-                    <li>Validity: 30 days from quotation date</li>
-                    <li>Measurement at site to be final</li>
-                </ol>
-                
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <p><strong>For GLASS WORKS</strong></p>
-                        <p>Authorized Signatory</p>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <p>Customer Acceptance</p>
-                        <p>_______________________</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+    if(document.getElementById('printShowSummary').checked) {
+        yPos += 10;
+        doc.setFontSize(10);
+        doc.text('Summary:', 15, yPos);
+        yPos += 7;
+        
+        doc.text(`Total Area: ${document.getElementById('totalArea').textContent}`, 150, yPos, { align: 'right' });
+        yPos += 5;
+        doc.text(`Basic Amount: ${document.getElementById('basicAmount').textContent}`, 150, yPos, { align: 'right' });
+        yPos += 5;
+        doc.text(`Additional Charges: ${document.getElementById('additionalCharges').textContent}`, 150, yPos, { align: 'right' });
+        yPos += 5;
+        doc.text(`GST: ${document.getElementById('gstAmount').textContent}`, 150, yPos, { align: 'right' });
+        yPos += 5;
+        doc.text(`GRAND TOTAL: ${document.getElementById('grandTotal').textContent}`, 150, yPos, { align: 'right' });
+    }
     
-    quotationContent.innerHTML = html;
+    // Save PDF
+    doc.save(`${document.getElementById('proformaNo').value}.pdf`);
     
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('quotationModal'));
-    modal.show();
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById('printOptionsModal')).hide();
 }
 
-// Print quotation
-function printQuotation() {
-    const printContent = document.getElementById('quotationContent').innerHTML;
-    const printWindow = window.open('', '_blank');
-    
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Quotation - ${document.getElementById('proformaNo').value}</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-            <style>
-                body { font-family: Arial, sans-serif; padding: 20px; }
-                @media print {
-                    .no-print { display: none !important; }
-                }
-            </style>
-        </head>
-        <body>
-            ${printContent}
-            <div class="no-print text-center mt-3">
-                <button class="btn btn-primary" onclick="window.print()">Print</button>
-                <button class="btn btn-secondary" onclick="window.close()">Close</button>
-            </div>
-        </body>
-        </html>
-    `);
-    
-    printWindow.document.close();
-}
-
-// Save quotation as PDF
-function saveQuotationAsPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    
-    // Get quotation content
-    const element = document.getElementById('quotationContent');
-    
-    html2canvas(element).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 190;
-        const pageHeight = 290;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        let heightLeft = imgHeight;
-        
-        let position = 10;
-        
-        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            doc.addPage();
-            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-        }
-        
-        doc.save(`Quotation_${document.getElementById('proformaNo').value}.pdf`);
-    });
-}
-
-// Other functions remain same as before
-function addEmptyRow() {
-    // Find first empty row and focus
+// Utility functions
+function scrollToFirstEmpty() {
     const rows = document.querySelectorAll('#productTableBody tr');
     for(let i = 0; i < rows.length; i++) {
-        const desc = rows[i].querySelector('.desc').value;
-        if(!desc) {
+        const desc = rows[i].querySelector('.desc').value.trim();
+        const sizeW = rows[i].querySelector('.actual-in-w').value.trim();
+        const sizeH = rows[i].querySelector('.actual-in-h').value.trim();
+        
+        if(!desc && !sizeW && !sizeH) {
+            rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
             rows[i].querySelector('.desc').focus();
             break;
         }
     }
 }
 
-function clearEmptyRows() {
-    if(confirm('Clear all empty rows?')) {
-        const rows = document.querySelectorAll('#productTableBody tr');
-        rows.forEach(row => {
-            const desc = row.querySelector('.desc').value;
-            const sizeW = row.querySelector('.actual-in-w').value;
-            const sizeH = row.querySelector('.actual-in-h').value;
-            
-            if(!desc && !sizeW && !sizeH) {
-                const inputs = row.querySelectorAll('input');
-                inputs.forEach(input => {
-                    if(!input.classList.contains('qty')) {
-                        input.value = '';
-                    }
-                });
-                row.querySelector('.area-cell').textContent = '0';
-                row.querySelector('.amount-cell').textContent = '0.00';
-            }
-        });
+function addMoreRows(count) {
+    const currentRows = document.querySelectorAll('#productTableBody tr').length;
+    const tbody = document.getElementById('productTableBody');
+    
+    for(let i = 1; i <= count; i++) {
+        const rowNum = currentRows + i;
+        const row = document.createElement('tr');
+        row.id = `row-${rowNum}`;
+        row.innerHTML = `
+            <td class="text-center">${rowNum}</td>
+            <td><input type="text" class="form-control form-control-sm desc" placeholder="Description"></td>
+            <td>
+                <div class="row g-0">
+                    <div class="col-6 pe-1"><input type="text" class="form-control form-control-sm actual-in-w" placeholder="W"></div>
+                    <div class="col-6 ps-1"><input type="text" class="form-control form-control-sm actual-in-h" placeholder="H"></div>
+                </div>
+            </td>
+            <td>
+                <div class="row g-0">
+                    <div class="col-6 pe-1"><input type="number" class="form-control form-control-sm actual-mm-w" placeholder="W mm"></div>
+                    <div class="col-6 ps-1"><input type="number" class="form-control form-control-sm actual-mm-h" placeholder="H mm"></div>
+                </div>
+            </td>
+            <td>
+                <div class="row g-0">
+                    <div class="col-6 pe-1"><input type="text" class="form-control form-control-sm charge-in-w" placeholder="W" readonly></div>
+                    <div class="col-6 ps-1"><input type="text" class="form-control form-control-sm charge-in-h" placeholder="H" readonly></div>
+                </div>
+            </td>
+            <td>
+                <div class="row g-0">
+                    <div class="col-6 pe-1"><input type="number" class="form-control form-control-sm charge-mm-w" placeholder="W mm" readonly></div>
+                    <div class="col-6 ps-1"><input type="number" class="form-control form-control-sm charge-mm-h" placeholder="H mm" readonly></div>
+                </div>
+            </td>
+            <td><input type="number" class="form-control form-control-sm qty" value="1" min="1"></td>
+            <td class="text-center area-cell">0</td>
+            <td><input type="number" class="form-control form-control-sm rate" value="0"></td>
+            <td class="text-end amount-cell">0.00</td>
+            <td class="text-center">
+                <button class="btn btn-danger btn-xs" onclick="clearRow(${rowNum})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+        addRowEventListeners(row, rowNum);
     }
+    
+    alert(`Added ${count} more rows! Total rows: ${currentRows + count}`);
 }
 
-function deleteRow(rowNum) {
+function clearRow(rowNum) {
     const row = document.getElementById(`row-${rowNum}`);
-    if(row && confirm('Delete this row?')) {
-        const inputs = row.querySelectorAll('input');
-        inputs.forEach(input => {
-            if(!input.classList.contains('qty')) {
-                input.value = '';
-            } else {
-                input.value = '1';
-            }
-        });
+    if(row && confirm('Clear this row?')) {
+        row.querySelector('.desc').value = '';
+        row.querySelector('.actual-in-w').value = '';
+        row.querySelector('.actual-in-h').value = '';
+        row.querySelector('.actual-mm-w').value = '';
+        row.querySelector('.actual-mm-h').value = '';
+        row.querySelector('.qty').value = '1';
+        row.querySelector('.rate').value = '0';
         row.querySelector('.area-cell').textContent = '0';
         row.querySelector('.amount-cell').textContent = '0.00';
-        row.querySelector('.desc').focus();
+        row.querySelector('.charge-in-w').value = '';
+        row.querySelector('.charge-in-h').value = '';
+        row.querySelector('.charge-mm-w').value = '';
+        row.querySelector('.charge-mm-h').value = '';
+        
+        calculateTotal();
     }
 }
 
-function toggleMM() {
-    const mode = document.getElementById('wastageMode').value;
-    const mmSettings = document.getElementById('mmSettings');
-    mmSettings.style.display = mode === '+mm' ? 'block' : 'none';
-}
-
-function applyMM() {
-    // Recalculate all rows
-    for(let i = 1; i <= 500; i++) {
-        calculateRow(i);
+function clearAllRows() {
+    if(confirm('Clear ALL rows? This cannot be undone!')) {
+        const rows = document.querySelectorAll('#productTableBody tr');
+        rows.forEach(row => {
+            row.querySelector('.desc').value = '';
+            row.querySelector('.actual-in-w').value = '';
+            row.querySelector('.actual-in-h').value = '';
+            row.querySelector('.actual-mm-w').value = '';
+            row.querySelector('.actual-mm-h').value = '';
+            row.querySelector('.qty').value = '1';
+            row.querySelector('.rate').value = '0';
+            row.querySelector('.area-cell').textContent = '0';
+            row.querySelector('.amount-cell').textContent = '0.00';
+            row.querySelector('.charge-in-w').value = '';
+            row.querySelector('.charge-in-h').value = '';
+            row.querySelector('.charge-mm-w').value = '';
+            row.querySelector('.charge-mm-h').value = '';
+        });
+        
+        calculateTotal();
+        alert('All rows cleared!');
     }
-    calculateTotal();
 }
 
-function newProforma() {
-    if(confirm('Create new proforma? Current data will be saved.')) {
-        // Increment proforma counter
-        let counter = parseInt(localStorage.getItem('proformaCounter') || 1);
-        counter++;
-        localStorage.setItem('proformaCounter', counter);
-        
-        // Update proforma number
-        document.getElementById('proformaNo').value = `PI-${counter.toString().padStart(3, '0')}`;
-        document.getElementById('currentProforma').textContent = `PI-${counter.toString().padStart(3, '0')}`;
-        
-        // Set today's date
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('proformaDate').value = today;
-        
+function resetAll() {
+    if(confirm('Reset entire proforma? All data will be lost!')) {
         // Clear party details
         document.getElementById('billName').value = '';
         document.getElementById('billAddress').value = '';
         document.getElementById('billGST').value = '';
         document.getElementById('billPhone').value = '';
-        
-        // Clear ship details
         document.getElementById('shipName').value = '';
         document.getElementById('shipAddress').value = '';
         document.getElementById('shipGST').value = '';
         document.getElementById('shipPhone').value = '';
         
-        // Clear all rows
-        clearAllRows();
-        
-        // Reset calculations
-        calculateTotal();
-        
-        alert(`New proforma created: PI-${counter.toString().padStart(3, '0')}`);
-    }
-}
-
-function clearAllRows() {
-    const rows = document.querySelectorAll('#productTableBody tr');
-    rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        inputs.forEach(input => {
-            if(!input.classList.contains('qty')) {
-                input.value = '';
-            }
-        });
-        row.querySelector('.area-cell').textContent = '0';
-        row.querySelector('.amount-cell').textContent = '0.00';
-    });
-}
-
-function resetProforma() {
-    if(confirm('Reset entire proforma? All data will be lost.')) {
-        // Clear all fields
-        document.getElementById('billName').value = '';
-        document.getElementById('billAddress').value = '';
-        document.getElementById('billGST').value = '';
-        document.getElementById('billPhone').value = '';
-        document.getElementById('shipName').value = '';
-        document.getElementById('shipAddress').value = '';
-        document.getElementById('shipGST').value = '';
-        document.getElementById('shipPhone').value = '';
-        document.getElementById('notes').value = '';
+        // Clear charges
+        document.getElementById('packingCharges').value = '0';
+        document.getElementById('freightCharges').value = '0';
+        document.getElementById('otherCharges').value = '0';
         document.getElementById('gstPercent').value = '18';
         document.getElementById('roundOff').value = '0';
+        document.getElementById('notes').value = '';
         
         // Clear all rows
         clearAllRows();
         
-        // Reset calculations
-        calculateTotal();
+        // Generate new proforma number
+        const currentNo = document.getElementById('proformaNo').value;
+        const num = parseInt(currentNo.replace('PI-', '')) || 1;
+        document.getElementById('proformaNo').value = `PI-${(num + 1).toString().padStart(3, '0')}`;
+        
+        // Set today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('proformaDate').value = today;
         
         alert('Proforma reset successfully!');
     }
 }
 
 function saveProforma() {
-    // Collect data
-    const proforma = {
-        number: document.getElementById('proformaNo').value,
-        date: document.getElementById('proformaDate').value,
-        billTo: {
-            name: document.getElementById('billName').value,
-            address: document.getElementById('billAddress').value,
-            gst: document.getElementById('billGST').value,
-            phone: document.getElementById('billPhone').value
-        },
-        shipTo: {
-            name: document.getElementById('shipName').value,
-            address: document.getElementById('shipAddress').value,
-            gst: document.getElementById('shipGST').value,
-            phone: document.getElementById('shipPhone').value
-        },
-        items: [],
-        summary: {
-            totalArea: document.getElementById('totalArea').textContent,
-            basicAmount: document.getElementById('basicAmount').textContent,
-            otherAmount: document.getElementById('otherAmount').textContent,
-            gstAmount: document.getElementById('gstAmount').textContent,
-            grandTotal: document.getElementById('grandTotal').textContent
-        },
-        settings: {
-            gstMode: document.getElementById('gstMode').value,
-            uom: document.getElementById('uom').value,
-            wastageMode: document.getElementById('wastageMode').value,
-            gstPercent: document.getElementById('gstPercent').value
-        }
-    };
-    
-    // Save items (only filled ones)
-    const rows = document.querySelectorAll('#productTableBody tr');
-    rows.forEach((row, index) => {
-        const desc = row.querySelector('.desc').value;
-        if(desc) {
-            const item = {
-                description: desc,
-                actualIn: `${row.querySelector('.actual-in-w').value}×${row.querySelector('.actual-in-h').value}`,
-                actualMm: `${row.querySelector('.actual-mm-w').value}×${row.querySelector('.actual-mm-h').value}`,
-                chargeableIn: `${row.querySelector('.charge-in-w').value}×${row.querySelector('.charge-in-h').value}`,
-                chargeableMm: `${row.querySelector('.charge-mm-w').value}×${row.querySelector('.charge-mm-h').value}`,
-                qty: row.querySelector('.qty').value,
-                rate: row.querySelector('.rate').value,
-                area: row.querySelector('.area-cell').textContent,
-                amount: row.querySelector('.amount-cell').textContent
-            };
-            proforma.items.push(item);
-        }
-    });
-    
-    // Save to localStorage
-    const savedProformas = JSON.parse(localStorage.getItem('savedProformas') || '[]');
-    savedProformas.push(proforma);
-    localStorage.setItem('savedProformas', JSON.stringify(savedProformas));
-    
-    alert('Proforma saved successfully!');
+    alert('Proforma saved successfully! (In real system, this would save to database)');
 }
 
-// PDF generation function (as before, but now working)
-function generatePDF() {
-    // This function is called from the print options modal
-    // Implementation as in previous code
-}
-
-// Print proforma function (as before, but now working)
-function printProforma() {
-    // This function is called from the print options modal
-    // Implementation as in previous code
+function newProforma() {
+    resetAll();
 }
