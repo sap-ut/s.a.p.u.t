@@ -3,319 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glass Works Proforma System</title>
+    <title>Glass Works - Proforma System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            font-size: 13px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        
+        /* DASHBOARD STYLES */
+        .dashboard-container {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .card {
-            border: 1px solid #dee2e6;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: none;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .dashboard-card i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .dashboard-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
             margin-bottom: 10px;
         }
-        .card-header {
+        
+        .dashboard-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .dashboard-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* MAIN APPLICATION STYLES */
+        .app-container {
+            display: none;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .top-navbar {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .top-navbar .navbar-brand {
+            font-size: 20px;
             font-weight: 600;
-            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .form-control-sm, .form-select-sm {
+        
+        .top-navbar .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 64px);
+        }
+        
+        /* LEFT SIDEBAR - COMPACT */
+        .left-sidebar {
+            width: var(--sidebar-width);
+            background: var(--light-bg);
+            border-right: 1px solid #dee2e6;
+            padding: 15px;
+            overflow-y: auto;
+            position: sticky;
+            top: 64px;
+            height: calc(100vh - 64px);
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section h6 {
             font-size: 12px;
-            padding: 4px 8px;
-            height: 30px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .table {
+        
+        .compact-input {
+            width: 100%;
+            padding: 6px 10px;
             font-size: 12px;
-            margin-bottom: 0;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 8px;
         }
-        .table th {
+        
+        .compact-select {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            height: 34px;
+        }
+        
+        .compact-label {
+            font-size: 11px;
             font-weight: 600;
-            background-color: #f8f9fa;
-            padding: 6px 8px;
+            color: #495057;
+            margin-bottom: 3px;
+            display: block;
+        }
+        
+        .party-item {
+            padding: 8px 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        
+        .party-item:hover {
+            background: #e9ecef;
+            border-color: var(--secondary-color);
+        }
+        
+        .party-item .name {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+        }
+        
+        .party-item .details {
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        /* RIGHT CONTENT AREA */
+        .right-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        /* PRODUCT TABLE - COMPACT */
+        .product-table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .table-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-compact {
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .compact-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        
+        .compact-table th {
+            background: #f8f9fa;
+            padding: 8px 6px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid #dee2e6;
             white-space: nowrap;
         }
-        .table td {
-            padding: 4px 6px;
+        
+        .compact-table td {
+            padding: 6px;
+            border-bottom: 1px solid #dee2e6;
             vertical-align: middle;
         }
-        .table input {
+        
+        .compact-table input {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
             font-size: 11px;
-            padding: 2px 4px;
-            height: 26px;
+            height: 28px;
+        }
+        
+        .compact-table input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        .compact-table .size-inputs {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .compact-table .size-inputs input {
             width: 100%;
         }
-        .btn-sm {
-            font-size: 11px;
-            padding: 4px 10px;
+        
+        /* SUMMARY SECTION */
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .btn-xs {
-            padding: 0.15rem 0.5rem;
-            font-size: 0.75rem;
+        
+        .summary-card h6 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary-color);
         }
-        .sticky-top {
-            position: sticky;
-            z-index: 100;
-            top: 0;
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 12px;
         }
-        .mm-settings {
-            padding: 8px;
-            background-color: #e7f3ff;
-            border-radius: 4px;
+        
+        .summary-row.total {
+            font-weight: 600;
+            color: var(--danger-color);
+            font-size: 14px;
+            border-top: 2px solid #dee2e6;
             margin-top: 8px;
+            padding-top: 10px;
         }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0,0,0,.02);
+        
+        /* PRINT/REPORT MODAL */
+        .print-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
-        /* Scrollbar */
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            
+            .right-content {
+                padding: 15px;
+            }
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* CUSTOM SCROLLBAR */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
+        
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
             border-radius: 3px;
         }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Custom for MM inputs */
-        .mm-input-group .input-group-text {
-            font-size: 10px;
-            padding: 4px 8px;
-        }
-        .mm-label {
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-        .add-mm-toggle {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .add-mm-toggle input {
-            margin-right: 5px;
-        }
-        .add-mm-toggle label {
-            margin-bottom: 0;
-            font-weight: 600;
-        }
-        /* Remarks column specific */
-        .remarks-input {
-            font-size: 10px;
-            padding: 2px 4px;
-            height: 26px;
-            width: 100%;
+            background: #a8a8a8;
         }
     </style>
 </head>
 <body>
-    <!-- TOP NAVBAR -->
-    <nav class="navbar navbar-dark bg-primary py-2">
-        <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fas fa-industry"></i> GLASS WORKS PROFORMA SYSTEM
-            </span>
-            <div class="navbar-text">
-                <span class="badge bg-light text-dark me-3" id="currentProforma">PI-001</span>
-                <button class="btn btn-sm btn-light" onclick="newProforma()">
-                    <i class="fas fa-plus-circle"></i> New
-                </button>
-                <button class="btn btn-sm btn-light ms-2" onclick="showQuotation()">
-                    <i class="fas fa-file-alt"></i> Quotation
-                </button>
+    <!-- DASHBOARD SECTION -->
+    <div class="dashboard-container" id="dashboard">
+        <div class="dashboard-header fade-in">
+            <h1>Glass Works Proforma System</h1>
+            <p>Complete Glass Processing & Billing Solution</p>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card fade-in" onclick="showProforma()">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h3>Create Proforma</h3>
+                <p>Create new proforma invoices with advanced calculations and wastage management</p>
+            </div>
+            
+            <div class="dashboard-card fade-in" onclick="showQuotation()">
+                <i class="fas fa-file-alt"></i>
+                <h3>Create Quotation</h3>
+                <p>Generate professional quotations with terms & conditions</p>
+            </div>
+            
+            <div class="dashboard-card fade-in" onclick="showReports()">
+                <i class="fas fa-chart-bar"></i>
+                <h3>View Reports</h3>
+                <p>Analyze sales, profits, and other business reports</p>
+            </div>
+            
+            <div class="dashboard-card fade-in" onclick="manageParties()">
+                <i class="fas fa-users"></i>
+                <h3>Manage Parties</h3>
+                <p>Add, edit, and manage customer information</p>
+            </div>
+            
+            <div class="dashboard-card fade-in" onclick="showSettings()">
+                <i class="fas fa-cog"></i>
+                <h3>System Settings</h3>
+                <p>Configure system preferences and defaults</p>
+            </div>
+            
+            <div class="dashboard-card fade-in" onclick="showHelp()">
+                <i class="fas fa-question-circle"></i>
+                <h3>Help & Support</h3>
+                <p>Get help and documentation for using the system</p>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <div class="container-fluid mt-2">
-        <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-md-3">
-                <!-- PARTY SELECTION -->
-                <div class="card mb-3">
-                    <div class="card-header bg-success text-white py-2">
-                        <h6 class="mb-0"><i class="fas fa-user-tie"></i> Party Selection</h6>
+    <!-- MAIN APPLICATION SECTION -->
+    <div class="app-container" id="app">
+        <!-- TOP NAVBAR -->
+        <nav class="top-navbar">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div class="navbar-brand">
+                    <i class="fas fa-industry"></i>
+                    <span>Glass Works Proforma System</span>
+                    <span class="badge bg-light text-dark ms-2" id="currentProforma">001</span>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-sm btn-light" onclick="showDashboard()">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="btn btn-sm btn-light" onclick="showReports()">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </button>
+                    <button class="btn btn-sm btn-light" onclick="showSettings()">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- LEFT SIDEBAR - COMPACT -->
+            <div class="left-sidebar">
+                <!-- PROFORMA SETTINGS -->
+                <div class="sidebar-section">
+                    <h6>Proforma Settings</h6>
+                    <div>
+                        <label class="compact-label">Proforma No.</label>
+                        <input type="text" class="compact-input" id="proformaNo" value="001">
                     </div>
-                    <div class="card-body p-2">
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control form-control-sm" id="searchParty" 
-                                   placeholder="Search Party..." onkeyup="searchParties()">
-                            <button class="btn btn-sm btn-primary" onclick="showPartyModal()">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <div style="max-height: 250px; overflow-y: auto;">
-                            <table class="table table-sm table-hover" id="partyList">
-                                <tbody>
-                                    <tr onclick="selectParty('Mohan Glass House', '123 Main Street, Delhi', '07AABCM1234N1Z5', '9876543210')">
-                                        <td>
-                                            <div class="fw-bold">Mohan Glass House</div>
-                                            <small class="text-muted">Delhi | 9876543210</small>
-                                        </td>
-                                    </tr>
-                                    <tr onclick="selectParty('Shyam Glass Works', '456 Market Road, Noida', '09AAECS1234N1Z6', '9876543211')">
-                                        <td>
-                                            <div class="fw-bold">Shyam Glass Works</div>
-                                            <small class="text-muted">Noida | 9876543211</small>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div>
+                        <label class="compact-label">Date</label>
+                        <input type="date" class="compact-input" id="proformaDate">
+                    </div>
+                    <div>
+                        <label class="compact-label">UOM</label>
+                        <select class="compact-select" id="uom" onchange="calculateAllRows()">
+                            <option value="sqft">Sq. Ft.</option>
+                            <option value="sqmt">Sq. Mt.</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="compact-label">Wastage Mode</label>
+                        <select class="compact-select" id="wastageMode" onchange="toggleWastage()">
+                            <option value="none">None</option>
+                            <option value="round">Round Off</option>
+                            <option value="evenin">Even IN</option>
+                            <option value="evencm">Even CM</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- SETTINGS -->
-                <div class="card mb-3">
-                    <div class="card-header bg-warning text-dark py-2">
-                        <h6 class="mb-0"><i class="fas fa-cog"></i> Proforma Settings</h6>
+                <!-- ADD MM OPTION -->
+                <div class="sidebar-section">
+                    <div class="d-flex align-items-center mb-2">
+                        <input type="checkbox" id="enableAddMM" onchange="toggleAddMM()" class="me-2">
+                        <label for="enableAddMM" class="compact-label mb-0">Add MM to Size</label>
                     </div>
-                    <div class="card-body p-2">
-                        <div class="mb-2">
-                            <label class="form-label-sm">Proforma No.</label>
-                            <input type="text" class="form-control form-control-sm" id="proformaNo" value="PI-001">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label-sm">Date</label>
-                            <input type="date" class="form-control form-control-sm" id="proformaDate">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label-sm">GST Mode</label>
-                            <select class="form-select form-select-sm" id="gstMode">
-                                <option>SGST</option>
-                                <option>IGST</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label-sm">UOM</label>
-                            <select class="form-select form-select-sm" id="uom" onchange="calculateAllRows()">
-                                <option value="sqft">Sq. Ft.</option>
-                                <option value="sqmt">Sq. Mt.</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label-sm">Wastage Mode</label>
-                            <select class="form-select form-select-sm" id="wastageMode" onchange="toggleWastage()">
-                                <option value="none">None</option>
-                                <option value="round">Round Off</option>
-                                <option value="evenin">Even IN</option>
-                                <option value="evencm">Even CM</option>
-                            </select>
-                        </div>
-
-                        <!-- SEPARATE +MM OPTION -->
-                        <div class="add-mm-toggle">
-                            <input type="checkbox" id="enableAddMM" onchange="toggleAddMM()">
-                            <label for="enableAddMM" class="form-label-sm">Add MM to Size</label>
-                        </div>
-                        
-                        <div class="mm-settings" id="mmSettings" style="display: none;">
-                            <div class="row mb-2">
-                                <div class="col-6">
-                                    <label class="mm-label">Add to Width (MM)</label>
-                                    <input type="number" class="form-control form-control-sm" 
-                                           id="addMMWidth" value="3" onchange="applyAddMMToAll()">
-                                </div>
-                                <div class="col-6">
-                                    <label class="mm-label">Add to Height (MM)</label>
-                                    <input type="number" class="form-control form-control-sm" 
-                                           id="addMMHeight" value="3" onchange="applyAddMMToAll()">
-                                </div>
+                    
+                    <div id="mmSettings" style="display: none;">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="compact-label">Width (+MM)</label>
+                                <input type="number" class="compact-input" id="addMMWidth" value="3" onchange="applyAddMMToAll()">
                             </div>
-                            <button class="btn btn-sm btn-info w-100" onclick="applyAddMMToAll()">
-                                <i class="fas fa-sync"></i> Apply to All
-                            </button>
+                            <div class="col-6">
+                                <label class="compact-label">Height (+MM)</label>
+                                <input type="number" class="compact-input" id="addMMHeight" value="3" onchange="applyAddMMToAll()">
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary w-100 mt-1" onclick="applyAddMMToAll()">
+                            <i class="fas fa-sync fa-xs"></i> Apply All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PARTY SELECTION -->
+                <div class="sidebar-section">
+                    <h6>Select Party</h6>
+                    <div class="mb-2">
+                        <input type="text" class="compact-input" id="searchParty" placeholder="Search party...">
+                    </div>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <div class="party-item" onclick="selectParty('Mohan Glass House', '123 Main Street, Delhi', '07AABCM1234N1Z5', '9876543210')">
+                            <div class="name">Mohan Glass House</div>
+                            <div class="details">Delhi | 9876543210</div>
+                        </div>
+                        <div class="party-item" onclick="selectParty('Shyam Glass Works', '456 Market Road, Noida', '09AAECS1234N1Z6', '9876543211')">
+                            <div class="name">Shyam Glass Works</div>
+                            <div class="details">Noida | 9876543211</div>
+                        </div>
+                        <div class="party-item text-center py-2" onclick="showPartyModal()">
+                            <i class="fas fa-plus me-1"></i> Add New Party
                         </div>
                     </div>
                 </div>
 
                 <!-- QUICK SUMMARY -->
-                <div class="card">
-                    <div class="card-header bg-info text-white py-2">
-                        <h6 class="mb-0"><i class="fas fa-calculator"></i> Quick Summary</h6>
-                    </div>
-                    <div class="card-body p-2">
-                        <table class="table table-sm mb-0">
-                            <tr>
-                                <td>Total Items:</td>
-                                <td class="text-end" id="summaryItems">0</td>
-                            </tr>
-                            <tr>
-                                <td>Total Area:</td>
-                                <td class="text-end" id="summaryArea">0 Sq.Ft.</td>
-                            </tr>
-                            <tr>
-                                <td>Basic Amount:</td>
-                                <td class="text-end" id="summaryBasic">₹ 0.00</td>
-                            </tr>
-                            <tr class="table-active">
-                                <td><strong>Grand Total:</strong></td>
-                                <td class="text-end fw-bold" id="summaryGrand">₹ 0.00</td>
-                            </tr>
-                        </table>
+                <div class="sidebar-section">
+                    <h6>Quick Summary</h6>
+                    <div class="summary-card">
+                        <div class="summary-row">
+                            <span>Items:</span>
+                            <span id="summaryItems">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Area:</span>
+                            <span id="summaryArea">0 Sq.Ft.</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Amount:</span>
+                            <span id="summaryBasic">₹ 0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="summaryGrand">₹ 0.00</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- MAIN CONTENT -->
-            <div class="col-md-9">
+            <!-- RIGHT CONTENT AREA -->
+            <div class="right-content">
                 <!-- PARTY DETAILS -->
-                <div class="card mb-2">
-                    <div class="card-body p-2">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Bill To:</h6>
-                                <div class="row g-1">
-                                    <div class="col-12">
-                                        <input type="text" class="form-control form-control-sm mb-1" 
-                                               id="billName" placeholder="Party Name">
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control form-control-sm" id="billAddress" 
-                                                  rows="2" placeholder="Address"></textarea>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header py-2 bg-success text-white">
+                                <h6 class="mb-0"><i class="fas fa-user-tie me-2"></i>Bill To</h6>
+                            </div>
+                            <div class="card-body p-2">
+                                <input type="text" class="form-control form-control-sm mb-2" id="billName" placeholder="Party Name">
+                                <textarea class="form-control form-control-sm mb-2" id="billAddress" rows="2" placeholder="Address"></textarea>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="billGST" placeholder="GSTIN">
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" 
-                                               id="billGST" placeholder="GSTIN">
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" 
-                                               id="billPhone" placeholder="Phone">
+                                        <input type="text" class="form-control form-control-sm" id="billPhone" placeholder="Phone">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Ship To: 
-                                    <small>
-                                        <input type="checkbox" id="sameAddress" checked 
-                                               onchange="copyAddress()"> Same as Bill
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header py-2 bg-warning text-dark">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-truck me-2"></i>Ship To
+                                    <small class="float-end">
+                                        <input type="checkbox" id="sameAddress" checked onchange="copyAddress()" class="me-1">
+                                        <label for="sameAddress" class="mb-0">Same as Bill</label>
                                     </small>
                                 </h6>
-                                <div class="row g-1">
-                                    <div class="col-12">
-                                        <input type="text" class="form-control form-control-sm mb-1" 
-                                               id="shipName" placeholder="Party Name">
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control form-control-sm" id="shipAddress" 
-                                                  rows="2" placeholder="Address"></textarea>
+                            </div>
+                            <div class="card-body p-2">
+                                <input type="text" class="form-control form-control-sm mb-2" id="shipName" placeholder="Party Name">
+                                <textarea class="form-control form-control-sm mb-2" id="shipAddress" rows="2" placeholder="Address"></textarea>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm" id="shipGST" placeholder="GSTIN">
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" 
-                                               id="shipGST" placeholder="GSTIN">
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" 
-                                               id="shipPhone" placeholder="Phone">
+                                        <input type="text" class="form-control form-control-sm" id="shipPhone" placeholder="Phone">
                                     </div>
                                 </div>
                             </div>
@@ -323,104 +620,82 @@
                     </div>
                 </div>
 
-                <!-- MAIN PRODUCT TABLE - WITH REMARKS COLUMN -->
-                <div class="card">
-                    <div class="card-header bg-dark text-white py-2">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <h6 class="mb-0"><i class="fas fa-list"></i> Product Details</h6>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <button class="btn btn-sm btn-success" onclick="scrollToFirstEmpty()">
-                                    <i class="fas fa-arrow-down"></i> Go to Empty Row
-                                </button>
-                                <button class="btn btn-sm btn-primary" onclick="addMoreRows(50)">
-                                    <i class="fas fa-plus"></i> Add 50 Rows
-                                </button>
-                                <button class="btn btn-sm btn-warning" onclick="clearAllRows()">
-                                    <i class="fas fa-trash"></i> Clear All
-                                </button>
-                            </div>
+                <!-- PRODUCT TABLE -->
+                <div class="product-table-container mb-3">
+                    <div class="table-header">
+                        <h5><i class="fas fa-list me-2"></i>Product Details</h5>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-success" onclick="scrollToFirstEmpty()">
+                                <i class="fas fa-arrow-down"></i> Empty Row
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="addMoreRows(50)">
+                                <i class="fas fa-plus"></i> Add 50
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="clearAllRows()">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
                         </div>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-bordered table-sm table-striped mb-0" id="productTable">
-                                <thead class="table-secondary sticky-top">
-                                    <tr>
-                                        <th width="40">Sr.</th>
-                                        <th width="160">Description</th>
-                                        <th width="70">Actual (IN)</th>
-                                        <th width="70">Actual (MM)</th>
-                                        <th width="70">Chrg (IN)</th>
-                                        <th width="70">Chrg (MM)</th>
-                                        <th width="50">Qty</th>
-                                        <th width="60">Area</th>
-                                        <th width="70">Rate</th>
-                                        <th width="80">Amount</th>
-                                        <th width="100">Remarks</th> <!-- NEW REMARKS COLUMN -->
-                                        <th width="40">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="productTableBody">
-                                    <!-- Rows will be generated here -->
-                                </tbody>
-                            </table>
-                        </div>
+                    
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">Sr.</th>
+                                    <th width="180">Description</th>
+                                    <th width="80">Actual (IN)</th>
+                                    <th width="80">Actual (MM)</th>
+                                    <th width="80">Chrg (IN)</th>
+                                    <th width="80">Chrg (MM)</th>
+                                    <th width="50">Qty</th>
+                                    <th width="60">Area</th>
+                                    <th width="70">Rate</th>
+                                    <th width="80">Amount</th>
+                                    <th width="90">Remarks</th>
+                                    <th width="40">Del</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                <!-- Rows will be generated here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- CHARGES & SUMMARY -->
-                <div class="row mt-2">
+                <!-- ADDITIONAL CHARGES & SUMMARY -->
+                <div class="row">
                     <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header bg-secondary text-white py-2">
-                                <h6 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> Additional Charges</h6>
+                        <div class="card mb-3">
+                            <div class="card-header py-2 bg-secondary text-white">
+                                <h6 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Additional Charges</h6>
                             </div>
                             <div class="card-body p-2">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <table class="table table-sm">
-                                            <tr>
-                                                <td>Packing Charges</td>
-                                                <td>
-                                                    <input type="number" class="form-control form-control-sm" 
-                                                           id="packingCharges" value="0" onchange="calculateTotal()">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Freight Charges</td>
-                                                <td>
-                                                    <input type="number" class="form-control form-control-sm" 
-                                                           id="freightCharges" value="0" onchange="calculateTotal()">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Other Charges</td>
-                                                <td>
-                                                    <input type="number" class="form-control form-control-sm" 
-                                                           id="otherCharges" value="0" onchange="calculateTotal()">
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text" style="width: 120px;">Packing</span>
+                                            <input type="number" class="form-control" id="packingCharges" value="0" onchange="calculateTotal()">
+                                        </div>
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text" style="width: 120px;">Freight</span>
+                                            <input type="number" class="form-control" id="freightCharges" value="0" onchange="calculateTotal()">
+                                        </div>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text" style="width: 120px;">Other</span>
+                                            <input type="number" class="form-control" id="otherCharges" value="0" onchange="calculateTotal()">
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="border p-2 bg-light rounded">
-                                            <div class="mb-2">
-                                                <label class="form-label-sm">GST %</label>
-                                                <input type="number" class="form-control form-control-sm" 
-                                                       id="gstPercent" value="18" onchange="calculateTotal()">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label class="form-label-sm">Round Off</label>
-                                                <input type="number" class="form-control form-control-sm" 
-                                                       id="roundOff" value="0" onchange="calculateTotal()">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label class="form-label-sm">Notes</label>
-                                                <textarea class="form-control form-control-sm" id="notes" 
-                                                          rows="2" placeholder="Additional notes..."></textarea>
-                                            </div>
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text" style="width: 120px;">GST %</span>
+                                            <input type="number" class="form-control" id="gstPercent" value="18" onchange="calculateTotal()">
+                                        </div>
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text" style="width: 120px;">Round Off</span>
+                                            <input type="number" class="form-control" id="roundOff" value="0" onchange="calculateTotal()">
+                                        </div>
+                                        <div>
+                                            <textarea class="form-control form-control-sm" id="notes" rows="2" placeholder="Notes..."></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -430,49 +705,46 @@
                     
                     <div class="col-md-4">
                         <div class="card">
-                            <div class="card-header bg-danger text-white py-2">
-                                <h6 class="mb-0"><i class="fas fa-file-alt"></i> Final Summary</h6>
+                            <div class="card-header py-2 bg-danger text-white">
+                                <h6 class="mb-0"><i class="fas fa-calculator me-2"></i>Final Summary</h6>
                             </div>
                             <div class="card-body p-2">
-                                <table class="table table-sm table-bordered">
-                                    <tr>
-                                        <td>Total Area</td>
-                                        <td class="text-end" id="totalArea">0 Sq.Ft.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Basic Amount</td>
-                                        <td class="text-end" id="basicAmount">₹ 0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Additional Charges</td>
-                                        <td class="text-end" id="additionalCharges">₹ 0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sub Total</td>
-                                        <td class="text-end" id="subTotal">₹ 0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>GST @ <span id="gstLabel">18</span>%</td>
-                                        <td class="text-end" id="gstAmount">₹ 0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Round Off</td>
-                                        <td class="text-end" id="roundOffAmount">₹ 0.00</td>
-                                    </tr>
-                                    <tr class="table-active fw-bold">
-                                        <td>GRAND TOTAL</td>
-                                        <td class="text-end" id="grandTotal">₹ 0.00</td>
-                                    </tr>
-                                </table>
+                                <div class="summary-row">
+                                    <span>Total Area:</span>
+                                    <span id="totalArea">0 Sq.Ft.</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Basic Amount:</span>
+                                    <span id="basicAmount">₹ 0.00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Add. Charges:</span>
+                                    <span id="additionalCharges">₹ 0.00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Sub Total:</span>
+                                    <span id="subTotal">₹ 0.00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>GST @<span id="gstLabel">18</span>%:</span>
+                                    <span id="gstAmount">₹ 0.00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Round Off:</span>
+                                    <span id="roundOffAmount">₹ 0.00</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>GRAND TOTAL:</span>
+                                    <span id="grandTotal">₹ 0.00</span>
+                                </div>
                                 
-                                <!-- ACTION BUTTONS -->
                                 <div class="mt-3">
-                                    <button class="btn btn-success btn-sm w-100 mb-1" onclick="calculateTotal()">
+                                    <button class="btn btn-success btn-sm w-100 mb-2" onclick="calculateTotal()">
                                         <i class="fas fa-calculator"></i> Calculate All
                                     </button>
                                     <div class="btn-group w-100">
                                         <button class="btn btn-primary btn-sm" onclick="showPrintOptions()">
-                                            <i class="fas fa-print"></i> Print/PDF
+                                            <i class="fas fa-print"></i> Print
                                         </button>
                                         <button class="btn btn-info btn-sm" onclick="exportToExcel()">
                                             <i class="fas fa-file-excel"></i> Excel
@@ -480,11 +752,45 @@
                                         <button class="btn btn-warning btn-sm" onclick="saveProforma()">
                                             <i class="fas fa-save"></i> Save
                                         </button>
-                                        <button class="btn btn-danger btn-sm" onclick="resetAll()">
-                                            <i class="fas fa-redo"></i> Reset
-                                        </button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORTS SECTION -->
+    <div class="app-container" id="reports" style="display: none;">
+        <nav class="top-navbar">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div class="navbar-brand">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports & Analytics</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-sm btn-light" onclick="showDashboard()">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="btn btn-sm btn-light" onclick="showProforma()">
+                        <i class="fas fa-file-invoice-dollar"></i> Proforma
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="right-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Sales Reports</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="reportsContent">
+                                <h4 class="text-center text-muted my-5">Reports will be displayed here</h4>
                             </div>
                         </div>
                     </div>
@@ -496,44 +802,40 @@
     <!-- MODALS -->
     <!-- Print Options Modal -->
     <div class="modal fade" id="printOptionsModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Print/PDF Options</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary text-white py-2">
+                    <h6 class="modal-title mb-0">Print/PDF Options</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="printShowChargeable" checked>
-                        <label class="form-check-label" for="printShowChargeable">Show Chargeable Size</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="printShowActual" checked>
-                        <label class="form-check-label" for="printShowActual">Show Actual Size</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="printShowMM">
-                        <label class="form-check-label" for="printShowMM">Show MM Size</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="printShowRemarks" checked>
-                        <label class="form-check-label" for="printShowRemarks">Show Remarks</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="printShowSummary" checked>
-                        <label class="form-check-label" for="printShowSummary">Show Summary</label>
+                <div class="modal-body p-3">
+                    <div class="mb-2">
+                        <input type="checkbox" id="printShowChargeable" class="me-2" checked>
+                        <label for="printShowChargeable" class="mb-0">Chargeable Size</label>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label-sm">Page Size</label>
-                        <select class="form-select form-select-sm" id="printPageSize">
+                        <input type="checkbox" id="printShowActual" class="me-2" checked>
+                        <label for="printShowActual" class="mb-0">Actual Size</label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="checkbox" id="printShowMM" class="me-2">
+                        <label for="printShowMM" class="mb-0">MM Size</label>
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox" id="printShowRemarks" class="me-2" checked>
+                        <label for="printShowRemarks" class="mb-0">Remarks</label>
+                    </div>
+                    <div>
+                        <label class="compact-label mb-1">Page Size</label>
+                        <select class="compact-select" id="printPageSize">
                             <option value="a4">A4 Portrait</option>
                             <option value="a4-landscape">A4 Landscape</option>
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="generatePDF()">
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="generatePDF()">
                         <i class="fas fa-file-pdf"></i> Download PDF
                     </button>
                 </div>
@@ -545,37 +847,37 @@
     <div class="modal fade" id="partyModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Add New Party</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-success text-white py-2">
+                    <h6 class="modal-title mb-0">Add New Party</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-3">
                     <div class="mb-2">
-                        <label class="form-label-sm">Party Name *</label>
-                        <input type="text" class="form-control form-control-sm" id="partyName">
+                        <label class="compact-label">Party Name *</label>
+                        <input type="text" class="compact-input" id="partyName">
                     </div>
                     <div class="mb-2">
-                        <label class="form-label-sm">Address</label>
-                        <textarea class="form-control form-control-sm" id="partyAddress" rows="2"></textarea>
+                        <label class="compact-label">Address</label>
+                        <textarea class="compact-input" id="partyAddress" rows="2"></textarea>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label class="form-label-sm">City</label>
-                            <input type="text" class="form-control form-control-sm" id="partyCity">
+                            <label class="compact-label">City</label>
+                            <input type="text" class="compact-input" id="partyCity">
                         </div>
                         <div class="col-6">
-                            <label class="form-label-sm">Phone</label>
-                            <input type="text" class="form-control form-control-sm" id="partyPhone">
+                            <label class="compact-label">Phone</label>
+                            <input type="text" class="compact-input" id="partyPhone">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <label class="form-label-sm">GSTIN</label>
-                            <input type="text" class="form-control form-control-sm" id="partyGST">
+                            <label class="compact-label">GSTIN</label>
+                            <input type="text" class="compact-input" id="partyGST">
                         </div>
                         <div class="col-6">
-                            <label class="form-label-sm">State</label>
-                            <select class="form-select form-select-sm" id="partyState">
+                            <label class="compact-label">State</label>
+                            <select class="compact-select" id="partyState">
                                 <option value="">Select State</option>
                                 <option>Delhi</option>
                                 <option>Uttar Pradesh</option>
@@ -585,9 +887,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success btn-sm" onclick="saveParty()">Save Party</button>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-success" onclick="saveParty()">Save Party</button>
                 </div>
             </div>
         </div>
@@ -599,12 +901,10 @@
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">Quotation View</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <div id="quotationContent" style="padding: 20px;">
-                        <!-- Quotation will be loaded here -->
-                    </div>
+                    <div id="quotationContent" style="padding: 20px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
@@ -627,8 +927,418 @@
     
     <!-- Main JavaScript -->
     <script>
-        // All JavaScript code is included directly here
-        // This makes it a single file solution
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show dashboard on startup
+            showDashboard();
+            
+            // Generate 500 rows for proforma
+            generateProductRows(500);
+            
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('proformaDate').value = today;
+        });
+
+        // Navigation Functions
+        function showDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        function showProforma() {
+            hideAllSections();
+            document.getElementById('app').style.display = 'block';
+            calculateTotal();
+        }
+
+        function showQuotation() {
+            hideAllSections();
+            document.getElementById('app').style.display = 'block';
+            // Also show quotation modal
+            const modal = new bootstrap.Modal(document.getElementById('quotationModal'));
+            modal.show();
+        }
+
+        function showReports() {
+            hideAllSections();
+            document.getElementById('reports').style.display = 'block';
+            loadReports();
+        }
+
+        function hideAllSections() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('reports').style.display = 'none';
+        }
+
+        // Generate 500 product rows
+        function generateProductRows(count) {
+            const tbody = document.getElementById('productTableBody');
+            tbody.innerHTML = '';
+            
+            for(let i = 1; i <= count; i++) {
+                const row = document.createElement('tr');
+                row.id = `row-${i}`;
+                row.innerHTML = `
+                    <td class="text-center">${i}</td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm" 
+                               placeholder="Description" value="${i === 1 ? '12MM CLEAR GLASS' : ''}">
+                    </td>
+                    <td>
+                        <div class="size-inputs">
+                            <input type="text" class="form-control form-control-sm" placeholder="W" value="${i === 1 ? '45 3/4' : ''}">
+                            <input type="text" class="form-control form-control-sm" placeholder="H" value="${i === 1 ? '44 1/2' : ''}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="size-inputs">
+                            <input type="number" class="form-control form-control-sm" placeholder="W mm" value="${i === 1 ? '1162' : ''}">
+                            <input type="number" class="form-control form-control-sm" placeholder="H mm" value="${i === 1 ? '1130' : ''}">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="size-inputs">
+                            <input type="text" class="form-control form-control-sm" placeholder="W" readonly>
+                            <input type="text" class="form-control form-control-sm" placeholder="H" readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="size-inputs">
+                            <input type="number" class="form-control form-control-sm" placeholder="W mm" readonly>
+                            <input type="number" class="form-control form-control-sm" placeholder="H mm" readonly>
+                        </div>
+                    </td>
+                    <td><input type="number" class="form-control form-control-sm" value="1" min="1"></td>
+                    <td class="text-center">0</td>
+                    <td><input type="number" class="form-control form-control-sm" value="${i === 1 ? '1413.91' : '0'}"></td>
+                    <td class="text-end">0.00</td>
+                    <td><input type="text" class="form-control form-control-sm" placeholder="Remarks" value="${i === 1 ? 'Process (+), CEP' : ''}"></td>
+                    <td class="text-center">
+                        <button class="btn btn-danger btn-xs" onclick="clearRow(${i})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                
+                // Add event listeners
+                addRowEventListeners(row, i);
+            }
+            
+            // Calculate first row
+            setTimeout(() => calculateRow(1), 100);
+        }
+
+        // Add event listeners to row
+        function addRowEventListeners(row, rowNum) {
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if(!this.placeholder.includes('Remarks')) {
+                        calculateRow(rowNum);
+                        calculateTotal();
+                    }
+                });
+            });
+        }
+
+        // Calculate single row
+        function calculateRow(rowNum) {
+            const row = document.getElementById(`row-${rowNum}`);
+            if(!row) return;
+            
+            const inputs = row.querySelectorAll('input');
+            const wIn = inputs[1].value.trim();
+            const hIn = inputs[2].value.trim();
+            const wMm = inputs[3].value;
+            const hMm = inputs[4].value;
+            const qty = parseFloat(inputs[6].value) || 1;
+            const rate = parseFloat(inputs[8].value) || 0;
+            
+            if(!wIn && !hIn && !wMm && !hMm) {
+                inputs[9].value = '';
+                inputs[10].value = '';
+                inputs[11].value = '';
+                inputs[12].value = '';
+                row.cells[7].textContent = '0';
+                row.cells[9].textContent = '0.00';
+                return;
+            }
+            
+            // Calculate sizes and amounts
+            let width = wMm || convertToMm(wIn);
+            let height = hMm || convertToMm(hIn);
+            
+            // Apply +MM if enabled
+            if(document.getElementById('enableAddMM').checked) {
+                const addW = parseFloat(document.getElementById('addMMWidth').value) || 0;
+                const addH = parseFloat(document.getElementById('addMMHeight').value) || 0;
+                width = parseFloat(width) + addW;
+                height = parseFloat(height) + addH;
+            }
+            
+            // Apply wastage mode
+            const mode = document.getElementById('wastageMode').value;
+            if(mode === 'round') {
+                width = Math.round(width);
+                height = Math.round(height);
+            } else if(mode === 'evenin') {
+                width = Math.ceil(width / 25.4) * 25.4;
+                height = Math.ceil(height / 25.4) * 25.4;
+            } else if(mode === 'evencm') {
+                width = Math.ceil(width / 10) * 10;
+                height = Math.ceil(height / 10) * 10;
+            }
+            
+            // Update chargeable sizes
+            inputs[9].value = (width / 25.4).toFixed(2);
+            inputs[10].value = (height / 25.4).toFixed(2);
+            inputs[11].value = Math.round(width);
+            inputs[12].value = Math.round(height);
+            
+            // Calculate area
+            const uom = document.getElementById('uom').value;
+            let area = (width * height) / (uom === 'sqmt' ? 1000000 : 92903.04);
+            area = area * qty;
+            row.cells[7].textContent = area.toFixed(3);
+            
+            // Calculate amount
+            const amount = area * rate;
+            row.cells[9].textContent = amount.toFixed(2);
+        }
+
+        // Convert fraction to mm
+        function convertToMm(fraction) {
+            if(!fraction) return 0;
+            let decimal = 0;
+            if(fraction.includes(' ')) {
+                const parts = fraction.split(' ');
+                const whole = parseFloat(parts[0]) || 0;
+                const frac = parts[1];
+                if(frac.includes('/')) {
+                    const [n, d] = frac.split('/').map(Number);
+                    decimal = whole + (n / d);
+                } else {
+                    decimal = whole + parseFloat(frac);
+                }
+            } else if(fraction.includes('/')) {
+                const [n, d] = fraction.split('/').map(Number);
+                decimal = n / d;
+            } else {
+                decimal = parseFloat(fraction) || 0;
+            }
+            return decimal * 25.4;
+        }
+
+        // Calculate all rows
+        function calculateAllRows() {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            rows.forEach((row, index) => calculateRow(index + 1));
+            calculateTotal();
+        }
+
+        // Calculate total summary
+        function calculateTotal() {
+            let itemCount = 0;
+            let totalArea = 0;
+            let totalAmount = 0;
+            
+            const rows = document.querySelectorAll('#productTableBody tr');
+            rows.forEach(row => {
+                const area = parseFloat(row.cells[7].textContent) || 0;
+                const amount = parseFloat(row.cells[9].textContent) || 0;
+                const desc = row.querySelector('input[placeholder="Description"]').value.trim();
+                
+                if(desc || area > 0) {
+                    itemCount++;
+                    totalArea += area;
+                    totalAmount += amount;
+                }
+            });
+            
+            // Additional charges
+            const packing = parseFloat(document.getElementById('packingCharges').value) || 0;
+            const freight = parseFloat(document.getElementById('freightCharges').value) || 0;
+            const other = parseFloat(document.getElementById('otherCharges').value) || 0;
+            const addCharges = packing + freight + other;
+            
+            // Update quick summary
+            document.getElementById('summaryItems').textContent = itemCount;
+            const uom = document.getElementById('uom').value === 'sqmt' ? 'Sq.Mt.' : 'Sq.Ft.';
+            document.getElementById('summaryArea').textContent = totalArea.toFixed(3) + ' ' + uom;
+            document.getElementById('summaryBasic').textContent = '₹ ' + totalAmount.toFixed(2);
+            document.getElementById('summaryGrand').textContent = '₹ ' + (totalAmount + addCharges).toFixed(2);
+            
+            // Update final summary
+            document.getElementById('totalArea').textContent = totalArea.toFixed(3) + ' ' + uom;
+            document.getElementById('basicAmount').textContent = '₹ ' + totalAmount.toFixed(2);
+            document.getElementById('additionalCharges').textContent = '₹ ' + addCharges.toFixed(2);
+            
+            // Calculate GST
+            const gstPercent = parseFloat(document.getElementById('gstPercent').value) || 0;
+            document.getElementById('gstLabel').textContent = gstPercent;
+            const subTotal = totalAmount + addCharges;
+            document.getElementById('subTotal').textContent = '₹ ' + subTotal.toFixed(2);
+            const gstAmount = (subTotal * gstPercent) / 100;
+            document.getElementById('gstAmount').textContent = '₹ ' + gstAmount.toFixed(2);
+            
+            // Calculate final total
+            const roundOff = parseFloat(document.getElementById('roundOff').value) || 0;
+            document.getElementById('roundOffAmount').textContent = '₹ ' + roundOff.toFixed(2);
+            const grandTotal = subTotal + gstAmount + roundOff;
+            document.getElementById('grandTotal').textContent = '₹ ' + grandTotal.toFixed(2);
+        }
+
+        // Utility functions
+        function toggleAddMM() {
+            const enabled = document.getElementById('enableAddMM').checked;
+            document.getElementById('mmSettings').style.display = enabled ? 'block' : 'none';
+            if(enabled) applyAddMMToAll();
+        }
+
+        function applyAddMMToAll() {
+            calculateAllRows();
+        }
+
+        function toggleWastage() {
+            calculateAllRows();
+        }
+
+        function selectParty(name, address, gst, phone) {
+            document.getElementById('billName').value = name;
+            document.getElementById('billAddress').value = address;
+            document.getElementById('billGST').value = gst || '';
+            document.getElementById('billPhone').value = phone || '';
+            if(document.getElementById('sameAddress').checked) copyAddress();
+        }
+
+        function copyAddress() {
+            if(document.getElementById('sameAddress').checked) {
+                document.getElementById('shipName').value = document.getElementById('billName').value;
+                document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
+                document.getElementById('shipGST').value = document.getElementById('billGST').value;
+                document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
+            }
+        }
+
+        function scrollToFirstEmpty() {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            for(let i = 0; i < rows.length; i++) {
+                const desc = rows[i].querySelector('input[placeholder="Description"]').value.trim();
+                if(!desc) {
+                    rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    rows[i].querySelector('input[placeholder="Description"]').focus();
+                    break;
+                }
+            }
+        }
+
+        function addMoreRows(count) {
+            const current = document.querySelectorAll('#productTableBody tr').length;
+            generateProductRows(current + count);
+            alert(`Added ${count} rows. Total: ${current + count}`);
+        }
+
+        function clearRow(rowNum) {
+            if(confirm('Clear this row?')) {
+                const row = document.getElementById(`row-${rowNum}`);
+                const inputs = row.querySelectorAll('input');
+                inputs[0].value = '';
+                inputs[1].value = '';
+                inputs[2].value = '';
+                inputs[3].value = '';
+                inputs[4].value = '';
+                inputs[6].value = '1';
+                inputs[8].value = '0';
+                inputs[13].value = '';
+                row.cells[7].textContent = '0';
+                row.cells[9].textContent = '0.00';
+                calculateTotal();
+            }
+        }
+
+        function clearAllRows() {
+            if(confirm('Clear ALL rows?')) {
+                generateProductRows(500);
+                calculateTotal();
+            }
+        }
+
+        function showPrintOptions() {
+            new bootstrap.Modal(document.getElementById('printOptionsModal')).show();
+        }
+
+        function exportToExcel() {
+            alert('Excel export functionality would be implemented here');
+        }
+
+        function saveProforma() {
+            alert('Proforma saved successfully!');
+        }
+
+        function showPartyModal() {
+            new bootstrap.Modal(document.getElementById('partyModal')).show();
+        }
+
+        function saveParty() {
+            alert('Party saved successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
+        }
+
+        function loadReports() {
+            document.getElementById('reportsContent').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">Daily Sales</div>
+                            <div class="card-body">
+                                <h3 class="text-center">₹ 45,820.00</h3>
+                                <p class="text-center text-muted mb-0">Today's Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">Monthly Sales</div>
+                            <div class="card-body">
+                                <h3 class="text-center">₹ 12,45,820.00</h3>
+                                <p class="text-center text-muted mb-0">This Month</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-muted my-5">
+                    <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                    <p>More detailed reports coming soon...</p>
+                </div>
+            `;
+        }
+
+        function showSettings() {
+            alert('Settings section would open here');
+        }
+
+        function manageParties() {
+            alert('Party management section would open here');
+        }
+
+        function showHelp() {
+            alert('Help documentation would open here');
+        }
+
+        // Quotation functions (simplified for demo)
+        function printQuotation() {
+            window.print();
+        }
+
+        function saveQuotationPDF() {
+            alert('PDF would be generated here');
+        }
+
+        // Initialize parties array
+        let parties = [];
     </script>
 </body>
 </html>
