@@ -2,7 +2,7 @@
 class SAPUTGlassSystem {
     constructor() {
         this.appName = "S.A.P.U.T. Glass Manufacturing System";
-        this.version = "3.0.0";
+        this.version = "5.0.0";
         this.company = {
             name: "S.A.P.U.T.",
             address: "Karnal, Haryana PIN code 132001",
@@ -22,93 +22,86 @@ class SAPUTGlassSystem {
     initialize() {
         console.log(`${this.appName} v${this.version} initialized`);
         
+        // Initialize global variables
+        window.piItems = [];
+        window.itemCounter = 1;
+        
         // Set up based on current page
         this.detectPageType();
         
         // Common setup
         this.setCurrentDateTime();
         this.setupCommonListeners();
-        this.loadCustomers();
         
-        // Auto-generate PI number if on PI page
-        if (document.getElementById('piNumber')) {
-            this.generatePINumber();
-        }
+        // Generate PI number immediately
+        this.generatePINumber();
+        
+        // Add initial row
+        setTimeout(() => this.addNewRow(), 300);
     }
     
     detectPageType() {
-        const path = window.location.pathname;
-        
-        if (path.includes('pi_system.html') || document.getElementById('piNumber')) {
+        if (document.getElementById('piNumber')) {
             this.setupPISystem();
-        } else if (path.includes('glass_quotation_system.html') || document.getElementById('quotationNumber')) {
-            this.setupQuotationSystem();
-        } else if (document.getElementById('dashboardStats')) {
-            this.setupDashboard();
         }
     }
     
     // ==================== COMMON FUNCTIONS ====================
     
     setCurrentDateTime() {
-        const updateTime = () => {
-            const now = new Date();
-            const dateOptions = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            
-            const timeOptions = {
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            
-            const dateStr = now.toLocaleDateString('en-IN', dateOptions);
-            const timeStr = now.toLocaleTimeString('en-IN', timeOptions);
-            
-            // Update any date/time elements
-            document.querySelectorAll('.current-date').forEach(el => {
-                el.textContent = dateStr;
-            });
-            
-            document.querySelectorAll('.current-time').forEach(el => {
-                el.textContent = timeStr;
-            });
-            
-            // Set date inputs to today
-            document.querySelectorAll('input[type="date"]').forEach(input => {
-                if (!input.value) {
-                    input.valueAsDate = now;
-                }
-            });
-        };
-        
-        updateTime();
-        setInterval(updateTime, 60000); // Update every minute
+        // Set today's date in date input
+        const dateInput = document.getElementById('piDate');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
     }
     
     setupCommonListeners() {
-        // Print buttons
+        // Print button
         document.querySelectorAll('.btn-print').forEach(btn => {
             btn.addEventListener('click', () => window.print());
         });
         
-        // Calculate buttons
-        document.querySelectorAll('.btn-calculate').forEach(btn => {
-            btn.addEventListener('click', () => this.calculateTotals());
-        });
-        
-        // Save buttons
+        // Save button
         document.querySelectorAll('.btn-save').forEach(btn => {
-            btn.addEventListener('click', () => this.saveDocument());
+            btn.addEventListener('click', () => this.savePI());
         });
         
-        // New document buttons
+        // New button
         document.querySelectorAll('.btn-new').forEach(btn => {
-            btn.addEventListener('click', () => this.newDocument());
+            btn.addEventListener('click', () => this.newPI());
         });
+        
+        // Copy to Ship button
+        const copyBtn = document.getElementById('copyToShipBtn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => this.copyToShip());
+        }
+        
+        // Same as Bill checkbox
+        const sameAsBill = document.getElementById('sameAsBill');
+        if (sameAsBill) {
+            sameAsBill.addEventListener('change', (e) => this.toggleShipAddress(e.target.checked));
+        }
+        
+        // Discount input
+        const discountInput = document.getElementById('discount');
+        if (discountInput) {
+            discountInput.addEventListener('input', () => this.calculateTotals());
+        }
+        
+        // New Customer button
+        const newCustomerBtn = document.getElementById('newCustomerBtn');
+        if (newCustomerBtn) {
+            newCustomerBtn.addEventListener('click', () => this.newCustomer());
+        }
+        
+        // Calculate button
+        const calculateBtn = document.getElementById('calculateBtn');
+        if (calculateBtn) {
+            calculateBtn.addEventListener('click', () => this.calculateTotals());
+        }
     }
     
     // ==================== PI SYSTEM FUNCTIONS ====================
@@ -116,180 +109,223 @@ class SAPUTGlassSystem {
     setupPISystem() {
         console.log('Setting up PI System');
         
-        // Initialize items array
-        window.piItems = [];
-        window.itemCounter = 1;
+        // Set up customer dropdown
+        this.setupCustomerDropdown();
         
-        // Set up inch/mm converters
-        this.setupUnitConverters();
-        
-        // Set up add row functionality
-        this.setupAddRow();
-        
-        // Set up customer management
-        this.setupCustomerManagement();
-        
-        // Set initial sample item
-        setTimeout(() => this.addSampleItem(), 500);
-    }
-    
-    setupUnitConverters() {
-        // Inch to MM converter
-        const inchInputs = document.querySelectorAll('.inch-input');
-        const mmInputs = document.querySelectorAll('.mm-input');
-        
-        inchInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const inches = parseFloat(this.value) || 0;
-                const mm = inches * 25.4;
-                
-                // Find corresponding mm input
-                const row = this.closest('.size-row');
-                if (row) {
-                    const mmInput = row.querySelector('.mm-input');
-                    if (mmInput) {
-                        mmInput.value = mm.toFixed(2);
-                    }
-                }
-            });
-        });
-        
-        mmInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const mm = parseFloat(this.value) || 0;
-                const inches = mm / 25.4;
-                
-                // Find corresponding inch input
-                const row = this.closest('.size-row');
-                if (row) {
-                    const inchInput = row.querySelector('.inch-input');
-                    if (inchInput) {
-                        inchInput.value = inches.toFixed(3);
-                    }
-                }
-            });
-        });
-    }
-    
-    setupAddRow() {
+        // Set up add row button
         const addRowBtn = document.getElementById('addRowBtn');
-        const sizeRowsContainer = document.getElementById('sizeRowsContainer');
+        if (addRowBtn) {
+            addRowBtn.addEventListener('click', () => this.addNewRow());
+        }
         
-        if (addRowBtn && sizeRowsContainer) {
-            addRowBtn.addEventListener('click', () => this.addSizeRow());
+        // Calculate initial totals
+        this.calculateTotals();
+    }
+    
+    setupCustomerDropdown() {
+        const customers = this.getCustomers();
+        const customerSelect = document.getElementById('customerSelect');
+        
+        if (customerSelect) {
+            customerSelect.innerHTML = '<option value="">Select Customer</option>';
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.name} (${customer.phone})`;
+                customerSelect.appendChild(option);
+            });
+            
+            customerSelect.addEventListener('change', (e) => {
+                const customerId = e.target.value;
+                if (customerId) {
+                    const customer = customers.find(c => c.id == customerId);
+                    if (customer) {
+                        this.fillCustomerDetails(customer);
+                    }
+                }
+            });
         }
     }
     
-    addSizeRow() {
-        const sizeRowsContainer = document.getElementById('sizeRowsContainer');
-        if (!sizeRowsContainer) return;
+    getCustomers() {
+        try {
+            const stored = localStorage.getItem('saput_customers');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+        } catch (e) {
+            console.error('Error loading customers:', e);
+        }
         
-        const rowCount = sizeRowsContainer.querySelectorAll('.size-row').length + 1;
-        
-        const rowHTML = `
-            <div class="size-row row g-2 mb-3">
-                <div class="col-md-2">
-                    <label>Width (Inches)</label>
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control width-feet" placeholder="Ft" value="4" min="0">
-                        <span class="input-group-text">'</span>
-                        <input type="number" class="form-control width-inch" placeholder="In" value="0" min="0" max="11">
-                        <select class="form-select width-frac" style="max-width: 80px;">
-                            <option value="0">0</option>
-                            <option value="0.125">1/8</option>
-                            <option value="0.25">1/4</option>
-                            <option value="0.375">3/8</option>
-                            <option value="0.5" selected>1/2</option>
-                            <option value="0.625">5/8</option>
-                            <option value="0.75">3/4</option>
-                            <option value="0.875">7/8</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <label>Height (Inches)</label>
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control height-feet" placeholder="Ft" value="3" min="0">
-                        <span class="input-group-text">'</span>
-                        <input type="number" class="form-control height-inch" placeholder="In" value="0" min="0" max="11">
-                        <select class="form-select height-frac" style="max-width: 80px;">
-                            <option value="0">0</option>
-                            <option value="0.125">1/8</option>
-                            <option value="0.25" selected>1/4</option>
-                            <option value="0.375">3/8</option>
-                            <option value="0.5">1/2</option>
-                            <option value="0.625">5/8</option>
-                            <option value="0.75">3/4</option>
-                            <option value="0.875">7/8</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <label>Extra MM</label>
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control extra-mm-width" placeholder="W" value="0" min="0">
-                        <input type="number" class="form-control extra-mm-height" placeholder="H" value="0" min="0">
-                        <span class="input-group-text">mm</span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <label>Size in MM</label>
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control mm-width inch-input" placeholder="Width" readonly>
-                        <input type="number" class="form-control mm-height inch-input" placeholder="Height" readonly>
-                        <span class="input-group-text">mm</span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <label>Qty & Glass Type</label>
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control item-qty" placeholder="Qty" value="1" min="1">
-                        <select class="form-select glass-type">
-                            <option value="450">Clear 6mm</option>
-                            <option value="650">Toughened</option>
-                            <option value="850">Laminated</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-sm btn-primary add-item-btn" onclick="saputApp.addItemFromRow(this)">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                    <button class="btn btn-sm btn-danger ms-2 remove-row-btn" onclick="this.closest('.size-row').remove()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        sizeRowsContainer.insertAdjacentHTML('beforeend', rowHTML);
-        
-        // Set up converters for new row
-        this.setupRowConverters(sizeRowsContainer.lastElementChild);
-        
-        // Calculate initial MM values
-        this.updateRowMM(sizeRowsContainer.lastElementChild);
+        // Default customers
+        return [
+            {
+                id: 1,
+                name: 'Raj Glass House',
+                address: '123, Main Market, Delhi',
+                gst: '07AABCU9603R1ZX',
+                phone: '9876543210'
+            },
+            {
+                id: 2,
+                name: 'Modern Glass Works',
+                address: '456, Industrial Area, Karnal',
+                gst: '06ABCDE1234F1Z5',
+                phone: '9876543211'
+            },
+            {
+                id: 3,
+                name: 'Sharma Glass Solutions',
+                address: '789, Sector 5, Panipat',
+                gst: '',
+                phone: '9876543212'
+            }
+        ];
     }
     
-    setupRowConverters(row) {
-        const inputs = [
-            row.querySelector('.width-feet'),
-            row.querySelector('.width-inch'),
-            row.querySelector('.width-frac'),
-            row.querySelector('.height-feet'),
-            row.querySelector('.height-inch'),
-            row.querySelector('.height-frac'),
-            row.querySelector('.extra-mm-width'),
-            row.querySelector('.extra-mm-height')
-        ];
+    fillCustomerDetails(customer) {
+        document.getElementById('customerName').value = customer.name || '';
+        document.getElementById('customerAddress').value = customer.address || '';
+        document.getElementById('customerGST').value = customer.gst || '';
+        document.getElementById('customerPhone').value = customer.phone || '';
+        
+        // If "Same as Bill" is checked, also update ship to
+        if (document.getElementById('sameAsBill').checked) {
+            this.copyToShip();
+        }
+    }
+    
+    addNewRow() {
+        const tableBody = document.querySelector('#itemsTable tbody');
+        if (!tableBody) return;
+        
+        const rowId = window.itemCounter++;
+        const rowHTML = this.getRowHTML(rowId);
+        
+        tableBody.insertAdjacentHTML('beforeend', rowHTML);
+        
+        // Set up event listeners for the new row
+        this.setupRowListeners(rowId);
+        
+        // Calculate MM for this row
+        this.calculateRowMM(rowId);
+    }
+    
+    getRowHTML(rowId) {
+        return `
+            <tr id="row-${rowId}" data-id="${rowId}">
+                <td>${rowId}</td>
+                <td>
+                    <div class="row g-1">
+                        <div class="col-6">
+                            <input type="number" class="form-control form-control-sm width-feet" placeholder="Ft" value="4" min="0">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" class="form-control form-control-sm width-inch" placeholder="In" value="0" min="0" max="11">
+                        </div>
+                        <div class="col-6 mt-1">
+                            <select class="form-select form-select-sm width-frac">
+                                <option value="0">0"</option>
+                                <option value="0.125">1/8"</option>
+                                <option value="0.25">1/4"</option>
+                                <option value="0.375">3/8"</option>
+                                <option value="0.5" selected>1/2"</option>
+                                <option value="0.625">5/8"</option>
+                                <option value="0.75">3/4"</option>
+                                <option value="0.875">7/8"</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-1">
+                            <input type="number" class="form-control form-control-sm extra-mm-width" placeholder="+MM Width" value="0" min="0">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="row g-1">
+                        <div class="col-6">
+                            <input type="number" class="form-control form-control-sm height-feet" placeholder="Ft" value="3" min="0">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" class="form-control form-control-sm height-inch" placeholder="In" value="0" min="0" max="11">
+                        </div>
+                        <div class="col-6 mt-1">
+                            <select class="form-select form-select-sm height-frac">
+                                <option value="0">0"</option>
+                                <option value="0.125">1/8"</option>
+                                <option value="0.25" selected>1/4"</option>
+                                <option value="0.375">3/8"</option>
+                                <option value="0.5">1/2"</option>
+                                <option value="0.625">5/8"</option>
+                                <option value="0.75">3/4"</option>
+                                <option value="0.875">7/8"</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-1">
+                            <input type="number" class="form-control form-control-sm extra-mm-height" placeholder="+MM Height" value="0" min="0">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="row g-1">
+                        <div class="col-12">
+                            <input type="number" class="form-control form-control-sm mm-width" placeholder="Width mm" readonly>
+                        </div>
+                        <div class="col-12 mt-1">
+                            <input type="number" class="form-control form-control-sm mm-height" placeholder="Height mm" readonly>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm qty" value="1" min="1">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm rate" value="450" min="0" step="0.01">
+                </td>
+                <td>
+                    <div class="row g-1">
+                        <div class="col-12">
+                            <input type="number" class="form-control form-control-sm hole-qty" placeholder="Holes" value="0" min="0">
+                        </div>
+                        <div class="col-12 mt-1">
+                            <input type="number" class="form-control form-control-sm cut-qty" placeholder="Cuts" value="0" min="0">
+                        </div>
+                    </div>
+                </td>
+                <td class="area-cell">0.00</td>
+                <td class="amount-cell">0.00</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="saputApp.removeRow(${rowId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+    
+    setupRowListeners(rowId) {
+        const row = document.getElementById(`row-${rowId}`);
+        if (!row) return;
+        
+        // Get all inputs that affect calculation
+        const inputs = row.querySelectorAll('input[type="number"], select');
         
         inputs.forEach(input => {
-            input.addEventListener('input', () => this.updateRowMM(row));
-            input.addEventListener('change', () => this.updateRowMM(row));
+            input.addEventListener('input', () => {
+                this.calculateRowMM(rowId);
+                this.calculateRowAmount(rowId);
+            });
+            input.addEventListener('change', () => {
+                this.calculateRowMM(rowId);
+                this.calculateRowAmount(rowId);
+            });
         });
     }
     
-    updateRowMM(row) {
+    calculateRowMM(rowId) {
+        const row = document.getElementById(`row-${rowId}`);
+        if (!row) return;
+        
+        // Get inch values
         const widthFeet = parseFloat(row.querySelector('.width-feet').value) || 0;
         const widthInch = parseFloat(row.querySelector('.width-inch').value) || 0;
         const widthFrac = parseFloat(row.querySelector('.width-frac').value) || 0;
@@ -308,132 +344,56 @@ class SAPUTGlassSystem {
         const widthMM = Math.round((totalWidthInches * 25.4) + extraMMWidth);
         const heightMM = Math.round((totalHeightInches * 25.4) + extraMMHeight);
         
-        // Update MM display
+        // Update MM fields
         row.querySelector('.mm-width').value = widthMM;
         row.querySelector('.mm-height').value = heightMM;
+        
+        return { widthMM, heightMM, totalWidthInches, totalHeightInches };
     }
     
-    addItemFromRow(button) {
-        const row = button.closest('.size-row');
+    calculateRowAmount(rowId) {
+        const row = document.getElementById(`row-${rowId}`);
+        if (!row) return;
         
-        const widthFeet = parseFloat(row.querySelector('.width-feet').value) || 0;
-        const widthInch = parseFloat(row.querySelector('.width-inch').value) || 0;
-        const widthFrac = parseFloat(row.querySelector('.width-frac').value) || 0;
-        const extraMMWidth = parseFloat(row.querySelector('.extra-mm-width').value) || 0;
+        const dimensions = this.calculateRowMM(rowId);
+        const qty = parseFloat(row.querySelector('.qty').value) || 1;
+        const rate = parseFloat(row.querySelector('.rate').value) || 450;
         
-        const heightFeet = parseFloat(row.querySelector('.height-feet').value) || 0;
-        const heightInch = parseFloat(row.querySelector('.height-inch').value) || 0;
-        const heightFrac = parseFloat(row.querySelector('.height-frac').value) || 0;
-        const extraMMHeight = parseFloat(row.querySelector('.extra-mm-height').value) || 0;
-        
-        const qty = parseFloat(row.querySelector('.item-qty').value) || 1;
-        const rate = parseFloat(row.querySelector('.glass-type').value) || 450;
-        
-        // Calculate total inches
-        const totalWidthInches = (widthFeet * 12) + widthInch + widthFrac;
-        const totalHeightInches = (heightFeet * 12) + heightInch + heightFrac;
-        
-        // Calculate total MM
-        const widthMM = Math.round((totalWidthInches * 25.4) + extraMMWidth);
-        const heightMM = Math.round((totalHeightInches * 25.4) + extraMMHeight);
-        
-        // Calculate area
-        const areaSqFt = (totalWidthInches * totalHeightInches) / 144;
+        // Calculate area in sq.ft
+        const areaSqFt = (dimensions.totalWidthInches * dimensions.totalHeightInches) / 144;
         const amount = areaSqFt * rate * qty;
         
-        // Format inch display
-        const widthDisplay = this.formatInchDisplay(widthFeet, widthInch, widthFrac);
-        const heightDisplay = this.formatInchDisplay(heightFeet, heightInch, heightFrac);
+        // Update display
+        row.querySelector('.area-cell').textContent = areaSqFt.toFixed(2);
+        row.querySelector('.amount-cell').textContent = amount.toFixed(2);
         
-        // Create item
-        const item = {
-            id: window.itemCounter++,
-            widthDisplay: widthDisplay,
-            heightDisplay: heightDisplay,
-            mmDisplay: `${widthMM} × ${heightMM} mm`,
-            qty: qty,
-            area: areaSqFt.toFixed(2),
-            rate: rate,
-            amount: amount.toFixed(2)
-        };
+        // Store in data attribute
+        row.dataset.amount = amount;
         
-        window.piItems.push(item);
-        this.updatePITable();
-        this.calculatePITotals();
+        // Recalculate totals
+        this.calculateTotals();
         
-        // Show success message
-        this.showNotification('Item added to invoice', 'success');
+        return amount;
     }
     
-    formatInchDisplay(feet, inches, fraction) {
-        let display = '';
-        if (feet > 0) display += `${feet}' `;
-        if (inches > 0) display += `${inches}`;
-        
-        if (fraction > 0) {
-            const fracText = this.getFractionText(fraction);
-            if (inches > 0) display += ' ';
-            display += fracText;
+    removeRow(rowId) {
+        const row = document.getElementById(`row-${rowId}`);
+        if (row) {
+            row.remove();
+            this.calculateTotals();
         }
-        
-        if (!display) display = '0';
-        display += '"';
-        
-        return display;
     }
     
-    getFractionText(fraction) {
-        const fractions = {
-            0.125: '1/8',
-            0.25: '1/4',
-            0.375: '3/8',
-            0.5: '1/2',
-            0.625: '5/8',
-            0.75: '3/4',
-            0.875: '7/8'
-        };
-        return fractions[fraction] || '';
-    }
-    
-    updatePITable() {
-        const table = document.getElementById('itemsTable');
-        if (!table) return;
-        
-        table.innerHTML = '';
-        
-        window.piItems.forEach((item, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.widthDisplay} × ${item.heightDisplay}</td>
-                <td>${item.mmDisplay}</td>
-                <td>${item.qty}</td>
-                <td>${item.area}</td>
-                <td>₹${item.rate}/sq.ft</td>
-                <td>₹${parseFloat(item.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
-                <td>
-                    <button class="btn btn-sm btn-danger" onclick="saputApp.removePIItem(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </td>
-            `;
-            table.appendChild(row);
-        });
-    }
-    
-    removePIItem(index) {
-        window.piItems.splice(index, 1);
-        this.updatePITable();
-        this.calculatePITotals();
-    }
-    
-    calculatePITotals() {
+    calculateTotals() {
         let subtotal = 0;
         
-        window.piItems.forEach(item => {
-            subtotal += parseFloat(item.amount);
+        // Calculate from all rows
+        document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
+            const amount = parseFloat(row.dataset.amount) || 0;
+            subtotal += amount;
         });
         
+        // Get discount
         const discountInput = document.getElementById('discount');
         const discountPercent = discountInput ? parseFloat(discountInput.value) || 0 : 0;
         const discountAmount = subtotal * (discountPercent / 100);
@@ -441,7 +401,7 @@ class SAPUTGlassSystem {
         const gstAmount = afterDiscount * 0.18;
         const grandTotal = afterDiscount + gstAmount;
         
-        // Update display
+        // Update totals display
         if (document.getElementById('subtotal')) {
             document.getElementById('subtotal').textContent = 
                 `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
@@ -461,107 +421,17 @@ class SAPUTGlassSystem {
             document.getElementById('grandTotal').textContent = 
                 `₹${grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
         }
-    }
-    
-    addSampleItem() {
-        // Add initial size row
-        this.addSizeRow();
-    }
-    
-    setupCustomerManagement() {
-        const customers = this.getCustomers();
         
-        // Auto-fill customer dropdown if exists
-        const customerSelect = document.getElementById('customerSelect');
-        if (customerSelect) {
-            customerSelect.innerHTML = '<option value="">Select Customer</option>';
-            customers.forEach(customer => {
-                const option = document.createElement('option');
-                option.value = customer.id;
-                option.textContent = `${customer.name} - ${customer.phone}`;
-                customerSelect.appendChild(option);
-            });
-            
-            customerSelect.addEventListener('change', function() {
-                const customerId = this.value;
-                if (customerId) {
-                    const customer = customers.find(c => c.id == customerId);
-                    if (customer) {
-                        document.getElementById('customerName').value = customer.name;
-                        document.getElementById('customerAddress').value = customer.address;
-                        document.getElementById('customerGST').value = customer.gst || '';
-                        document.getElementById('customerPhone').value = customer.phone;
-                    }
-                }
-            });
-        }
+        return { subtotal, discountAmount, gstAmount, grandTotal };
     }
-    
-    getCustomers() {
-        // Try to get from localStorage
-        const stored = localStorage.getItem('saput_customers');
-        if (stored) {
-            return JSON.parse(stored);
-        }
-        
-        // Return sample customers
-        return [
-            {
-                id: 1,
-                name: 'Raj Glass House',
-                address: '123, Main Market, Delhi',
-                gst: '07AABCU9603R1ZX',
-                phone: '9876543210'
-            },
-            {
-                id: 2,
-                name: 'Sharma Glass Works',
-                address: '456, Industrial Area, Karnal',
-                gst: '06ABCDE1234F1Z5',
-                phone: '9876543211'
-            },
-            {
-                id: 3,
-                name: 'Modern Glass Solutions',
-                address: '789, Sector 5, Panipat',
-                gst: '',
-                phone: '9876543212'
-            }
-        ];
-    }
-    
-    loadCustomers() {
-        // Load customers into localStorage if not exists
-        if (!localStorage.getItem('saput_customers')) {
-            const customers = this.getCustomers();
-            localStorage.setItem('saput_customers', JSON.stringify(customers));
-        }
-    }
-    
-    addCustomer(customerData) {
-        const customers = this.getCustomers();
-        const newId = customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1;
-        
-        const newCustomer = {
-            id: newId,
-            ...customerData,
-            created: new Date().toISOString()
-        };
-        
-        customers.push(newCustomer);
-        localStorage.setItem('saput_customers', JSON.stringify(customers));
-        
-        return newCustomer;
-    }
-    
-    // ==================== UTILITY FUNCTIONS ====================
     
     generatePINumber() {
         const year = new Date().getFullYear();
         const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+        const day = new Date().getDate().toString().padStart(2, '0');
         const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
         
-        const piNumber = `PI-${year}${month}-${random}`;
+        const piNumber = `PI-${year}${month}${day}-${random}`;
         
         const piNumberElement = document.getElementById('piNumber');
         if (piNumberElement) {
@@ -571,201 +441,158 @@ class SAPUTGlassSystem {
         return piNumber;
     }
     
-    calculateTotals() {
-        // This is a generic calculate function
-        // Specific systems should override
-        console.log('Calculating totals...');
+    copyToShip() {
+        document.getElementById('shipName').value = document.getElementById('customerName').value;
+        document.getElementById('shipAddress').value = document.getElementById('customerAddress').value;
+        document.getElementById('shipGST').value = document.getElementById('customerGST').value;
+        document.getElementById('shipPhone').value = document.getElementById('customerPhone').value;
     }
     
-    saveDocument() {
-        // Get document data
-        const documentData = {
-            type: window.location.pathname.includes('pi_system') ? 'PI' : 'Quotation',
-            number: document.getElementById('piNumber')?.textContent || 
-                   document.getElementById('quotationNumber')?.textContent || 'Unknown',
-            date: document.querySelector('input[type="date"]')?.value || new Date().toISOString().split('T')[0],
-            customer: {
-                name: document.getElementById('customerName')?.value || '',
-                address: document.getElementById('customerAddress')?.value || ''
+    toggleShipAddress(checked) {
+        const shipInputs = [
+            document.getElementById('shipName'),
+            document.getElementById('shipAddress'),
+            document.getElementById('shipGST'),
+            document.getElementById('shipPhone')
+        ];
+        
+        shipInputs.forEach(input => {
+            input.readOnly = checked;
+            if (checked) {
+                this.copyToShip();
+            }
+        });
+    }
+    
+    newCustomer() {
+        document.getElementById('customerName').value = '';
+        document.getElementById('customerAddress').value = '';
+        document.getElementById('customerGST').value = '';
+        document.getElementById('customerPhone').value = '';
+        
+        // Reset customer dropdown
+        const customerSelect = document.getElementById('customerSelect');
+        if (customerSelect) {
+            customerSelect.value = '';
+        }
+        
+        // Uncheck "Same as Bill"
+        document.getElementById('sameAsBill').checked = false;
+        this.toggleShipAddress(false);
+    }
+    
+    savePI() {
+        // Get customer details
+        const customer = {
+            name: document.getElementById('customerName').value,
+            address: document.getElementById('customerAddress').value,
+            gst: document.getElementById('customerGST').value,
+            phone: document.getElementById('customerPhone').value
+        };
+        
+        // Get all items
+        const items = [];
+        document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
+            const item = {
+                widthFeet: row.querySelector('.width-feet').value,
+                widthInch: row.querySelector('.width-inch').value,
+                widthFrac: row.querySelector('.width-frac').value,
+                heightFeet: row.querySelector('.height-feet').value,
+                heightInch: row.querySelector('.height-inch').value,
+                heightFrac: row.querySelector('.height-frac').value,
+                extraMMWidth: row.querySelector('.extra-mm-width').value,
+                extraMMHeight: row.querySelector('.extra-mm-height').value,
+                mmWidth: row.querySelector('.mm-width').value,
+                mmHeight: row.querySelector('.mm-height').value,
+                qty: row.querySelector('.qty').value,
+                rate: row.querySelector('.rate').value,
+                holeQty: row.querySelector('.hole-qty').value,
+                cutQty: row.querySelector('.cut-qty').value,
+                area: row.querySelector('.area-cell').textContent,
+                amount: row.querySelector('.amount-cell').textContent
+            };
+            items.push(item);
+        });
+        
+        // Get totals
+        const totals = this.calculateTotals();
+        
+        // Create PI object
+        const pi = {
+            id: document.getElementById('piNumber').textContent,
+            date: document.getElementById('piDate').value,
+            customer: customer,
+            shipTo: {
+                name: document.getElementById('shipName').value,
+                address: document.getElementById('shipAddress').value,
+                gst: document.getElementById('shipGST').value,
+                phone: document.getElementById('shipPhone').value
             },
-            items: window.piItems || [],
-            totals: this.calculatePITotals ? this.calculatePITotals() : {}
+            items: items,
+            totals: totals,
+            created: new Date().toISOString()
         };
         
         // Save to localStorage
-        const documents = JSON.parse(localStorage.getItem('saput_documents') || '[]');
-        documents.push({
-            ...documentData,
-            savedAt: new Date().toISOString()
-        });
-        
-        localStorage.setItem('saput_documents', JSON.stringify(documents));
-        
-        this.showNotification('Document saved successfully!', 'success');
+        try {
+            let savedPIs = JSON.parse(localStorage.getItem('saput_pis') || '[]');
+            savedPIs.push(pi);
+            localStorage.setItem('saput_pis', JSON.stringify(savedPIs));
+            
+            // Save customer if not exists
+            this.saveCustomerIfNew(customer);
+            
+            alert('PI saved successfully!');
+        } catch (e) {
+            console.error('Error saving PI:', e);
+            alert('Error saving PI. Please try again.');
+        }
     }
     
-    newDocument() {
-        if (confirm('Create new document? Current unsaved data will be lost.')) {
-            // Clear items
-            window.piItems = [];
+    saveCustomerIfNew(customer) {
+        if (!customer.name) return;
+        
+        const customers = this.getCustomers();
+        const exists = customers.some(c => 
+            c.name === customer.name && c.phone === customer.phone
+        );
+        
+        if (!exists) {
+            const newCustomer = {
+                id: customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1,
+                name: customer.name,
+                address: customer.address,
+                gst: customer.gst,
+                phone: customer.phone
+            };
             
-            // Clear table
-            const table = document.getElementById('itemsTable');
-            if (table) table.innerHTML = '';
+            customers.push(newCustomer);
+            localStorage.setItem('saput_customers', JSON.stringify(customers));
+        }
+    }
+    
+    newPI() {
+        if (confirm('Create new PI? Current data will be lost.')) {
+            // Clear items table
+            document.querySelector('#itemsTable tbody').innerHTML = '';
             
-            // Clear size rows
-            const sizeRowsContainer = document.getElementById('sizeRowsContainer');
-            if (sizeRowsContainer) sizeRowsContainer.innerHTML = '';
+            // Reset counter
+            window.itemCounter = 1;
             
-            // Generate new number
+            // Generate new PI number
             this.generatePINumber();
             
-            // Reset date
-            const dateInput = document.querySelector('input[type="date"]');
-            if (dateInput) dateInput.valueAsDate = new Date();
+            // Reset date to today
+            this.setCurrentDateTime();
             
-            // Clear customer
-            document.getElementById('customerName').value = '';
-            document.getElementById('customerAddress').value = '';
-            document.getElementById('customerGST').value = '';
-            document.getElementById('customerPhone').value = '';
+            // Reset customer
+            this.newCustomer();
             
             // Reset totals
-            this.calculatePITotals();
+            this.calculateTotals();
             
             // Add initial row
-            setTimeout(() => this.addSizeRow(), 100);
-            
-            this.showNotification('New document created', 'info');
-        }
-    }
-    
-    showNotification(message, type = 'info') {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `notification alert alert-${type} alert-dismissible fade show`;
-        notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        // Style it
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        `;
-        
-        // Add to body
-        document.body.appendChild(notification);
-        
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 3000);
-    }
-    
-    // ==================== DASHBOARD FUNCTIONS ====================
-    
-    setupDashboard() {
-        console.log('Setting up Dashboard');
-        this.loadDashboardStats();
-    }
-    
-    loadDashboardStats() {
-        // Load from localStorage
-        const documents = JSON.parse(localStorage.getItem('saput_documents') || '[]');
-        const customers = JSON.parse(localStorage.getItem('saput_customers') || '[]');
-        
-        // Calculate stats
-        const totalOrders = documents.length;
-        const totalRevenue = documents.reduce((sum, doc) => {
-            const docTotal = doc.items?.reduce((itemSum, item) => 
-                itemSum + (parseFloat(item.amount) || 0), 0) || 0;
-            return sum + docTotal;
-        }, 0);
-        
-        const pendingOrders = documents.filter(doc => 
-            !doc.status || doc.status === 'pending').length;
-        const completedOrders = documents.filter(doc => 
-            doc.status === 'completed').length;
-        
-        // Update stats cards
-        this.updateStatCard('.stat-orders', totalOrders);
-        this.updateStatCard('.stat-revenue', totalRevenue);
-        this.updateStatCard('.stat-pending', pendingOrders);
-        this.updateStatCard('.stat-completed', completedOrders);
-        
-        // Update recent activity
-        this.updateRecentActivity(documents.slice(-5).reverse());
-    }
-    
-    updateStatCard(selector, value) {
-        const card = document.querySelector(selector);
-        if (!card) return;
-        
-        const valueElement = card.querySelector('h3');
-        if (valueElement) {
-            if (selector.includes('revenue')) {
-                // Format as currency
-                if (value >= 100000) {
-                    valueElement.textContent = `₹${(value / 100000).toFixed(1)}L`;
-                } else if (value >= 1000) {
-                    valueElement.textContent = `₹${(value / 1000).toFixed(1)}K`;
-                } else {
-                    valueElement.textContent = `₹${value}`;
-                }
-            } else {
-                valueElement.textContent = value;
-            }
-        }
-    }
-    
-    updateRecentActivity(documents) {
-        const activityList = document.querySelector('.activity-list');
-        if (!activityList) return;
-        
-        activityList.innerHTML = '';
-        
-        documents.forEach(doc => {
-            const activityItem = document.createElement('div');
-            activityItem.className = 'activity-item';
-            
-            const timeAgo = this.getTimeAgo(doc.savedAt || doc.date);
-            
-            activityItem.innerHTML = `
-                <div>
-                    <i class="fas fa-file-invoice text-primary me-2"></i>
-                    <strong>${doc.type} Created</strong> - ${doc.number}
-                </div>
-                <span class="text-muted">${timeAgo}</span>
-            `;
-            
-            activityList.appendChild(activityItem);
-        });
-    }
-    
-    getTimeAgo(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        
-        if (diffMins < 60) {
-            return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-        } else if (diffHours < 24) {
-            return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-        } else if (diffDays < 30) {
-            return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-        } else {
-            return date.toLocaleDateString('en-IN');
+            this.addNewRow();
         }
     }
 }
