@@ -1,83 +1,91 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+/* ... previous styles ... */
+
+.pdf-options {
+    border: 1px solid #dee2e6;
+    margin-top: 10px;
 }
 
-.header-section {
+.pdf-options h6 {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.3em;
+}
+
+.form-check-label {
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Modal specific styles */
+.modal-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
 }
 
-.company-name {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 5px;
+.modal-footer .btn {
+    min-width: 100px;
 }
 
-.proforma-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.invoice-details {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 10px;
-    border-radius: 5px;
-    display: inline-block;
-}
-
-.fabrication-box {
-    background-color: #fff3cd;
-    border: 1px solid #ffeaa7;
-}
-
-.fabrication-box .card-header {
-    padding: 8px 15px;
-    font-size: 14px;
-}
-
-.fabrication-box .form-control-sm {
-    height: 30px;
-    font-size: 12px;
-}
-
-.table th {
-    font-size: 12px;
-    padding: 8px;
-}
-
-.table td {
-    font-size: 12px;
-    padding: 8px;
-}
-
-.btn-sm {
-    font-size: 11px;
-    padding: 3px 8px;
-}
-
-#mainTable input {
-    width: 100%;
-    padding: 4px;
-    font-size: 12px;
-}
-
-.modal-body table {
-    font-size: 12px;
-}
-
-/* For PDF print */
+/* Print specific */
 @media print {
+    @page {
+        margin: 10mm;
+    }
+    
+    body {
+        font-size: 10pt;
+        color: #000;
+        background: #fff;
+    }
+    
     .no-print {
         display: none !important;
     }
     
-    .header-section {
-        background: #667eea !important;
-        -webkit-print-color-adjust: exact;
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+    
+    .table {
+        border-collapse: collapse !important;
+        font-size: 9pt;
+    }
+    
+    .table th,
+    .table td {
+        border: 1px solid #000 !important;
+        padding: 4px !important;
+    }
+    
+    .table-bordered {
+        border: 2px solid #000 !important;
+    }
+    
+    /* Force black and white for printing */
+    * {
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+}
+
+/* Landscape print */
+@media print and (orientation: landscape) {
+    body {
+        font-size: 9pt;
+    }
+    
+    .table {
+        font-size: 8pt;
     }
 }
