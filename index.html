@@ -3,31 +3,889 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.A.P.U.T. Glass Works Enterprise - Complete ERP System</title>
+    <title>S.A.P.U.T. Glass Works Enterprise</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1a237e;
-            --secondary: #2979ff;
-            --success: #00c853;
-            --warning: #ff9100;
-            --danger: #ff1744;
-            --info: #00b8d4;
-            --glass: #e3f2fd;
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #17a2b8;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f5f7fa;
             margin: 0;
             padding: 0;
             font-size: 13px;
         }
         
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 
+        /* HEADER */
+        .header-bar {
+            background: white;
+            padding: 8px 15px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        /* DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-color: var(--secondary);
+        }
+        
+        /* PROFORMA TABLE */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .data-table thead {
+            background: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .data-table th {
+            padding: 10px 8px;
+            font-weight: 600;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+        
+        .data-table td {
+            padding: 6px 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .data-table input, .data-table select {
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 12px;
+            height: 28px;
+        }
+        
+        /* GLASS TYPE QUICK KEYS */
+        .glass-keys-panel {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            width: 250px;
+            border: 2px solid var(--primary);
+        }
+        
+        .glass-key-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .glass-key-btn:hover {
+            background: #e3f2fd;
+            border-color: var(--secondary);
+        }
+        
+        .key-shortcut {
+            background: #6c757d;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-family: monospace;
+        }
+        
+        /* PRINT STYLES */
+        @media print {
+            .no-print, .glass-keys-panel, .header-bar {
+                display: none !important;
+            }
+            
+            .table-container {
+                border: none;
+            }
+            
+            .data-table th {
+                background: #ddd !important;
+                color: #000 !important;
+            }
+        }
+        
+        /* UTILITIES */
+        .w-100 { width: 100%; }
+        .mb-2 { margin-bottom: 10px; }
+        .mb-3 { margin-bottom: 15px; }
+        .cursor-pointer { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <!-- GLASS TYPE QUICK KEYS PANEL -->
+    <div class="glass-keys-panel">
+        <h6 class="mb-3"><i class="fas fa-keyboard me-2"></i>Glass Type Shortcuts</h6>
+        <div class="mb-2">
+            <div class="glass-key-btn" onclick="setGlassType('C')" data-key="C">
+                <span><i class="fas fa-square text-info me-2"></i>Clear Glass</span>
+                <kbd class="key-shortcut">Ctrl+1</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('P')" data-key="P">
+                <span><i class="fas fa-th-large text-warning me-2"></i>Patterned</span>
+                <kbd class="key-shortcut">Ctrl+2</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('F')" data-key="F">
+                <span><i class="fas fa-snowflake text-primary me-2"></i>Frosted</span>
+                <kbd class="key-shortcut">Ctrl+3</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('T')" data-key="T">
+                <span><i class="fas fa-shield-alt text-success me-2"></i>Toughened</span>
+                <kbd class="key-shortcut">Ctrl+4</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('L')" data-key="L">
+                <span><i class="fas fa-layer-group text-danger me-2"></i>Laminated</span>
+                <kbd class="key-shortcut">Ctrl+5</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('DG')" data-key="DG">
+                <span><i class="fas fa-window-restore text-info me-2"></i>Double Glazed</span>
+                <kbd class="key-shortcut">Ctrl+6</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('W')" data-key="W">
+                <span><i class="fas fa-border-style text-secondary me-2"></i>Wired</span>
+                <kbd class="key-shortcut">Ctrl+7</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('B')" data-key="B">
+                <span><i class="fas fa-palette text-warning me-2"></i>Body Tinted</span>
+                <kbd class="key-shortcut">Ctrl+8</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('RD')" data-key="RD">
+                <span><i class="fas fa-sun text-danger me-2"></i>Reflective</span>
+                <kbd class="key-shortcut">Ctrl+9</kbd>
+            </div>
+            <div class="glass-key-btn" onclick="setGlassType('D')" data-key="D">
+                <span><i class="fas fa-paint-brush text-success me-2"></i>Designer</span>
+                <kbd class="key-shortcut">Ctrl+0</kbd>
+            </div>
+        </div>
+        <div class="text-xs text-muted">
+            <i class="fas fa-info-circle me-1"></i>
+            Click or use shortcut keys
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header-bar">
+        <div class="header-title">
+            <i class="fas fa-industry me-2"></i>
+            S.A.P.U.T. Glass Works Enterprise
+        </div>
+        <div>
+            <button class="btn btn-sm btn-primary me-2" onclick="showProforma()">
+                <i class="fas fa-file-invoice-dollar me-1"></i> Proforma
+            </button>
+            <button class="btn btn-sm btn-success" onclick="showDashboard()">
+                <i class="fas fa-home me-1"></i> Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardSection" class="container">
+        <div class="dashboard-grid">
+            <div class="module-card" onclick="showProforma()">
+                <i class="fas fa-file-invoice-dollar fa-2x"></i>
+                <h6 class="mt-2">Proforma Invoice</h6>
+                <p class="text-xs text-muted">Create PI with shortcuts</p>
+            </div>
+            <div class="module-card" onclick="showOrderManagement()">
+                <i class="fas fa-clipboard-list fa-2x"></i>
+                <h6 class="mt-2">Order Management</h6>
+                <p class="text-xs text-muted">Manage orders</p>
+            </div>
+            <div class="module-card" onclick="showGlassLines()">
+                <i class="fas fa-th-large fa-2x"></i>
+                <h6 class="mt-2">Glass Lines</h6>
+                <p class="text-xs text-muted">All glass types</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFORMA SECTION -->
+    <div id="proformaSection" style="display: none;" class="container">
+        <div class="glass-effect p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5><i class="fas fa-file-invoice-dollar me-2"></i>Proforma Invoice</h5>
+                <div class="text-muted">
+                    Press <kbd>F1</kbd> for shortcuts help
+                </div>
+            </div>
+            
+            <!-- CUSTOMER DETAILS -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="form-label">Customer Name</label>
+                        <input type="text" class="form-control form-control-sm" id="customerName">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="form-label">PI Number</label>
+                        <input type="text" class="form-control form-control-sm" id="piNumber" value="PI-001">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PRODUCT TABLE -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th width="30">#</th>
+                            <th width="150">Glass Type</th>
+                            <th width="120">Item Code</th>
+                            <th width="100">Actual Width</th>
+                            <th width="100">Actual Height</th>
+                            <th width="100">Chargable Width</th>
+                            <th width="100">Chargable Height</th>
+                            <th width="80">Qty</th>
+                            <th width="100">Rate</th>
+                            <th width="80">Hole</th>
+                            <th width="80">Cut</th>
+                            <th width="120">Amount</th>
+                            <th width="50" class="no-print">Del</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTable">
+                        <!-- Rows will be added here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex justify-content-between mt-3">
+                <div>
+                    <button class="btn btn-primary me-2" onclick="addNewRow()">
+                        <i class="fas fa-plus me-1"></i> Add Row (Ins)
+                    </button>
+                    <button class="btn btn-success me-2" onclick="calculateAll()">
+                        <i class="fas fa-calculator me-1"></i> Calculate (F9)
+                    </button>
+                    <button class="btn btn-warning" onclick="printProforma()">
+                        <i class="fas fa-print me-1"></i> Print (Ctrl+P)
+                    </button>
+                </div>
+                <div>
+                    <div class="text-end">
+                        <h5>Total: <span id="grandTotal">₹0.00</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // GLASS TYPE DATA
+        const glassTypes = {
+            'C': { // Clear Glass
+                name: 'Clear Float Glass',
+                items: [
+                    { code: 'C-3MM', name: 'Clear 3mm', rate: 45 },
+                    { code: 'C-4MM', name: 'Clear 4mm', rate: 55 },
+                    { code: 'C-5MM', name: 'Clear 5mm', rate: 65 },
+                    { code: 'C-6MM', name: 'Clear 6mm', rate: 75 },
+                    { code: 'C-8MM', name: 'Clear 8mm', rate: 95 },
+                    { code: 'C-10MM', name: 'Clear 10mm', rate: 125 },
+                    { code: 'C-12MM', name: 'Clear 12mm', rate: 155 }
+                ]
+            },
+            'P': { // Patterned
+                name: 'Patterned Glass',
+                items: [
+                    { code: 'P-4MM', name: 'Patterned 4mm', rate: 85 },
+                    { code: 'P-5MM', name: 'Patterned 5mm', rate: 95 },
+                    { code: 'P-6MM', name: 'Patterned 6mm', rate: 105 }
+                ]
+            },
+            'F': { // Frosted
+                name: 'Frosted Glass',
+                items: [
+                    { code: 'F-4MM', name: 'Frosted 4mm', rate: 110 },
+                    { code: 'F-5MM', name: 'Frosted 5mm', rate: 120 },
+                    { code: 'F-6MM', name: 'Frosted 6mm', rate: 130 }
+                ]
+            },
+            'T': { // Toughened
+                name: 'Toughened Glass',
+                items: [
+                    { code: 'T-5MM', name: 'Toughened 5mm', rate: 155 },
+                    { code: 'T-6MM', name: 'Toughened 6mm', rate: 175 },
+                    { code: 'T-8MM', name: 'Toughened 8mm', rate: 205 },
+                    { code: 'T-10MM', name: 'Toughened 10mm', rate: 245 },
+                    { code: 'T-12MM', name: 'Toughened 12mm', rate: 295 }
+                ]
+            },
+            'L': { // Laminated
+                name: 'Laminated Glass',
+                items: [
+                    { code: 'L-6.38', name: 'Laminated 6.38mm', rate: 225 },
+                    { code: 'L-8.38', name: 'Laminated 8.38mm', rate: 265 },
+                    { code: 'L-10.38', name: 'Laminated 10.38mm', rate: 315 }
+                ]
+            },
+            'DG': { // Double Glazed
+                name: 'Double Glazed Unit',
+                items: [
+                    { code: 'DG-24MM', name: 'DGU 24mm', rate: 385 },
+                    { code: 'DG-28MM', name: 'DGU 28mm', rate: 425 }
+                ]
+            },
+            'W': { // Wired
+                name: 'Wired Glass',
+                items: [
+                    { code: 'W-6MM', name: 'Wired 6mm', rate: 140 },
+                    { code: 'W-8MM', name: 'Wired 8mm', rate: 160 }
+                ]
+            },
+            'B': { // Body Tinted
+                name: 'Body Tinted Glass',
+                items: [
+                    { code: 'B-5MM', name: 'Tinted 5mm Bronze', rate: 135 },
+                    { code: 'B-6MM', name: 'Tinted 6mm Green', rate: 145 },
+                    { code: 'B-8MM', name: 'Tinted 8mm Blue', rate: 165 },
+                    { code: 'B-10MM', name: 'Tinted 10mm Grey', rate: 185 }
+                ]
+            },
+            'RD': { // Reflective/Dyed
+                name: 'Reflective Glass',
+                items: [
+                    { code: 'RD-6MM', name: 'Reflective 6mm Blue', rate: 195 },
+                    { code: 'RD-8MM', name: 'Reflective 8mm Silver', rate: 225 },
+                    { code: 'RD-DYE', name: 'Dyed Glass 6mm', rate: 185 }
+                ]
+            },
+            'D': { // Designer
+                name: 'Designer Glass',
+                items: [
+                    { code: 'D-ETCH', name: 'Etched Designer', rate: 325 },
+                    { code: 'D-BACK', name: 'Backpainted Glass', rate: 285 },
+                    { code: 'D-PRINT', name: 'Digital Print Glass', rate: 450 }
+                ]
+            }
+        };
+
+        // VARIABLES
+        let currentRow = 1;
+        let currentGlassType = 'C'; // Default: Clear Glass
+        
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', function() {
+            showDashboard();
+            setupKeyboardShortcuts();
+            // Add initial row
+            addNewRow();
+        });
+        
+        // KEYBOARD SHORTCUTS SETUP
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Prevent default in input fields except for navigation
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    // Allow only specific shortcuts in input fields
+                    if (e.key === 'F1' || e.key === 'F9' || e.key === 'Insert' || 
+                        e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+                        e.preventDefault();
+                    } else {
+                        return;
+                    }
+                }
+                
+                // Function Keys
+                if (e.key === 'F1') {
+                    e.preventDefault();
+                    showShortcutsHelp();
+                }
+                if (e.key === 'F9') {
+                    e.preventDefault();
+                    calculateAll();
+                }
+                if (e.key === 'Insert' || e.key === 'Ins') {
+                    e.preventDefault();
+                    addNewRow();
+                }
+                
+                // Ctrl + Number (1-0) for Glass Types
+                if (e.ctrlKey && !e.altKey && !e.shiftKey) {
+                    const key = e.key;
+                    switch(key) {
+                        case '1': e.preventDefault(); setGlassType('C'); break;
+                        case '2': e.preventDefault(); setGlassType('P'); break;
+                        case '3': e.preventDefault(); setGlassType('F'); break;
+                        case '4': e.preventDefault(); setGlassType('T'); break;
+                        case '5': e.preventDefault(); setGlassType('L'); break;
+                        case '6': e.preventDefault(); setGlassType('DG'); break;
+                        case '7': e.preventDefault(); setGlassType('W'); break;
+                        case '8': e.preventDefault(); setGlassType('B'); break;
+                        case '9': e.preventDefault(); setGlassType('RD'); break;
+                        case '0': e.preventDefault(); setGlassType('D'); break;
+                    }
+                }
+                
+                // Ctrl + P for Print
+                if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+                    e.preventDefault();
+                    printProforma();
+                }
+                
+                // Tab Navigation in Table
+                if (e.key === 'Tab' && document.getElementById('proformaSection').style.display !== 'none') {
+                    handleTabNavigation(e);
+                }
+                
+                // Delete Row with Delete key
+                if (e.key === 'Delete' && document.activeElement.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    deleteCurrentRow();
+                }
+            });
+        }
+        
+        // TAB NAVIGATION IN TABLE
+        function handleTabNavigation(e) {
+            const activeElement = document.activeElement;
+            if (!activeElement.closest('tr')) return;
+            
+            const currentRow = activeElement.closest('tr');
+            const inputs = Array.from(currentRow.querySelectorAll('input, select'));
+            const currentIndex = inputs.indexOf(activeElement);
+            
+            if (!e.shiftKey && currentIndex === inputs.length - 1) {
+                // Last field in row, go to next row
+                e.preventDefault();
+                const nextRow = currentRow.nextElementSibling;
+                if (nextRow) {
+                    const firstInput = nextRow.querySelector('input, select');
+                    if (firstInput) firstInput.focus();
+                } else {
+                    addNewRow();
+                    setTimeout(() => {
+                        const newRow = document.querySelector('#productTable tr:last-child');
+                        const firstInput = newRow.querySelector('input, select');
+                        if (firstInput) firstInput.focus();
+                    }, 10);
+                }
+            }
+        }
+        
+        // NAVIGATION
+        function showDashboard() {
+            document.getElementById('dashboardSection').style.display = 'block';
+            document.getElementById('proformaSection').style.display = 'none';
+        }
+        
+        function showProforma() {
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('proformaSection').style.display = 'block';
+        }
+        
+        // SET GLASS TYPE WITH SHORTCUT
+        function setGlassType(type) {
+            currentGlassType = type;
+            
+            // Highlight the selected button
+            document.querySelectorAll('.glass-key-btn').forEach(btn => {
+                btn.style.background = btn.dataset.key === type ? '#e3f2fd' : '';
+                btn.style.borderColor = btn.dataset.key === type ? '#2196f3' : '#dee2e6';
+            });
+            
+            // Show notification
+            showNotification(`Glass type set to: ${glassTypes[type].name}`);
+            
+            // Auto-fill current row with selected glass type
+            const activeRow = document.querySelector('tr input:focus')?.closest('tr');
+            if (activeRow) {
+                const typeCell = activeRow.querySelector('td:nth-child(2)');
+                const itemCell = activeRow.querySelector('td:nth-child(3) select');
+                
+                if (typeCell && itemCell) {
+                    typeCell.innerHTML = `<strong>${type}</strong> - ${glassTypes[type].name}`;
+                    
+                    // Populate item dropdown
+                    itemCell.innerHTML = '<option value="">Select Item</option>' +
+                        glassTypes[type].items.map(item => 
+                            `<option value="${item.code}" data-rate="${item.rate}">${item.name}</option>`
+                        ).join('');
+                    
+                    // Focus on item selection
+                    itemCell.focus();
+                }
+            }
+        }
+        
+        // ADD NEW ROW
+        function addNewRow() {
+            const table = document.getElementById('productTable');
+            const rowId = currentRow++;
+            
+            const rowHTML = `
+                <tr id="row-${rowId}">
+                    <td>${rowId}</td>
+                    <td class="glass-type-cell">
+                        <span id="glassType-${rowId}">C - Clear Float Glass</span>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm item-select" 
+                                onchange="updateRate(this, ${rowId})"
+                                data-row="${rowId}">
+                            <option value="">Select Item</option>
+                            ${glassTypes['C'].items.map(item => 
+                                `<option value="${item.code}" data-rate="${item.rate}">${item.name}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm actual-width" 
+                               placeholder="Width" value="0" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm actual-height" 
+                               placeholder="Height" value="0" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td class="chargable-width">0</td>
+                    <td class="chargable-height">0</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm qty" 
+                               value="1" min="1" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm rate" 
+                               value="45" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm hole" 
+                               value="0" min="0" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm cut" 
+                               value="0" min="0" onchange="calculateRow(${rowId})">
+                    </td>
+                    <td class="amount">0.00</td>
+                    <td class="no-print">
+                        <button class="btn btn-xs btn-danger" onclick="deleteRow(${rowId})" title="Delete (Del)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            
+            table.insertAdjacentHTML('beforeend', rowHTML);
+            
+            // Add event listener for focus to update glass type
+            const row = document.getElementById(`row-${rowId}`);
+            const inputs = row.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // Update glass type display when focusing on this row
+                    document.getElementById(`glassType-${rowId}`).innerHTML = 
+                        `<strong>${currentGlassType}</strong> - ${glassTypes[currentGlassType].name}`;
+                    
+                    // Update item dropdown if needed
+                    const itemSelect = row.querySelector('.item-select');
+                    if (itemSelect.options.length === 1) { // Only has "Select Item"
+                        itemSelect.innerHTML = '<option value="">Select Item</option>' +
+                            glassTypes[currentGlassType].items.map(item => 
+                                `<option value="${item.code}" data-rate="${item.rate}">${item.name}</option>`
+                            ).join('');
+                    }
+                });
+            });
+            
+            // Focus on first input
+            setTimeout(() => {
+                row.querySelector('.actual-width').focus();
+            }, 10);
+        }
+        
+        // UPDATE RATE WHEN ITEM SELECTED
+        function updateRate(select, rowId) {
+            const selectedOption = select.options[select.selectedIndex];
+            const rate = selectedOption.dataset.rate || 0;
+            
+            const row = document.getElementById(`row-${rowId}`);
+            if (row) {
+                row.querySelector('.rate').value = rate;
+                calculateRow(rowId);
+            }
+        }
+        
+        // CALCULATE ROW
+        function calculateRow(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            if (!row) return 0;
+            
+            const width = parseFloat(row.querySelector('.actual-width').value) || 0;
+            const height = parseFloat(row.querySelector('.actual-height').value) || 0;
+            const qty = parseFloat(row.querySelector('.qty').value) || 1;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            
+            // Calculate chargable size (add 3mm each side)
+            const chargableWidth = Math.round(width * 25.4) + 6;
+            const chargableHeight = Math.round(height * 25.4) + 6;
+            
+            // Calculate area in sq.ft
+            const area = (width * height) / 144;
+            const amount = area * rate * qty;
+            
+            // Update row
+            row.querySelector('.chargable-width').textContent = chargableWidth;
+            row.querySelector('.chargable-height').textContent = chargableHeight;
+            row.querySelector('.amount').textContent = amount.toFixed(2);
+            
+            // Store data
+            row.dataset.amount = amount;
+            
+            // Update total
+            calculateTotal();
+            
+            return amount;
+        }
+        
+        // CALCULATE ALL
+        function calculateAll() {
+            let total = 0;
+            
+            document.querySelectorAll('#productTable tr').forEach(row => {
+                if (row.id && row.id.startsWith('row-')) {
+                    const rowId = parseInt(row.id.replace('row-', ''));
+                    total += calculateRow(rowId) || 0;
+                }
+            });
+            
+            calculateTotal();
+            showNotification('All calculations completed!');
+        }
+        
+        // CALCULATE TOTAL
+        function calculateTotal() {
+            let total = 0;
+            
+            document.querySelectorAll('#productTable tr').forEach(row => {
+                if (row.dataset.amount) {
+                    total += parseFloat(row.dataset.amount) || 0;
+                }
+            });
+            
+            document.getElementById('grandTotal').textContent = '₹' + total.toFixed(2);
+        }
+        
+        // DELETE ROW
+        function deleteRow(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            if (row && confirm('Delete this row?')) {
+                row.remove();
+                calculateTotal();
+            }
+        }
+        
+        function deleteCurrentRow() {
+            const activeRow = document.activeElement.closest('tr');
+            if (activeRow && activeRow.id.startsWith('row-')) {
+                const rowId = parseInt(activeRow.id.replace('row-', ''));
+                deleteRow(rowId);
+            }
+        }
+        
+        // PRINT PROFORMA
+        function printProforma() {
+            window.print();
+        }
+        
+        // SHOW NOTIFICATION
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // SHOW SHORTCUTS HELP
+        function showShortcutsHelp() {
+            const helpHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                           background: white; padding: 30px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                           z-index: 9999; max-width: 600px; width: 90%;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h4>
+                        <button class="btn btn-sm btn-outline-danger" onclick="this.closest('div').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Glass Type Shortcuts</h6>
+                            <div class="mb-2">
+                                <kbd>Ctrl+1</kbd> - Clear Glass
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Ctrl+2</kbd> - Patterned Glass
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Ctrl+3</kbd> - Frosted Glass
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Ctrl+4</kbd> - Toughened Glass
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Ctrl+5</kbd> - <strong>Laminated Glass</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>General Shortcuts</h6>
+                            <div class="mb-2">
+                                <kbd>Insert</kbd> - Add New Row
+                            </div>
+                            <div class="mb-2">
+                                <kbd>F9</kbd> - Calculate All
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Ctrl+P</kbd> - Print Proforma
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Delete</kbd> - Delete Current Row
+                            </div>
+                            <div class="mb-2">
+                                <kbd>Tab</kbd> - Next Field
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Quick Workflow</h6>
+                        <ol class="mb-0">
+                            <li>Press <kbd>Ctrl+5</kbd> for Laminated Glass</li>
+                            <li>Press <kbd>Insert</kbd> to add row</li>
+                            <li>Enter dimensions, select item</li>
+                            <li>Press <kbd>Tab</kbd> to move between fields</li>
+                            <li>Press <kbd>F9</kbd> to calculate</li>
+                            <li>Press <kbd>Ctrl+P</kbd> to print</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <button class="btn btn-primary" onclick="this.closest('div').remove()">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing help if any
+            const existingHelp = document.querySelector('div[style*="Keyboard Shortcuts"]');
+            if (existingHelp) existingHelp.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', helpHTML);
+        }
+        
+        // OTHER MODULES (Placeholder)
+        function showOrderManagement() {
+            alert('Order Management module - Coming soon!');
+        }
+        
+        function showGlassLines() {
+            alert('Glass Lines module - Use shortcuts panel for quick access!');
+        }
+    </script>
+</body>
+</html>
