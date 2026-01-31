@@ -3,1091 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.A.P.U.T. Glass Works - Professional ERP</title>
+    <title>S.A.P.U.T. Glass Works</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* LIGHT COLOR THEME - EASY ON EYES */
+        :root {
+            --primary-light: #4a6fa5;
+            --primary-soft: #5d8bcd;
+            --secondary-light: #6c757d;
+            --success-light: #28a745;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-light: #e2e8f0;
+            --hover-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* TOP HEADER WITH LOGO AND NAVIGATION */
+        .top-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-bottom: 1px solid var(--border-light);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-soft));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-light);
+            letter-spacing: 0.5px;
+        }
+
+        .logo-subtext {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: -2px;
+        }
+
+        /* NAVIGATION TABS */
+        .nav-tabs-container {
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-tab:hover {
+            background: var(--hover-bg);
+            color: var(--primary-light);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-light);
+            color: white;
+            box-shadow: 0 2px 4px rgba(74, 111, 165, 0.2);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            padding: 20px 15px;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* MODULE CARDS */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: var(--primary-light);
+        }
+
+        .module-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .icon-proforma { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .icon-orders { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .icon-customers { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .icon-items { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .icon-accounting { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .icon-reports { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .icon-gst { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+        .icon-dispatch { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+
+        .module-info h6 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--text-primary);
+        }
+
+        .module-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* FORM STYLES */
+        .form-control, .form-select {
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+        }
+
+        /* TABLE STYLES */
+        .data-table {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            font-size: 13px;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .data-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 13px;
+        }
+
+        .data-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        /* BUTTONS */
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 13px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-soft);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        /* CARD STYLES */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .card-header {
+            background: var(--hover-bg);
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* UTILITY CLASSES */
+        .text-muted-light {
+            color: var(--text-secondary);
+        }
+
+        .border-light {
+            border-color: var(--border-light) !important;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--hover-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .module-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs-container {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
 </head>
 <body>
-    <!-- SIMPLE NAVBAR -->
-    <nav class="navbar navbar-dark bg-primary shadow">
+    <!-- TOP HEADER WITH LOGO AND NAVIGATION -->
+    <div class="top-header">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#" onclick="showDashboard()">
-                <i class="fas fa-glass-whiskey me-2"></i>
-                <strong>S.A.P.U.T.</strong> Glass Works
-            </a>
-            <div class="navbar-nav flex-row gap-2">
-                <button class="btn btn-sm btn-light" onclick="showDashboard()">
-                    <i class="fas fa-home"></i>
-                </button>
-                <button class="btn btn-sm btn-light" onclick="showProforma()">
-                    <i class="fas fa-file-invoice-dollar"></i> Proforma
-                </button>
-                <button class="btn btn-sm btn-light" onclick="showOrders()">
-                    <i class="fas fa-clipboard-list"></i> Orders
-                </button>
-                <button class="btn btn-sm btn-light" onclick="showCustomers()">
-                    <i class="fas fa-users"></i> Customers
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <div class="container-fluid mt-3">
-        
-        <!-- DASHBOARD -->
-        <div id="dashboard" class="row">
-            <div class="col-md-3 mb-3">
-                <div class="card border-primary">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-invoice-dollar fa-2x text-primary mb-2"></i>
-                        <h5>Proforma Invoice</h5>
-                        <button class="btn btn-primary w-100" onclick="showProforma()">
-                            <i class="fas fa-plus"></i> Create New
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card border-success">
-                    <div class="card-body text-center">
-                        <i class="fas fa-clipboard-check fa-2x text-success mb-2"></i>
-                        <h5>Order Management</h5>
-                        <button class="btn btn-success w-100" onclick="showOrders()">
-                            <i class="fas fa-eye"></i> View Orders
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card border-info">
-                    <div class="card-body text-center">
-                        <i class="fas fa-users fa-2x text-info mb-2"></i>
-                        <h5>Customers</h5>
-                        <button class="btn btn-info w-100" onclick="showCustomers()">
-                            <i class="fas fa-user-plus"></i> Add Customer
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card border-warning">
-                    <div class="card-body text-center">
-                        <i class="fas fa-boxes fa-2x text-warning mb-2"></i>
-                        <h5>Items Master</h5>
-                        <button class="btn btn-warning w-100" onclick="showItems()">
-                            <i class="fas fa-cube"></i> Manage Items
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFORMA INVOICE SECTION -->
-        <div id="proforma" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between">
-                    <h5 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> Proforma Invoice</h5>
-                    <div class="d-flex gap-2">
-                        <span class="badge bg-light text-dark" id="currentPINumber">PI-001</span>
-                        <button class="btn btn-sm btn-light" onclick="generateNewPI()">
-                            <i class="fas fa-plus"></i> New
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- CUSTOMER SELECTION -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Customer</label>
-                            <select class="form-select" id="customerSelect" onchange="loadCustomerDetails()">
-                                <option value="">Select Customer</option>
-                            </select>
+            <div class="row align-items-center">
+                <!-- LOGO -->
+                <div class="col-md-3">
+                    <div class="logo-container">
+                        <div class="logo-icon">
+                            <i class="fas fa-glass-whiskey"></i>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">PI Number</label>
-                            <input type="text" class="form-control" id="piNumber" value="PI-<?php echo date('Ymd-His'); ?>" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" id="piDate" value="<?php echo date('Y-m-d'); ?>">
-                        </div>
-                    </div>
-
-                    <!-- CUSTOMER DETAILS -->
-                    <div class="row mb-3" id="customerDetails" style="display: none;">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body p-2">
-                                    <h6>Bill To:</h6>
-                                    <p class="mb-1" id="billToName"></p>
-                                    <p class="mb-1" id="billToAddress"></p>
-                                    <p class="mb-1" id="billToGST"></p>
-                                    <p class="mb-0" id="billToPhone"></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body p-2">
-                                    <h6>Ship To:</h6>
-                                    <p class="mb-1" id="shipToName"></p>
-                                    <p class="mb-1" id="shipToAddress"></p>
-                                    <div class="form-check mt-2">
-                                        <input class="form-check-input" type="checkbox" id="sameAddress" checked 
-                                               onchange="copyBillToShip()">
-                                        <label class="form-check-label">Same as Bill To</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PRODUCT TABLE - SIMPLE EXCEL STYLE -->
-                    <div class="table-responsive mb-3">
-                        <table class="table table-bordered table-sm" id="productTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th width="40">Sr</th>
-                                    <th width="150">Description</th>
-                                    <th width="100">Size (Inches)</th>
-                                    <th width="100">Size (MM)</th>
-                                    <th width="80">Qty</th>
-                                    <th width="100">Area (Sq.Mt)</th>
-                                    <th width="100">Rate (₹/Sq.Mt)</th>
-                                    <th width="120">Amount (₹)</th>
-                                    <th width="80">Action</th>
-                                </tr>
-                                <tr>
-                                    <th></th>
-                                    <th><input type="text" class="form-control form-control-sm" placeholder="Item" id="itemDesc"></th>
-                                    <th>
-                                        <div class="d-flex gap-1">
-                                            <input type="text" class="form-control form-control-sm" placeholder="W" id="widthInch">
-                                            <span class="align-self-center">×</span>
-                                            <input type="text" class="form-control form-control-sm" placeholder="H" id="heightInch">
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="d-flex gap-1">
-                                            <input type="number" class="form-control form-control-sm" placeholder="W" id="widthMM">
-                                            <span class="align-self-center">×</span>
-                                            <input type="number" class="form-control form-control-sm" placeholder="H" id="heightMM">
-                                        </div>
-                                    </th>
-                                    <th><input type="number" class="form-control form-control-sm" value="1" id="quantity"></th>
-                                    <th><input type="number" class="form-control form-control-sm" id="rate" placeholder="Rate"></th>
-                                    <th colspan="3">
-                                        <button class="btn btn-primary btn-sm w-100" onclick="addItem()">
-                                            <i class="fas fa-plus"></i> Add Item
-                                        </button>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemsTableBody">
-                                <!-- Items will be added here -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- TOTALS - COMPACT -->
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-body p-2">
-                                    <h6>Terms & Conditions:</h6>
-                                    <ol class="mb-0" style="font-size: 12px;">
-                                        <li>Prices are ex-factory</li>
-                                        <li>Delivery: 7-10 working days</li>
-                                        <li>Payment: 50% advance with order</li>
-                                        <li>Subject to S.A.S. Nagar jurisdiction</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body p-2">
-                                    <div class="d-flex justify-content-between border-bottom py-1">
-                                        <span>Subtotal:</span>
-                                        <span id="subtotal">₹0.00</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between border-bottom py-1">
-                                        <span>GST (18%):</span>
-                                        <span id="gstAmount">₹0.00</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between py-1 fw-bold">
-                                        <span>TOTAL:</span>
-                                        <span id="totalAmount">₹0.00</span>
-                                    </div>
-                                    <button class="btn btn-success btn-sm w-100 mt-2" onclick="generatePDF()">
-                                        <i class="fas fa-file-pdf"></i> Generate PDF
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ACTION BUTTONS -->
-                    <div class="d-flex justify-content-between mt-3">
                         <div>
-                            <button class="btn btn-primary" onclick="saveProforma()">
-                                <i class="fas fa-save"></i> Save
-                            </button>
-                            <button class="btn btn-warning" onclick="printProforma()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
+                            <div class="logo-text">S.A.P.U.T.</div>
+                            <div class="logo-subtext">Glass Works Enterprise</div>
                         </div>
-                        <button class="btn btn-secondary" onclick="showDashboard()">
-                            <i class="fas fa-home"></i> Back to Dashboard
+                    </div>
+                </div>
+
+                <!-- NAVIGATION TABS -->
+                <div class="col-md-9">
+                    <div class="d-flex flex-wrap gap-2 nav-tabs-container">
+                        <button class="nav-tab active" onclick="showModule('dashboard')">
+                            <i class="fas fa-home"></i> Dashboard
+                        </button>
+                        <button class="nav-tab" onclick="showModule('proforma')">
+                            <i class="fas fa-file-invoice-dollar"></i> Proforma Invoice
+                        </button>
+                        <button class="nav-tab" onclick="showModule('orders')">
+                            <i class="fas fa-clipboard-list"></i> Order Management
+                        </button>
+                        <button class="nav-tab" onclick="showModule('customers')">
+                            <i class="fas fa-users"></i> Customers
+                        </button>
+                        <button class="nav-tab" onclick="showModule('items')">
+                            <i class="fas fa-box"></i> Item Master
+                        </button>
+                        <button class="nav-tab" onclick="showModule('accounting')">
+                            <i class="fas fa-calculator"></i> Accounting
+                        </button>
+                        <button class="nav-tab" onclick="showModule('reports')">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </button>
+                        <button class="nav-tab" onclick="showModule('gst')">
+                            <i class="fas fa-file-invoice"></i> GST Invoice
+                        </button>
+                        <button class="nav-tab" onclick="showModule('dispatch')">
+                            <i class="fas fa-truck"></i> Dispatch
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ORDER MANAGEMENT SECTION -->
-        <div id="orders" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Order Management</h5>
+    <!-- MAIN CONTENT AREA -->
+    <div class="main-content">
+        <!-- DASHBOARD MODULE -->
+        <div id="dashboard" class="fade-in">
+            <div class="container-fluid">
+                <h4 class="mb-4">Dashboard Overview</h4>
+                
+                <!-- QUICK STATS -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-file-invoice-dollar fa-2x text-primary"></i>
+                                </div>
+                                <h5 id="todayProforma">0</h5>
+                                <p class="text-muted-light mb-0">Today's Proforma</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-clipboard-check fa-2x text-success"></i>
+                                </div>
+                                <h5 id="pendingOrders">0</h5>
+                                <p class="text-muted-light mb-0">Pending Orders</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-rupee-sign fa-2x text-warning"></i>
+                                </div>
+                                <h5 id="monthRevenue">₹0</h5>
+                                <p class="text-muted-light mb-0">Month Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-users fa-2x text-info"></i>
+                                </div>
+                                <h5 id="totalCustomers">0</h5>
+                                <p class="text-muted-light mb-0">Total Customers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALL MODULES GRID -->
+                <h5 class="mb-3">Quick Access Modules</h5>
+                <div class="module-grid">
+                    <!-- PROFORMA INVOICE -->
+                    <a href="#" class="module-card" onclick="showModule('proforma')">
+                        <div class="module-icon icon-proforma">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Proforma Invoice</h6>
+                            <p>Create and manage invoices</p>
+                        </div>
+                    </a>
+
+                    <!-- ORDER MANAGEMENT -->
+                    <a href="#" class="module-card" onclick="showModule('orders')">
+                        <div class="module-icon icon-orders">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Order Management</h6>
+                            <p>Track and manage orders</p>
+                        </div>
+                    </a>
+
+                    <!-- CUSTOMER MANAGEMENT -->
+                    <a href="#" class="module-card" onclick="showModule('customers')">
+                        <div class="module-icon icon-customers">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Customer Management</h6>
+                            <p>Manage customer database</p>
+                        </div>
+                    </a>
+
+                    <!-- ITEM MASTER -->
+                    <a href="#" class="module-card" onclick="showModule('items')">
+                        <div class="module-icon icon-items">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Item Master</h6>
+                            <p>Product catalog and rates</p>
+                        </div>
+                    </a>
+
+                    <!-- ACCOUNTING -->
+                    <a href="#" class="module-card" onclick="showModule('accounting')">
+                        <div class="module-icon icon-accounting">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Accounting</h6>
+                            <p>Ledger and accounts</p>
+                        </div>
+                    </a>
+
+                    <!-- REPORTS -->
+                    <a href="#" class="module-card" onclick="showModule('reports')">
+                        <div class="module-icon icon-reports">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Reports</h6>
+                            <p>Analytics and reports</p>
+                        </div>
+                    </a>
+
+                    <!-- GST INVOICE -->
+                    <a href="#" class="module-card" onclick="showModule('gst')">
+                        <div class="module-icon icon-gst">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>GST Invoice</h6>
+                            <p>Generate GST invoices</p>
+                        </div>
+                    </a>
+
+                    <!-- DISPATCH PLANNER -->
+                    <a href="#" class="module-card" onclick="showModule('dispatch')">
+                        <div class="module-icon icon-dispatch">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="module-info">
+                            <h6>Dispatch Planner</h6>
+                            <p>Delivery scheduling</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFORMA INVOICE MODULE -->
+        <div id="proforma" class="container-fluid" style="display: none;">
+            <div class="card fade-in">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Proforma Invoice</h5>
+                    <div>
+                        <button class="btn btn-primary btn-sm" onclick="createNewProforma()">
+                            <i class="fas fa-plus"></i> New Invoice
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Order No</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ordersTable">
-                                <!-- Orders will load here -->
-                            </tbody>
-                        </table>
+                    <!-- Simple form for now -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Proforma Invoice Module - Coming Soon
                     </div>
-                    <button class="btn btn-success" onclick="createOrderFromProforma()">
-                        <i class="fas fa-plus"></i> Create Order from Proforma
+                    <button class="btn btn-secondary" onclick="showModule('dashboard')">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- CUSTOMER MANAGEMENT SECTION -->
-        <div id="customers" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-users"></i> Customer Management</h5>
+        <!-- OTHER MODULES SIMILARLY... -->
+        <div id="orders" class="container-fluid" style="display: none;">
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Order Management</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Search customers..." id="searchCustomer">
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <button class="btn btn-primary" onclick="showAddCustomerModal()">
-                                <i class="fas fa-user-plus"></i> Add Customer
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>GST No</th>
-                                    <th>Phone</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="customersTable">
-                                <!-- Customers will load here -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- Order management content -->
                 </div>
             </div>
         </div>
 
-        <!-- ITEMS MASTER SECTION -->
-        <div id="items" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-boxes"></i> Items Master</h5>
+        <div id="customers" class="container-fluid" style="display: none;">
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Customer Management</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Description</th>
-                                    <th>Type</th>
-                                    <th>Rate (₹/Sq.Mt)</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemsMasterTable">
-                                <!-- Items will load here -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- Customer management content -->
                 </div>
             </div>
         </div>
 
-    </div>
+        <!-- Add similar divs for other modules -->
 
-    <!-- ADD CUSTOMER MODAL -->
-    <div class="modal fade" id="addCustomerModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="customerForm">
-                        <div class="mb-3">
-                            <label class="form-label">Company Name *</label>
-                            <input type="text" class="form-control" id="custName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <textarea class="form-control" id="custAddress" rows="2"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">GST Number</label>
-                                <input type="text" class="form-control" id="custGST">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Phone</label>
-                                <input type="tel" class="form-control" id="custPhone">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCustomer()">Save Customer</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // Initialize variables
-        let currentProforma = [];
-        let customers = [];
-        let orders = [];
-        let items = [];
-        let nextItemId = 1;
-
-        // Initialize on load
+        // Initialize - Show only dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            showDashboard();
-            loadSampleData();
-            loadCustomers();
-            loadOrders();
-            loadItems();
+            showModule('dashboard');
+            updateDashboardStats();
+            
+            // Set active tab
+            setActiveTab('dashboard');
         });
 
-        // NAVIGATION FUNCTIONS
-        function showDashboard() {
-            hideAllSections();
-            document.getElementById('dashboard').style.display = 'block';
-        }
-
-        function showProforma() {
-            hideAllSections();
-            document.getElementById('proforma').style.display = 'block';
-            generateNewPI();
-        }
-
-        function showOrders() {
-            hideAllSections();
-            document.getElementById('orders').style.display = 'block';
-            loadOrdersTable();
-        }
-
-        function showCustomers() {
-            hideAllSections();
-            document.getElementById('customers').style.display = 'block';
-            loadCustomersTable();
-        }
-
-        function showItems() {
-            hideAllSections();
-            document.getElementById('items').style.display = 'block';
-            loadItemsMasterTable();
-        }
-
-        function hideAllSections() {
-            ['dashboard', 'proforma', 'orders', 'customers', 'items'].forEach(id => {
-                document.getElementById(id).style.display = 'none';
-            });
-        }
-
-        // LOAD SAMPLE DATA
-        function loadSampleData() {
-            // Sample customers
-            customers = [
-                {
-                    id: 1,
-                    name: 'Raj Glass House',
-                    address: '123 Main Street, Delhi',
-                    gst: '07AABCM1234N1Z5',
-                    phone: '9876543210'
-                },
-                {
-                    id: 2,
-                    name: 'Shyam Glass Works',
-                    address: '456 Market Road, Noida',
-                    gst: '09AAECS1234N1Z6',
-                    phone: '9876543211'
-                }
-            ];
-
-            // Sample items
-            items = [
-                { code: 'GL-001', name: 'Clear Float 6mm', type: 'Clear', rate: 1850 },
-                { code: 'GL-002', name: 'Toughened 8mm', type: 'Toughened', rate: 2850 },
-                { code: 'GL-003', name: 'Laminated 6.38mm', type: 'Laminated', rate: 3200 }
-            ];
-
-            // Sample orders
-            orders = [
-                {
-                    id: 1,
-                    orderNo: 'ORD-001',
-                    date: '2024-01-15',
-                    customerName: 'Raj Glass House',
-                    amount: 45000,
-                    status: 'pending'
-                }
-            ];
-        }
-
-        // CUSTOMER FUNCTIONS
-        function loadCustomers() {
-            const select = document.getElementById('customerSelect');
-            select.innerHTML = '<option value="">Select Customer</option>';
-            customers.forEach(customer => {
-                const option = document.createElement('option');
-                option.value = customer.id;
-                option.textContent = customer.name;
-                select.appendChild(option);
-            });
-        }
-
-        function loadCustomerDetails() {
-            const customerId = document.getElementById('customerSelect').value;
-            const customer = customers.find(c => c.id == customerId);
-            
-            if (customer) {
-                document.getElementById('customerDetails').style.display = 'block';
-                document.getElementById('billToName').textContent = customer.name;
-                document.getElementById('billToAddress').textContent = customer.address;
-                document.getElementById('billToGST').textContent = 'GST: ' + customer.gst;
-                document.getElementById('billToPhone').textContent = 'Phone: ' + customer.phone;
-                
-                if (document.getElementById('sameAddress').checked) {
-                    copyBillToShip();
-                }
-            } else {
-                document.getElementById('customerDetails').style.display = 'none';
-            }
-        }
-
-        function copyBillToShip() {
-            if (document.getElementById('sameAddress').checked) {
-                document.getElementById('shipToName').textContent = document.getElementById('billToName').textContent;
-                document.getElementById('shipToAddress').textContent = document.getElementById('billToAddress').textContent;
-            } else {
-                document.getElementById('shipToName').textContent = '';
-                document.getElementById('shipToAddress').textContent = '';
-            }
-        }
-
-        function showAddCustomerModal() {
-            document.getElementById('custName').value = '';
-            document.getElementById('custAddress').value = '';
-            document.getElementById('custGST').value = '';
-            document.getElementById('custPhone').value = '';
-            
-            const modal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
-            modal.show();
-        }
-
-        function saveCustomer() {
-            const name = document.getElementById('custName').value.trim();
-            const address = document.getElementById('custAddress').value.trim();
-            const gst = document.getElementById('custGST').value.trim();
-            const phone = document.getElementById('custPhone').value.trim();
-            
-            if (!name) {
-                alert('Please enter customer name');
-                return;
-            }
-            
-            const newCustomer = {
-                id: customers.length + 1,
-                name: name,
-                address: address,
-                gst: gst,
-                phone: phone
-            };
-            
-            customers.push(newCustomer);
-            loadCustomers();
-            
-            // Select this customer
-            document.getElementById('customerSelect').value = newCustomer.id;
-            loadCustomerDetails();
-            
-            bootstrap.Modal.getInstance(document.getElementById('addCustomerModal')).hide();
-            alert('Customer saved successfully!');
-        }
-
-        // PROFORMA FUNCTIONS
-        function generateNewPI() {
-            const piNumber = 'PI-' + new Date().getTime().toString().slice(-6);
-            document.getElementById('piNumber').value = piNumber;
-            document.getElementById('currentPINumber').textContent = piNumber;
-            document.getElementById('itemsTableBody').innerHTML = '';
-            currentProforma = [];
-            nextItemId = 1;
-            calculateTotal();
-        }
-
-        function addItem() {
-            const desc = document.getElementById('itemDesc').value.trim();
-            const widthInch = document.getElementById('widthInch').value;
-            const heightInch = document.getElementById('heightInch').value;
-            const widthMM = document.getElementById('widthMM').value;
-            const heightMM = document.getElementById('heightMM').value;
-            const qty = document.getElementById('quantity').value || 1;
-            const rate = document.getElementById('rate').value || 0;
-            
-            if (!desc) {
-                alert('Please enter item description');
-                return;
-            }
-            
-            // Calculate area in Sq.Mt
-            let area = 0;
-            if (widthMM && heightMM) {
-                area = (parseFloat(widthMM) * parseFloat(heightMM)) / 1000000;
-            } else if (widthInch && heightInch) {
-                const widthMM = parseFloat(widthInch) * 25.4;
-                const heightMM = parseFloat(heightInch) * 25.4;
-                area = (widthMM * heightMM) / 1000000;
-            }
-            
-            const amount = area * parseFloat(rate) * parseFloat(qty);
-            
-            const item = {
-                id: nextItemId++,
-                description: desc,
-                sizeInch: widthInch && heightInch ? `${widthInch}" × ${heightInch}"` : '',
-                sizeMM: widthMM && heightMM ? `${widthMM} × ${heightMM} mm` : '',
-                qty: qty,
-                area: area.toFixed(3),
-                rate: parseFloat(rate).toFixed(2),
-                amount: amount.toFixed(2)
-            };
-            
-            currentProforma.push(item);
-            
-            // Add to table
-            const tbody = document.getElementById('itemsTableBody');
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.description}</td>
-                <td>${item.sizeInch}</td>
-                <td>${item.sizeMM}</td>
-                <td>${item.qty}</td>
-                <td>${item.area}</td>
-                <td>₹${item.rate}</td>
-                <td>₹${item.amount}</td>
-                <td>
-                    <button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
-            
-            // Clear inputs
-            document.getElementById('itemDesc').value = '';
-            document.getElementById('widthInch').value = '';
-            document.getElementById('heightInch').value = '';
-            document.getElementById('widthMM').value = '';
-            document.getElementById('heightMM').value = '';
-            document.getElementById('quantity').value = '1';
-            document.getElementById('rate').value = '';
-            
-            calculateTotal();
-        }
-
-        function deleteItem(itemId) {
-            currentProforma = currentProforma.filter(item => item.id !== itemId);
-            const tbody = document.getElementById('itemsTableBody');
-            tbody.innerHTML = '';
-            currentProforma.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.description}</td>
-                    <td>${item.sizeInch}</td>
-                    <td>${item.sizeMM}</td>
-                    <td>${item.qty}</td>
-                    <td>${item.area}</td>
-                    <td>₹${item.rate}</td>
-                    <td>₹${item.amount}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            let subtotal = 0;
-            currentProforma.forEach(item => {
-                subtotal += parseFloat(item.amount);
-            });
-            
-            const gst = subtotal * 0.18;
-            const total = subtotal + gst;
-            
-            document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
-            document.getElementById('gstAmount').textContent = '₹' + gst.toFixed(2);
-            document.getElementById('totalAmount').textContent = '₹' + total.toFixed(2);
-        }
-
-        function saveProforma() {
-            if (currentProforma.length === 0) {
-                alert('Please add at least one item');
-                return;
-            }
-            
-            alert('Proforma saved successfully! PI Number: ' + document.getElementById('piNumber').value);
-        }
-
-        // ORDER MANAGEMENT FUNCTIONS
-        function loadOrdersTable() {
-            const tbody = document.getElementById('ordersTable');
-            tbody.innerHTML = '';
-            
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${order.orderNo}</td>
-                    <td>${order.date}</td>
-                    <td>${order.customerName}</td>
-                    <td>₹${order.amount}</td>
-                    <td>
-                        <span class="badge ${order.status === 'pending' ? 'bg-warning' : 'bg-success'}">
-                            ${order.status}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-success" onclick="approveOrder('${order.orderNo}')">
-                            <i class="fas fa-check"></i> Approve
-                        </button>
-                        <button class="btn btn-sm btn-primary" onclick="viewOrder('${order.orderNo}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function approveOrder(orderNo) {
-            if (confirm(`Approve order ${orderNo}?`)) {
-                alert(`Order ${orderNo} approved successfully!`);
-                loadOrdersTable();
-            }
-        }
-
-        function viewOrder(orderNo) {
-            alert(`Viewing order: ${orderNo}`);
-        }
-
-        function createOrderFromProforma() {
-            if (currentProforma.length === 0) {
-                alert('Please create a proforma first');
-                showProforma();
-                return;
-            }
-            
-            const orderNo = 'ORD-' + new Date().getTime().toString().slice(-6);
-            const newOrder = {
-                id: orders.length + 1,
-                orderNo: orderNo,
-                date: new Date().toISOString().split('T')[0],
-                customerName: document.getElementById('billToName').textContent || 'Unknown',
-                amount: document.getElementById('totalAmount').textContent.replace('₹', ''),
-                status: 'pending'
-            };
-            
-            orders.push(newOrder);
-            loadOrdersTable();
-            alert(`Order ${orderNo} created successfully!`);
-        }
-
-        // CUSTOMER TABLE
-        function loadCustomersTable() {
-            const tbody = document.getElementById('customersTable');
-            tbody.innerHTML = '';
-            
-            customers.forEach(customer => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${customer.name}</td>
-                    <td>${customer.address}</td>
-                    <td>${customer.gst}</td>
-                    <td>${customer.phone}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // ITEMS MASTER TABLE
-        function loadItemsMasterTable() {
-            const tbody = document.getElementById('itemsMasterTable');
-            tbody.innerHTML = '';
-            
-            items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.code}</td>
-                    <td>${item.name}</td>
-                    <td>${item.type}</td>
-                    <td>₹${item.rate}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // PDF GENERATION - TALLY STYLE
-        function generatePDF() {
-            if (currentProforma.length === 0) {
-                alert('Please add items to generate PDF');
-                return;
-            }
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = doc.internal.pageSize.width;
-            const margin = 15;
-            
-            // COMPANY HEADER - TALLY STYLE
-            doc.setFontSize(20);
-            doc.setTextColor(44, 62, 80);
-            doc.setFont(undefined, 'bold');
-            doc.text('S.A.P.U.T. GLASS WORKS', pageWidth / 2, margin, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.setTextColor(100, 100, 100);
-            doc.setFont(undefined, 'normal');
-            doc.text('Manufacturer & Supplier of All Types of Glass', pageWidth / 2, margin + 7, { align: 'center' });
-            doc.text('Industrial Area | Phone: 9876543210 | GSTIN: 22AAAAA0000A1Z5', pageWidth / 2, margin + 12, { align: 'center' });
-            
-            // INVOICE TITLE
-            doc.setFontSize(16);
-            doc.setTextColor(0, 0, 0);
-            doc.setFont(undefined, 'bold');
-            doc.text('PROFORMA INVOICE', pageWidth / 2, margin + 25, { align: 'center' });
-            
-            // INVOICE DETAILS
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Invoice No: ${document.getElementById('piNumber').value}`, margin, margin + 35);
-            doc.text(`Date: ${document.getElementById('piDate').value}`, pageWidth - margin, margin + 35, { align: 'right' });
-            
-            // CUSTOMER DETAILS
-            const customerY = margin + 45;
-            doc.text('Bill To:', margin, customerY);
-            doc.setFont(undefined, 'bold');
-            doc.text(document.getElementById('billToName').textContent, margin + 20, customerY);
-            doc.setFont(undefined, 'normal');
-            doc.text(document.getElementById('billToAddress').textContent, margin + 20, customerY + 5);
-            doc.text(document.getElementById('billToGST').textContent, margin + 20, customerY + 10);
-            doc.text(document.getElementById('billToPhone').textContent, margin + 20, customerY + 15);
-            
-            // TABLE HEADER
-            const tableY = margin + 65;
-            doc.setFillColor(240, 240, 240);
-            doc.rect(margin, tableY, pageWidth - 2 * margin, 8, 'F');
-            
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'bold');
-            const headers = ['Sr', 'Description', 'Size', 'Qty', 'Area', 'Rate', 'Amount'];
-            const colWidths = [10, 60, 30, 15, 20, 25, 30];
-            
-            let xPos = margin;
-            headers.forEach((header, i) => {
-                doc.text(header, xPos + colWidths[i] / 2, tableY + 5, { align: 'center' });
-                xPos += colWidths[i];
-            });
-            
-            // TABLE DATA
-            doc.setFont(undefined, 'normal');
-            let yPos = tableY + 10;
-            
-            currentProforma.forEach((item, index) => {
-                if (yPos > 250) {
-                    doc.addPage();
-                    yPos = margin + 20;
-                }
-                
-                xPos = margin;
-                doc.text((index + 1).toString(), xPos + 3, yPos);
-                xPos += colWidths[0];
-                
-                doc.text(item.description, xPos, yPos);
-                xPos += colWidths[1];
-                
-                doc.text(item.sizeInch || item.sizeMM, xPos, yPos);
-                xPos += colWidths[2];
-                
-                doc.text(item.qty, xPos + 3, yPos, { align: 'center' });
-                xPos += colWidths[3];
-                
-                doc.text(item.area, xPos + 3, yPos, { align: 'center' });
-                xPos += colWidths[4];
-                
-                doc.text('₹' + item.rate, xPos + 3, yPos, { align: 'center' });
-                xPos += colWidths[5];
-                
-                doc.text('₹' + item.amount, xPos + 3, yPos, { align: 'center' });
-                
-                yPos += 6;
-            });
-            
-            // TOTALS
-            yPos += 10;
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'bold');
-            
-            const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace('₹', ''));
-            const gst = parseFloat(document.getElementById('gstAmount').textContent.replace('₹', ''));
-            const total = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', ''));
-            
-            doc.text('Subtotal:', pageWidth - margin - 60, yPos);
-            doc.text('₹' + subtotal.toFixed(2), pageWidth - margin, yPos, { align: 'right' });
-            
-            yPos += 6;
-            doc.text('GST (18%):', pageWidth - margin - 60, yPos);
-            doc.text('₹' + gst.toFixed(2), pageWidth - margin, yPos, { align: 'right' });
-            
-            yPos += 6;
-            doc.setTextColor(220, 0, 0);
-            doc.text('GRAND TOTAL:', pageWidth - margin - 60, yPos);
-            doc.text('₹' + total.toFixed(2), pageWidth - margin, yPos, { align: 'right' });
-            
-            // TERMS & CONDITIONS
-            yPos += 15;
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'bold');
-            doc.text('Terms & Conditions:', margin, yPos);
-            
-            doc.setFont(undefined, 'normal');
-            const terms = [
-                '1. Prices are ex-factory',
-                '2. Delivery: 7-10 working days',
-                '3. Payment: 50% advance with order',
-                '4. Goods once sold will not be taken back',
-                '5. Subject to S.A.S. Nagar jurisdiction'
+        // Show specific module
+        function showModule(moduleName) {
+            // Hide all modules
+            const modules = [
+                'dashboard', 'proforma', 'orders', 'customers', 
+                'items', 'accounting', 'reports', 'gst', 'dispatch'
             ];
             
-            terms.forEach((term, i) => {
-                doc.text(term, margin + 5, yPos + 6 + (i * 4));
+            modules.forEach(module => {
+                const element = document.getElementById(module);
+                if (element) {
+                    element.style.display = 'none';
+                }
             });
             
-            // SIGNATURES
-            const sigY = yPos + 30;
-            doc.text('______________________', margin, sigY);
-            doc.text('Authorized Signatory', margin + 20, sigY + 5);
+            // Show selected module
+            const selectedModule = document.getElementById(moduleName);
+            if (selectedModule) {
+                selectedModule.style.display = 'block';
+            }
             
-            doc.text('______________________', pageWidth - margin - 50, sigY);
-            doc.text('Customer Acceptance', pageWidth - margin - 30, sigY + 5);
+            // Update active tab
+            setActiveTab(moduleName);
             
-            // FOOTER
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Powered by S.A.P.U.T. Glass Works Enterprise', pageWidth / 2, 290, { align: 'center' });
-            
-            // SAVE PDF
-            doc.save(`Proforma_${document.getElementById('piNumber').value}.pdf`);
+            // Update module-specific data
+            if (moduleName === 'dashboard') {
+                updateDashboardStats();
+            }
         }
 
-        // PRINT PROFORMA - CLEAN VIEW
-        function printProforma() {
-            const printContent = document.getElementById('proforma').innerHTML;
-            const printWindow = window.open('', '_blank');
+        // Set active navigation tab
+        function setActiveTab(moduleName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Proforma Invoice - ${document.getElementById('piNumber').value}</title>
-                    <style>
-                        @media print {
-                            body {
-                                font-family: Arial, sans-serif;
-                                font-size: 12px;
-                                margin: 0;
-                                padding: 10mm;
-                            }
-                            .no-print { display: none !important; }
-                            .table { border-collapse: collapse; width: 100%; }
-                            .table th, .table td { border: 1px solid #000; padding: 4px; }
-                            .table th { background: #f0f0f0; }
-                            .text-center { text-align: center; }
-                            .text-right { text-align: right; }
-                            .bold { font-weight: bold; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <h2 style="margin: 0;">S.A.P.U.T. GLASS WORKS</h2>
-                        <p style="margin: 5px 0;">Manufacturer & Supplier of All Types of Glass</p>
-                        <p style="margin: 5px 0;">Industrial Area | Phone: 9876543210 | GSTIN: 22AAAAA0000A1Z5</p>
-                    </div>
-                    
-                    <div style="text-align: center; margin: 20px 0;">
-                        <h3 style="margin: 0; text-decoration: underline;">PROFORMA INVOICE</h3>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                        <div>
-                            <p><strong>Invoice No:</strong> ${document.getElementById('piNumber').value}</p>
-                            <p><strong>Date:</strong> ${document.getElementById('piDate').value}</p>
-                        </div>
-                        <div>
-                            <p><strong>Bill To:</strong></p>
-                            <p>${document.getElementById('billToName').textContent}</p>
-                            <p>${document.getElementById('billToAddress').textContent}</p>
-                            <p>${document.getElementById('billToGST').textContent}</p>
-                        </div>
-                    </div>
-                    
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Sr</th>
-                                <th>Description</th>
-                                <th>Size</th>
-                                <th>Qty</th>
-                                <th>Area</th>
-                                <th>Rate</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${currentProforma.map((item, index) => `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${item.description}</td>
-                                    <td>${item.sizeInch || item.sizeMM}</td>
-                                    <td>${item.qty}</td>
-                                    <td>${item.area}</td>
-                                    <td>₹${item.rate}</td>
-                                    <td>₹${item.amount}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    
-                    <div style="margin-top: 30px; text-align: right;">
-                        <p><strong>Subtotal:</strong> ${document.getElementById('subtotal').textContent}</p>
-                        <p><strong>GST (18%):</strong> ${document.getElementById('gstAmount').textContent}</p>
-                        <p><strong style="font-size: 14px;">TOTAL:</strong> ${document.getElementById('totalAmount').textContent}</p>
-                    </div>
-                    
-                    <div style="margin-top: 40px; display: flex; justify-content: space-between;">
-                        <div>
-                            <p>________________________</p>
-                            <p>Authorized Signatory</p>
-                        </div>
-                        <div>
-                            <p>________________________</p>
-                            <p>Customer Acceptance</p>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 50px; font-size: 10px; text-align: center; border-top: 1px solid #ccc; padding-top: 5px;">
-                        Powered by S.A.P.U.T. Glass Works Enterprise
-                    </div>
-                    
-                    <div class="no-print" style="text-align: center; margin-top: 20px;">
-                        <button onclick="window.print()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px;">
-                            Print Now
-                        </button>
-                        <button onclick="window.close()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 4px; margin-left: 10px;">
-                            Close
-                        </button>
-                    </div>
-                    
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                        };
-                    </script>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
+            // Add active class to clicked tab
+            const activeTab = document.querySelector(`[onclick="showModule('${moduleName}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
         }
 
-        // AUTO GENERATE PI NUMBER
-        function generatePINumber() {
-            const date = new Date();
-            const year = date.getFullYear().toString().slice(-2);
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-            return `PI-${year}${month}${day}-${random}`;
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            // Sample data - replace with actual data
+            document.getElementById('todayProforma').textContent = '12';
+            document.getElementById('pendingOrders').textContent = '8';
+            document.getElementById('monthRevenue').textContent = '₹1,25,000';
+            document.getElementById('totalCustomers').textContent = '45';
         }
 
-        // Initialize with a PI number
-        document.getElementById('piNumber').value = generatePINumber();
-        document.getElementById('currentPINumber').textContent = document.getElementById('piNumber').value;
+        // Create new proforma
+        function createNewProforma() {
+            alert('Creating new proforma invoice...');
+            // Add your proforma creation logic here
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Alt + D for Dashboard
+            if (e.altKey && e.key === 'd') {
+                e.preventDefault();
+                showModule('dashboard');
+            }
+            
+            // Alt + P for Proforma
+            if (e.altKey && e.key === 'p') {
+                e.preventDefault();
+                showModule('proforma');
+            }
+            
+            // Alt + O for Orders
+            if (e.altKey && e.key === 'o') {
+                e.preventDefault();
+                showModule('orders');
+            }
+        });
     </script>
 </body>
 </html>
