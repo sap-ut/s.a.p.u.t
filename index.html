@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glass Works - Proforma System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>S.A.P.U.T. Glass Works - Complete Proforma System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --light-bg: #f8f9fa;
-            --sidebar-width: 280px;
+            --primary-color: #4A90E2;
+            --secondary-color: #50C9C3;
+            --success-color: #66BB6A;
+            --warning-color: #FFA726;
+            --danger-color: #EF5350;
+            --sidebar-width: 320px;
+            --topbar-height: 70px;
         }
         
         * {
@@ -25,31 +27,53 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8f9fa;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
-        /* DASHBOARD STYLES */
+        /* DASHBOARD SECTION */
         .dashboard-container {
-            display: none;
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #357ABD 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
         }
         
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            gap: 25px;
+            margin-top: 20px;
         }
         
         .dashboard-card {
             background: white;
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
             cursor: pointer;
             border: none;
             height: 100%;
@@ -58,185 +82,233 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            border: 2px solid transparent;
         }
         
         .dashboard-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
         }
         
         .dashboard-card i {
             font-size: 48px;
             margin-bottom: 20px;
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         .dashboard-card h3 {
-            font-size: 20px;
+            font-size: 1.3rem;
             font-weight: 600;
-            color: var(--primary-color);
+            color: #2c3e50;
             margin-bottom: 10px;
         }
         
         .dashboard-card p {
             color: #666;
-            font-size: 14px;
+            font-size: 0.95rem;
             line-height: 1.5;
         }
         
-        .dashboard-header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
-        
-        .dashboard-header h1 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .dashboard-header p {
-            font-size: 18px;
-            opacity: 0.9;
-        }
-        
-        /* MAIN APPLICATION STYLES */
+        /* MAIN APPLICATION */
         .app-container {
             display: none;
-            background: white;
             min-height: 100vh;
         }
         
+        /* TOP NAVBAR */
         .top-navbar {
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: white;
+            height: var(--topbar-height);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
             position: sticky;
             top: 0;
             z-index: 1000;
         }
         
-        .top-navbar .navbar-brand {
-            font-size: 20px;
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            align-items: center;
+        }
+        
+        .badge-pi {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 0.9rem;
         }
         
-        .top-navbar .nav-buttons {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
+        /* MAIN CONTENT LAYOUT */
         .main-content {
             display: flex;
-            min-height: calc(100vh - 64px);
+            min-height: calc(100vh - var(--topbar-height));
         }
         
         /* LEFT SIDEBAR - COMPACT */
         .left-sidebar {
             width: var(--sidebar-width);
-            background: var(--light-bg);
-            border-right: 1px solid #dee2e6;
-            padding: 15px;
+            background: white;
+            border-right: 1px solid #e9ecef;
+            padding: 20px;
             overflow-y: auto;
             position: sticky;
-            top: 64px;
-            height: calc(100vh - 64px);
+            top: var(--topbar-height);
+            height: calc(100vh - var(--topbar-height));
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
         }
         
         .sidebar-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .sidebar-section h6 {
-            font-size: 12px;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--primary-color);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
         }
         
-        .compact-input {
-            width: 100%;
-            padding: 6px 10px;
-            font-size: 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            margin-bottom: 8px;
+        .form-control-sm {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            height: 38px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
         
-        .compact-select {
-            width: 100%;
-            padding: 6px 10px;
-            font-size: 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            height: 34px;
+        .form-control-sm:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
         
-        .compact-label {
-            font-size: 11px;
+        .form-label {
+            font-size: 0.85rem;
             font-weight: 600;
             color: #495057;
-            margin-bottom: 3px;
-            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* PARTY LIST */
+        .party-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 5px;
         }
         
         .party-item {
-            padding: 8px 10px;
+            padding: 10px 12px;
             background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            margin-bottom: 6px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 5px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 12px;
         }
         
         .party-item:hover {
-            background: #e9ecef;
-            border-color: var(--secondary-color);
+            background: #f8f9fa;
+            border-color: var(--primary-color);
+        }
+        
+        .party-item.active {
+            background: #e8f4fd;
+            border-color: var(--primary-color);
         }
         
         .party-item .name {
             font-weight: 600;
-            color: var(--primary-color);
+            color: #2c3e50;
+            font-size: 0.9rem;
             margin-bottom: 2px;
         }
         
         .party-item .details {
-            font-size: 11px;
+            font-size: 0.8rem;
             color: #6c757d;
         }
         
         /* RIGHT CONTENT AREA */
         .right-content {
             flex: 1;
-            padding: 20px;
+            padding: 25px;
             overflow-y: auto;
             background: #f8f9fa;
         }
         
-        /* PRODUCT TABLE - COMPACT */
-        .product-table-container {
+        /* CUSTOMER DETAILS CARD */
+        .customer-card {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+        }
+        
+        .customer-card.bill-to {
+            border-color: var(--primary-color);
+        }
+        
+        .customer-card.ship-to {
+            border-color: var(--secondary-color);
+        }
+        
+        .customer-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .customer-card-header h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .customer-card-header i {
+            font-size: 1.2rem;
+        }
+        
+        /* PRODUCT TABLE */
+        .table-container {
+            background: white;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
         
         .table-header {
             background: var(--primary-color);
             color: white;
-            padding: 12px 15px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -244,108 +316,196 @@
         
         .table-header h5 {
             margin: 0;
-            font-size: 16px;
+            font-size: 1.1rem;
             font-weight: 600;
         }
         
         .table-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
-        .btn-compact {
-            padding: 4px 10px;
-            font-size: 12px;
-            border-radius: 4px;
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            transition: all 0.3s;
         }
         
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        /* COMPACT TABLE */
         .compact-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 0.85rem;
+        }
+        
+        .compact-table thead {
+            background: #f8f9fa;
         }
         
         .compact-table th {
-            background: #f8f9fa;
-            padding: 8px 6px;
-            text-align: left;
+            padding: 12px 8px;
+            text-align: center;
             font-weight: 600;
-            color: var(--primary-color);
+            color: #2c3e50;
             border-bottom: 2px solid #dee2e6;
             white-space: nowrap;
         }
         
         .compact-table td {
-            padding: 6px;
-            border-bottom: 1px solid #dee2e6;
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
             vertical-align: middle;
         }
         
         .compact-table input {
             width: 100%;
-            padding: 4px 6px;
+            padding: 6px 8px;
             border: 1px solid #ced4da;
-            border-radius: 3px;
-            font-size: 11px;
-            height: 28px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-align: center;
+            transition: all 0.3s;
         }
         
         .compact-table input:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
         
-        .compact-table .size-inputs {
+        .size-input-group {
             display: flex;
             gap: 4px;
         }
         
-        .compact-table .size-inputs input {
-            width: 100%;
+        .size-input-group input {
+            text-align: center;
+        }
+        
+        .fraction-select {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.85rem;
         }
         
         /* SUMMARY SECTION */
-        .summary-card {
+        .summary-container {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
-        .summary-card h6 {
-            font-size: 14px;
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .summary-header h5 {
+            margin: 0;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--secondary-color);
+            color: #2c3e50;
         }
         
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
-            font-size: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.95rem;
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
         }
         
         .summary-row.total {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
             color: var(--danger-color);
-            font-size: 14px;
+            margin-top: 10px;
+            padding-top: 15px;
             border-top: 2px solid #dee2e6;
-            margin-top: 8px;
-            padding-top: 10px;
         }
         
-        /* PRINT/REPORT MODAL */
-        .print-options {
+        /* REPORTS PAGE */
+        .reports-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 4px solid;
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card h3 {
+            font-size: 1.8rem;
+            margin: 10px 0 5px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        /* MODAL STYLES */
+        .modal-xl {
+            max-width: 90%;
         }
         
         /* RESPONSIVE */
@@ -365,6 +525,23 @@
             }
         }
         
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+        
         /* ANIMATIONS */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -377,50 +554,68 @@
         
         /* CUSTOM SCROLLBAR */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
         
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
-            border-radius: 3px;
+            border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb {
             background: #c1c1c1;
-            border-radius: 3px;
+            border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
+        
+        /* UTILITY CLASSES */
+        .text-primary { color: var(--primary-color) !important; }
+        .text-success { color: var(--success-color) !important; }
+        .text-warning { color: var(--warning-color) !important; }
+        .text-danger { color: var(--danger-color) !important; }
+        
+        .bg-primary { background: var(--primary-color) !important; }
+        .bg-success { background: var(--success-color) !important; }
+        .bg-warning { background: var(--warning-color) !important; }
+        .bg-danger { background: var(--danger-color) !important; }
     </style>
 </head>
 <body>
     <!-- DASHBOARD SECTION -->
     <div class="dashboard-container" id="dashboard">
         <div class="dashboard-header fade-in">
-            <h1>Glass Works Proforma System</h1>
+            <h1>S.A.P.U.T. Glass Works Proforma System</h1>
             <p>Complete Glass Processing & Billing Solution</p>
+            <div class="contact-info text-white mt-3">
+                <p class="mb-1">
+                    <i class="fas fa-map-marker-alt me-2"></i>Karnal, Haryana - 132001 |
+                    <i class="fas fa-mobile-alt ms-3 me-2"></i>1111111111 |
+                    <i class="fas fa-envelope ms-3 me-2"></i>jperp1001@gmail.com
+                </p>
+            </div>
         </div>
         
         <div class="dashboard-grid">
             <div class="dashboard-card fade-in" onclick="showProforma()">
                 <i class="fas fa-file-invoice-dollar"></i>
                 <h3>Create Proforma</h3>
-                <p>Create new proforma invoices with advanced calculations and wastage management</p>
+                <p>Create professional proforma invoices with advanced calculations</p>
             </div>
             
             <div class="dashboard-card fade-in" onclick="showQuotation()">
                 <i class="fas fa-file-alt"></i>
                 <h3>Create Quotation</h3>
-                <p>Generate professional quotations with terms & conditions</p>
+                <p>Generate detailed quotations with terms & conditions</p>
             </div>
             
             <div class="dashboard-card fade-in" onclick="showReports()">
                 <i class="fas fa-chart-bar"></i>
                 <h3>View Reports</h3>
-                <p>Analyze sales, profits, and other business reports</p>
+                <p>Analyze sales, profits, and business reports</p>
             </div>
             
             <div class="dashboard-card fade-in" onclick="manageParties()">
@@ -443,84 +638,94 @@
         </div>
     </div>
 
-    <!-- MAIN APPLICATION SECTION -->
+    <!-- MAIN PROFORMA APPLICATION -->
     <div class="app-container" id="app">
         <!-- TOP NAVBAR -->
         <nav class="top-navbar">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <div class="navbar-brand">
-                    <i class="fas fa-industry"></i>
-                    <span>Glass Works Proforma System</span>
-                    <span class="badge bg-light text-dark ms-2" id="currentProforma">001</span>
-                </div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-sm btn-light" onclick="showDashboard()">
-                        <i class="fas fa-home"></i> Dashboard
+            <div class="navbar-brand">
+                <i class="fas fa-industry"></i>
+                <span>S.A.P.U.T. Glass Works</span>
+                <span class="badge-pi" id="currentProforma">PI-001</span>
+            </div>
+            
+            <div class="navbar-actions">
+                <button class="btn btn-sm btn-outline-primary" onclick="showDashboard()">
+                    <i class="fas fa-home me-1"></i> Dashboard
+                </button>
+                <button class="btn btn-sm btn-outline-success" onclick="showReports()">
+                    <i class="fas fa-chart-bar me-1"></i> Reports
+                </button>
+                <button class="btn btn-sm btn-outline-warning" onclick="showSettings()">
+                    <i class="fas fa-cog me-1"></i> Settings
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i> User
                     </button>
-                    <button class="btn btn-sm btn-light" onclick="showReports()">
-                        <i class="fas fa-chart-bar"></i> Reports
-                    </button>
-                    <button class="btn btn-sm btn-light" onclick="showSettings()">
-                        <i class="fas fa-cog"></i> Settings
-                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- LEFT SIDEBAR - COMPACT -->
+            <!-- LEFT SIDEBAR -->
             <div class="left-sidebar">
                 <!-- PROFORMA SETTINGS -->
                 <div class="sidebar-section">
                     <h6>Proforma Settings</h6>
-                    <div>
-                        <label class="compact-label">Proforma No.</label>
-                        <input type="text" class="compact-input" id="proformaNo" value="001">
+                    <div class="mb-3">
+                        <label class="form-label">Proforma No.</label>
+                        <input type="text" class="form-control form-control-sm" id="proformaNo" value="PI-001" readonly>
                     </div>
-                    <div>
-                        <label class="compact-label">Date</label>
-                        <input type="date" class="compact-input" id="proformaDate">
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control form-control-sm" id="proformaDate">
                     </div>
-                    <div>
-                        <label class="compact-label">UOM</label>
-                        <select class="compact-select" id="uom" onchange="calculateAllRows()">
-                            <option value="sqft">Sq. Ft.</option>
-                            <option value="sqmt">Sq. Mt.</option>
+                    <div class="mb-3">
+                        <label class="form-label">UOM</label>
+                        <select class="form-select form-select-sm" id="uom" onchange="calculateAllRows()">
+                            <option value="sqft">Square Feet</option>
+                            <option value="sqmt">Square Meters</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="compact-label">Wastage Mode</label>
-                        <select class="compact-select" id="wastageMode" onchange="toggleWastage()">
-                            <option value="none">None</option>
-                            <option value="round">Round Off</option>
-                            <option value="evenin">Even IN</option>
-                            <option value="evencm">Even CM</option>
+                    <div class="mb-3">
+                        <label class="form-label">Wastage Mode</label>
+                        <select class="form-select form-select-sm" id="wastageMode" onchange="toggleWastage()">
+                            <option value="none">No Wastage</option>
+                            <option value="round">Round Up</option>
+                            <option value="evenin">Even Inches</option>
+                            <option value="evencm">Even Centimeters</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- ADD MM OPTION -->
+                <!-- ADD MM SETTINGS -->
                 <div class="sidebar-section">
-                    <div class="d-flex align-items-center mb-2">
-                        <input type="checkbox" id="enableAddMM" onchange="toggleAddMM()" class="me-2">
-                        <label for="enableAddMM" class="compact-label mb-0">Add MM to Size</label>
+                    <h6>Add MM Settings</h6>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="enableAddMM" onchange="toggleAddMM()">
+                        <label class="form-check-label" for="enableAddMM">
+                            Enable Add MM
+                        </label>
                     </div>
                     
                     <div id="mmSettings" style="display: none;">
-                        <div class="row g-2">
+                        <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label class="compact-label">Width (+MM)</label>
-                                <input type="number" class="compact-input" id="addMMWidth" value="3" onchange="applyAddMMToAll()">
+                                <label class="form-label">Width (+MM)</label>
+                                <input type="number" class="form-control form-control-sm" id="addMMWidth" value="3" min="0">
                             </div>
                             <div class="col-6">
-                                <label class="compact-label">Height (+MM)</label>
-                                <input type="number" class="compact-input" id="addMMHeight" value="3" onchange="applyAddMMToAll()">
+                                <label class="form-label">Height (+MM)</label>
+                                <input type="number" class="form-control form-control-sm" id="addMMHeight" value="3" min="0">
                             </div>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary w-100 mt-1" onclick="applyAddMMToAll()">
-                            <i class="fas fa-sync fa-xs"></i> Apply All
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="applyAddMMToAll()">
+                            <i class="fas fa-sync fa-xs me-1"></i> Apply to All
                         </button>
                     </div>
                 </div>
@@ -528,42 +733,39 @@
                 <!-- PARTY SELECTION -->
                 <div class="sidebar-section">
                     <h6>Select Party</h6>
-                    <div class="mb-2">
-                        <input type="text" class="compact-input" id="searchParty" placeholder="Search party...">
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-sm" id="searchParty" placeholder="Search party..." onkeyup="searchParties()">
                     </div>
-                    <div style="max-height: 200px; overflow-y: auto;">
-                        <div class="party-item" onclick="selectParty('Mohan Glass House', '123 Main Street, Delhi', '07AABCM1234N1Z5', '9876543210')">
-                            <div class="name">Mohan Glass House</div>
-                            <div class="details">Delhi | 9876543210</div>
-                        </div>
-                        <div class="party-item" onclick="selectParty('Shyam Glass Works', '456 Market Road, Noida', '09AAECS1234N1Z6', '9876543211')">
-                            <div class="name">Shyam Glass Works</div>
-                            <div class="details">Noida | 9876543211</div>
-                        </div>
-                        <div class="party-item text-center py-2" onclick="showPartyModal()">
-                            <i class="fas fa-plus me-1"></i> Add New Party
-                        </div>
+                    <div class="party-list" id="partyList">
+                        <!-- Parties will be loaded here -->
                     </div>
+                    <button class="btn btn-sm btn-success w-100 mt-2" onclick="showPartyModal()">
+                        <i class="fas fa-plus me-1"></i> Add New Party
+                    </button>
                 </div>
 
                 <!-- QUICK SUMMARY -->
                 <div class="sidebar-section">
                     <h6>Quick Summary</h6>
-                    <div class="summary-card">
+                    <div class="summary-container">
                         <div class="summary-row">
-                            <span>Items:</span>
+                            <span>Total Items:</span>
                             <span id="summaryItems">0</span>
                         </div>
                         <div class="summary-row">
-                            <span>Area:</span>
+                            <span>Total Area:</span>
                             <span id="summaryArea">0 Sq.Ft.</span>
                         </div>
                         <div class="summary-row">
-                            <span>Amount:</span>
+                            <span>Basic Amount:</span>
                             <span id="summaryBasic">₹ 0.00</span>
                         </div>
+                        <div class="summary-row">
+                            <span>GST (18%):</span>
+                            <span id="summaryGST">₹ 0.00</span>
+                        </div>
                         <div class="summary-row total">
-                            <span>Total:</span>
+                            <span>Grand Total:</span>
                             <span id="summaryGrand">₹ 0.00</span>
                         </div>
                     </div>
@@ -572,48 +774,55 @@
 
             <!-- RIGHT CONTENT AREA -->
             <div class="right-content">
-                <!-- PARTY DETAILS -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header py-2 bg-success text-white">
-                                <h6 class="mb-0"><i class="fas fa-user-tie me-2"></i>Bill To</h6>
+                <!-- CUSTOMER DETAILS -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="customer-card bill-to">
+                            <div class="customer-card-header">
+                                <h5><i class="fas fa-user-tie me-2"></i>Bill To</h5>
+                                <i class="fas fa-building text-primary"></i>
                             </div>
-                            <div class="card-body p-2">
-                                <input type="text" class="form-control form-control-sm mb-2" id="billName" placeholder="Party Name">
-                                <textarea class="form-control form-control-sm mb-2" id="billAddress" rows="2" placeholder="Address"></textarea>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" id="billGST" placeholder="GSTIN">
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" id="billPhone" placeholder="Phone">
-                                    </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <input type="text" class="form-control form-control-sm" id="billName" placeholder="Party Name" value="Raj Glass House">
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control form-control-sm" id="billAddress" rows="2" placeholder="Address">123, Main Market, Delhi</textarea>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" id="billGST" placeholder="GSTIN" value="07AABCU9603R1ZX">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" id="billPhone" placeholder="Phone" value="9876543210">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header py-2 bg-warning text-dark">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-truck me-2"></i>Ship To
-                                    <small class="float-end">
-                                        <input type="checkbox" id="sameAddress" checked onchange="copyAddress()" class="me-1">
-                                        <label for="sameAddress" class="mb-0">Same as Bill</label>
-                                    </small>
-                                </h6>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="customer-card ship-to">
+                            <div class="customer-card-header">
+                                <h5><i class="fas fa-truck me-2"></i>Ship To</h5>
+                                <i class="fas fa-shipping-fast text-secondary"></i>
                             </div>
-                            <div class="card-body p-2">
-                                <input type="text" class="form-control form-control-sm mb-2" id="shipName" placeholder="Party Name">
-                                <textarea class="form-control form-control-sm mb-2" id="shipAddress" rows="2" placeholder="Address"></textarea>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" id="shipGST" placeholder="GSTIN">
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control form-control-sm" id="shipPhone" placeholder="Phone">
-                                    </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="sameAsBill" onchange="copyToShip()">
+                                <label class="form-check-label" for="sameAsBill">
+                                    Same as Bill To
+                                </label>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <input type="text" class="form-control form-control-sm" id="shipName" placeholder="Ship To Name">
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control form-control-sm" id="shipAddress" rows="2" placeholder="Shipping Address"></textarea>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" id="shipGST" placeholder="GSTIN">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" id="shipPhone" placeholder="Phone">
                                 </div>
                             </div>
                         </div>
@@ -621,139 +830,92 @@
                 </div>
 
                 <!-- PRODUCT TABLE -->
-                <div class="product-table-container mb-3">
+                <div class="table-container">
                     <div class="table-header">
-                        <h5><i class="fas fa-list me-2"></i>Product Details</h5>
+                        <h5><i class="fas fa-glass-whiskey me-2"></i>Glass Items</h5>
                         <div class="table-actions">
-                            <button class="btn btn-sm btn-success" onclick="scrollToFirstEmpty()">
-                                <i class="fas fa-arrow-down"></i> Empty Row
+                            <button class="btn-action btn-primary" onclick="addNewRow()">
+                                <i class="fas fa-plus me-1"></i> Add Row
                             </button>
-                            <button class="btn btn-sm btn-primary" onclick="addMoreRows(50)">
-                                <i class="fas fa-plus"></i> Add 50
+                            <button class="btn-action btn-success" onclick="calculateAllRows()">
+                                <i class="fas fa-calculator me-1"></i> Calculate All
                             </button>
-                            <button class="btn btn-sm btn-warning" onclick="clearAllRows()">
-                                <i class="fas fa-trash"></i> Clear All
+                            <button class="btn-action btn-warning" onclick="clearAllRows()">
+                                <i class="fas fa-trash me-1"></i> Clear All
                             </button>
                         </div>
                     </div>
                     
-                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <div class="table-responsive">
                         <table class="compact-table">
                             <thead>
                                 <tr>
-                                    <th width="40">Sr.</th>
-                                    <th width="180">Description</th>
-                                    <th width="80">Actual (IN)</th>
-                                    <th width="80">Actual (MM)</th>
-                                    <th width="80">Chrg (IN)</th>
-                                    <th width="80">Chrg (MM)</th>
-                                    <th width="50">Qty</th>
-                                    <th width="60">Area</th>
-                                    <th width="70">Rate</th>
-                                    <th width="80">Amount</th>
-                                    <th width="90">Remarks</th>
-                                    <th width="40">Del</th>
+                                    <th width="3%">#</th>
+                                    <th width="10%">Width (Ft-In-Frac)</th>
+                                    <th width="10%">Height (Ft-In-Frac)</th>
+                                    <th width="12%">Size in MM</th>
+                                    <th width="8%">Qty</th>
+                                    <th width="10%">Rate (₹/sq.ft)</th>
+                                    <th width="12%">Hole/Cut Qty</th>
+                                    <th width="8%">Area</th>
+                                    <th width="10%">Amount</th>
+                                    <th width="5%">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="productTableBody">
-                                <!-- Rows will be generated here -->
+                            <tbody id="productTable">
+                                <!-- Rows will be added here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- ADDITIONAL CHARGES & SUMMARY -->
-                <div class="row">
+                <!-- SUMMARY & ACTIONS -->
+                <div class="row mt-4">
                     <div class="col-md-8">
-                        <div class="card mb-3">
-                            <div class="card-header py-2 bg-secondary text-white">
-                                <h6 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Additional Charges</h6>
+                        <div class="summary-container">
+                            <div class="summary-header">
+                                <h5>Invoice Summary</h5>
                             </div>
-                            <div class="card-body p-2">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-sm mb-2">
-                                            <span class="input-group-text" style="width: 120px;">Packing</span>
-                                            <input type="number" class="form-control" id="packingCharges" value="0" onchange="calculateTotal()">
-                                        </div>
-                                        <div class="input-group input-group-sm mb-2">
-                                            <span class="input-group-text" style="width: 120px;">Freight</span>
-                                            <input type="number" class="form-control" id="freightCharges" value="0" onchange="calculateTotal()">
-                                        </div>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text" style="width: 120px;">Other</span>
-                                            <input type="number" class="form-control" id="otherCharges" value="0" onchange="calculateTotal()">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-sm mb-2">
-                                            <span class="input-group-text" style="width: 120px;">GST %</span>
-                                            <input type="number" class="form-control" id="gstPercent" value="18" onchange="calculateTotal()">
-                                        </div>
-                                        <div class="input-group input-group-sm mb-2">
-                                            <span class="input-group-text" style="width: 120px;">Round Off</span>
-                                            <input type="number" class="form-control" id="roundOff" value="0" onchange="calculateTotal()">
-                                        </div>
-                                        <div>
-                                            <textarea class="form-control form-control-sm" id="notes" rows="2" placeholder="Notes..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="invoiceSubtotal">₹ 0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Discount:</span>
+                                <span>
+                                    <input type="number" id="discountPercent" value="0" min="0" max="100" style="width: 60px; padding: 2px;"> %
+                                    <span id="discountAmount" class="ms-2">₹ 0.00</span>
+                                </span>
+                            </div>
+                            <div class="summary-row">
+                                <span>GST (18%):</span>
+                                <span id="invoiceGST">₹ 0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>GRAND TOTAL:</span>
+                                <span id="invoiceGrandTotal">₹ 0.00</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header py-2 bg-danger text-white">
-                                <h6 class="mb-0"><i class="fas fa-calculator me-2"></i>Final Summary</h6>
+                        <div class="summary-container">
+                            <div class="summary-header">
+                                <h5>Actions</h5>
                             </div>
-                            <div class="card-body p-2">
-                                <div class="summary-row">
-                                    <span>Total Area:</span>
-                                    <span id="totalArea">0 Sq.Ft.</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Basic Amount:</span>
-                                    <span id="basicAmount">₹ 0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Add. Charges:</span>
-                                    <span id="additionalCharges">₹ 0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Sub Total:</span>
-                                    <span id="subTotal">₹ 0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>GST @<span id="gstLabel">18</span>%:</span>
-                                    <span id="gstAmount">₹ 0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Round Off:</span>
-                                    <span id="roundOffAmount">₹ 0.00</span>
-                                </div>
-                                <div class="summary-row total">
-                                    <span>GRAND TOTAL:</span>
-                                    <span id="grandTotal">₹ 0.00</span>
-                                </div>
-                                
-                                <div class="mt-3">
-                                    <button class="btn btn-success btn-sm w-100 mb-2" onclick="calculateTotal()">
-                                        <i class="fas fa-calculator"></i> Calculate All
-                                    </button>
-                                    <div class="btn-group w-100">
-                                        <button class="btn btn-primary btn-sm" onclick="showPrintOptions()">
-                                            <i class="fas fa-print"></i> Print
-                                        </button>
-                                        <button class="btn btn-info btn-sm" onclick="exportToExcel()">
-                                            <i class="fas fa-file-excel"></i> Excel
-                                        </button>
-                                        <button class="btn btn-warning btn-sm" onclick="saveProforma()">
-                                            <i class="fas fa-save"></i> Save
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn-action btn-primary" onclick="saveProforma()">
+                                    <i class="fas fa-save me-2"></i> Save Proforma
+                                </button>
+                                <button class="btn-action btn-success" onclick="printProforma()">
+                                    <i class="fas fa-print me-2"></i> Print/PDF
+                                </button>
+                                <button class="btn-action btn-warning" onclick="newProforma()">
+                                    <i class="fas fa-file me-2"></i> New Proforma
+                                </button>
+                                <button class="btn-action btn-danger" onclick="emailProforma()">
+                                    <i class="fas fa-envelope me-2"></i> Email
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -763,582 +925,955 @@
     </div>
 
     <!-- REPORTS SECTION -->
-    <div class="app-container" id="reports" style="display: none;">
-        <nav class="top-navbar">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <div class="navbar-brand">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports & Analytics</span>
-                </div>
-                <div class="nav-buttons">
-                    <button class="btn btn-sm btn-light" onclick="showDashboard()">
-                        <i class="fas fa-home"></i> Dashboard
+    <div class="reports-container" id="reportsSection" style="display: none;">
+        <div class="dashboard-header">
+            <h1>Reports & Analytics</h1>
+            <p>Complete business intelligence and reporting dashboard</p>
+        </div>
+        
+        <div class="stats-grid" id="reportsStats">
+            <!-- Stats will be loaded here -->
+        </div>
+        
+        <div class="chart-container">
+            <h5 class="mb-3">Revenue Trend</h5>
+            <canvas id="revenueChart"></canvas>
+        </div>
+        
+        <div class="table-container mt-4">
+            <div class="table-header">
+                <h5><i class="fas fa-file-invoice me-2"></i>Recent Proformas</h5>
+                <div class="table-actions">
+                    <button class="btn-action btn-primary" onclick="exportReports()">
+                        <i class="fas fa-download me-1"></i> Export Excel
                     </button>
-                    <button class="btn btn-sm btn-light" onclick="showProforma()">
-                        <i class="fas fa-file-invoice-dollar"></i> Proforma
+                    <button class="btn-action btn-success" onclick="printReports()">
+                        <i class="fas fa-print me-1"></i> Print
                     </button>
                 </div>
             </div>
-        </nav>
-        
-        <div class="right-content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Sales Reports</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="reportsContent">
-                                <h4 class="text-center text-muted my-5">Reports will be displayed here</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="table-responsive">
+                <table class="compact-table" id="reportsTable">
+                    <!-- Reports will be loaded here -->
+                </table>
             </div>
         </div>
     </div>
 
     <!-- MODALS -->
-    <!-- Print Options Modal -->
-    <div class="modal fade" id="printOptionsModal" tabindex="-1">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white py-2">
-                    <h6 class="modal-title mb-0">Print/PDF Options</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-3">
-                    <div class="mb-2">
-                        <input type="checkbox" id="printShowChargeable" class="me-2" checked>
-                        <label for="printShowChargeable" class="mb-0">Chargeable Size</label>
-                    </div>
-                    <div class="mb-2">
-                        <input type="checkbox" id="printShowActual" class="me-2" checked>
-                        <label for="printShowActual" class="mb-0">Actual Size</label>
-                    </div>
-                    <div class="mb-2">
-                        <input type="checkbox" id="printShowMM" class="me-2">
-                        <label for="printShowMM" class="mb-0">MM Size</label>
-                    </div>
-                    <div class="mb-3">
-                        <input type="checkbox" id="printShowRemarks" class="me-2" checked>
-                        <label for="printShowRemarks" class="mb-0">Remarks</label>
-                    </div>
-                    <div>
-                        <label class="compact-label mb-1">Page Size</label>
-                        <select class="compact-select" id="printPageSize">
-                            <option value="a4">A4 Portrait</option>
-                            <option value="a4-landscape">A4 Landscape</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer py-2">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-primary" onclick="generatePDF()">
-                        <i class="fas fa-file-pdf"></i> Download PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Party Modal -->
     <div class="modal fade" id="partyModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-success text-white py-2">
-                    <h6 class="modal-title mb-0">Add New Party</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title">Add/Edit Party</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-3">
-                    <div class="mb-2">
-                        <label class="compact-label">Party Name *</label>
-                        <input type="text" class="compact-input" id="partyName">
-                    </div>
-                    <div class="mb-2">
-                        <label class="compact-label">Address</label>
-                        <textarea class="compact-input" id="partyAddress" rows="2"></textarea>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label class="compact-label">City</label>
-                            <input type="text" class="compact-input" id="partyCity">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Party Name *</label>
+                            <input type="text" class="form-control" id="modalPartyName">
                         </div>
-                        <div class="col-6">
-                            <label class="compact-label">Phone</label>
-                            <input type="text" class="compact-input" id="partyPhone">
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Person</label>
+                            <input type="text" class="form-control" id="modalContactPerson">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="compact-label">GSTIN</label>
-                            <input type="text" class="compact-input" id="partyGST">
+                        <div class="col-md-12">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" id="modalAddress" rows="2"></textarea>
                         </div>
-                        <div class="col-6">
-                            <label class="compact-label">State</label>
-                            <select class="compact-select" id="partyState">
-                                <option value="">Select State</option>
-                                <option>Delhi</option>
-                                <option>Uttar Pradesh</option>
-                                <option>Haryana</option>
-                                <option>Punjab</option>
-                            </select>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone *</label>
+                            <input type="text" class="form-control" id="modalPhone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="modalEmail">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">GSTIN</label>
+                            <input type="text" class="form-control" id="modalGST">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">PAN</label>
+                            <input type="text" class="form-control" id="modalPAN">
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer py-2">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-success" onclick="saveParty()">Save Party</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quotation Modal -->
-    <div class="modal fade" id="quotationModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title">Quotation View</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div id="quotationContent" style="padding: 20px;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="printQuotation()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button type="button" class="btn btn-success btn-sm" onclick="saveQuotationPDF()">
-                        <i class="fas fa-file-pdf"></i> Save as PDF
-                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveParty()">Save Party</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- External Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-    <!-- Main JavaScript -->
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">System Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Company Settings</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Name</label>
+                                        <input type="text" class="form-control" value="S.A.P.U.T. Glass Works">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control" rows="2">Karnal, Haryana - 132001</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" class="form-control" value="1111111111">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="jperp1001@gmail.com">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Default Rates</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Clear Glass 6mm (₹/sq.ft)</label>
+                                        <input type="number" class="form-control" value="450">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Toughened Glass (₹/sq.ft)</label>
+                                        <input type="number" class="form-control" value="650">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Laminated Glass (₹/sq.ft)</label>
+                                        <input type="number" class="form-control" value="850">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">GST Percentage</label>
+                                        <input type="number" class="form-control" value="18">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Other Settings</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Default UOM</label>
+                                        <select class="form-select">
+                                            <option value="sqft">Square Feet</option>
+                                            <option value="sqmt">Square Meters</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Default Wastage</label>
+                                        <select class="form-select">
+                                            <option value="none">No Wastage</option>
+                                            <option value="round">Round Up</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Auto Numbering</label>
+                                        <select class="form-select">
+                                            <option value="auto">Auto Generate</option>
+                                            <option value="manual">Manual Entry</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Print Format</label>
+                                        <select class="form-select">
+                                            <option value="a4">A4 Size</option>
+                                            <option value="thermal">Thermal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Help & Support</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Quick Guide</h6>
+                    <ol>
+                        <li>Select party from sidebar or add new</li>
+                        <li>Enter glass sizes in feet, inches, fractions</li>
+                        <li>Add +MM if needed for cutting wastage</li>
+                        <li>Enter quantity and rate per sq.ft</li>
+                        <li>Click Calculate All to compute totals</li>
+                        <li>Save or Print the proforma</li>
+                    </ol>
+                    <hr>
+                    <h6>Support</h6>
+                    <p>Email: jperp1001@gmail.com</p>
+                    <p>Phone: 1111111111</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script>
-        // Initialize on load
+        // Global Variables
+        let currentProformaId = 1;
+        let rowCounter = 1;
+        let parties = [];
+        let proformas = [];
+        
+        // Initialize Application
         document.addEventListener('DOMContentLoaded', function() {
-            // Show dashboard on startup
-            showDashboard();
-            
-            // Generate 500 rows for proforma
-            generateProductRows(500);
-            
-            // Set today's date
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            // Set current date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('proformaDate').value = today;
-        });
-
-        // Navigation Functions
-        function showDashboard() {
-            hideAllSections();
-            document.getElementById('dashboard').style.display = 'block';
-        }
-
-        function showProforma() {
-            hideAllSections();
-            document.getElementById('app').style.display = 'block';
-            calculateTotal();
-        }
-
-        function showQuotation() {
-            hideAllSections();
-            document.getElementById('app').style.display = 'block';
-            // Also show quotation modal
-            const modal = new bootstrap.Modal(document.getElementById('quotationModal'));
-            modal.show();
-        }
-
-        function showReports() {
-            hideAllSections();
-            document.getElementById('reports').style.display = 'block';
-            loadReports();
-        }
-
-        function hideAllSections() {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('app').style.display = 'none';
-            document.getElementById('reports').style.display = 'none';
-        }
-
-        // Generate 500 product rows
-        function generateProductRows(count) {
-            const tbody = document.getElementById('productTableBody');
-            tbody.innerHTML = '';
             
-            for(let i = 1; i <= count; i++) {
-                const row = document.createElement('tr');
-                row.id = `row-${i}`;
-                row.innerHTML = `
-                    <td class="text-center">${i}</td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" 
-                               placeholder="Description" value="${i === 1 ? '12MM CLEAR GLASS' : ''}">
-                    </td>
-                    <td>
-                        <div class="size-inputs">
-                            <input type="text" class="form-control form-control-sm" placeholder="W" value="${i === 1 ? '45 3/4' : ''}">
-                            <input type="text" class="form-control form-control-sm" placeholder="H" value="${i === 1 ? '44 1/2' : ''}">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="size-inputs">
-                            <input type="number" class="form-control form-control-sm" placeholder="W mm" value="${i === 1 ? '1162' : ''}">
-                            <input type="number" class="form-control form-control-sm" placeholder="H mm" value="${i === 1 ? '1130' : ''}">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="size-inputs">
-                            <input type="text" class="form-control form-control-sm" placeholder="W" readonly>
-                            <input type="text" class="form-control form-control-sm" placeholder="H" readonly>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="size-inputs">
-                            <input type="number" class="form-control form-control-sm" placeholder="W mm" readonly>
-                            <input type="number" class="form-control form-control-sm" placeholder="H mm" readonly>
-                        </div>
-                    </td>
-                    <td><input type="number" class="form-control form-control-sm" value="1" min="1"></td>
-                    <td class="text-center">0</td>
-                    <td><input type="number" class="form-control form-control-sm" value="${i === 1 ? '1413.91' : '0'}"></td>
-                    <td class="text-end">0.00</td>
-                    <td><input type="text" class="form-control form-control-sm" placeholder="Remarks" value="${i === 1 ? 'Process (+), CEP' : ''}"></td>
-                    <td class="text-center">
-                        <button class="btn btn-danger btn-xs" onclick="clearRow(${i})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-                
-                // Add event listeners
-                addRowEventListeners(row, i);
-            }
+            // Load saved data
+            loadParties();
+            loadProformas();
             
-            // Calculate first row
-            setTimeout(() => calculateRow(1), 100);
+            // Generate proforma number
+            generateProformaNumber();
+            
+            // Add initial row
+            addNewRow();
+            
+            // Setup event listeners
+            setupEventListeners();
         }
-
-        // Add event listeners to row
-        function addRowEventListeners(row, rowNum) {
-            const inputs = row.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    if(!this.placeholder.includes('Remarks')) {
-                        calculateRow(rowNum);
-                        calculateTotal();
-                    }
-                });
+        
+        function setupEventListeners() {
+            // Discount percentage change
+            document.getElementById('discountPercent').addEventListener('input', calculateSummary);
+            
+            // Date picker
+            flatpickr("#proformaDate", {
+                dateFormat: "Y-m-d",
+                defaultDate: "today"
             });
         }
-
-        // Calculate single row
-        function calculateRow(rowNum) {
-            const row = document.getElementById(`row-${rowNum}`);
-            if(!row) return;
+        
+        // NAVIGATION FUNCTIONS
+        function showDashboard() {
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('reportsSection').style.display = 'none';
+        }
+        
+        function showProforma() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            document.getElementById('reportsSection').style.display = 'none';
+        }
+        
+        function showQuotation() {
+            alert('Quotation module coming soon!');
+        }
+        
+        function showReports() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('reportsSection').style.display = 'block';
+            loadReportsData();
+        }
+        
+        function manageParties() {
+            showPartyModal();
+        }
+        
+        function showSettings() {
+            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+        }
+        
+        function showHelp() {
+            new bootstrap.Modal(document.getElementById('helpModal')).show();
+        }
+        
+        // PARTY MANAGEMENT
+        function loadParties() {
+            // Load from localStorage or use defaults
+            try {
+                parties = JSON.parse(localStorage.getItem('saput_parties')) || [];
+            } catch {
+                parties = [];
+            }
             
-            const inputs = row.querySelectorAll('input');
-            const wIn = inputs[1].value.trim();
-            const hIn = inputs[2].value.trim();
-            const wMm = inputs[3].value;
-            const hMm = inputs[4].value;
-            const qty = parseFloat(inputs[6].value) || 1;
-            const rate = parseFloat(inputs[8].value) || 0;
+            // Default parties if none exist
+            if (parties.length === 0) {
+                parties = [
+                    {
+                        id: 1,
+                        name: 'Raj Glass House',
+                        address: '123, Main Market, Delhi',
+                        gst: '07AABCU9603R1ZX',
+                        phone: '9876543210',
+                        email: 'raj@glass.com'
+                    },
+                    {
+                        id: 2,
+                        name: 'Shyam Glass Works',
+                        address: '456, Industrial Area, Noida',
+                        gst: '09AAECS1234N1Z6',
+                        phone: '9876543211',
+                        email: 'shyam@glass.com'
+                    },
+                    {
+                        id: 3,
+                        name: 'Modern Glass Solutions',
+                        address: '789, Sector 5, Panipat',
+                        gst: '',
+                        phone: '9876543212',
+                        email: 'modern@glass.com'
+                    }
+                ];
+                localStorage.setItem('saput_parties', JSON.stringify(parties));
+            }
             
-            if(!wIn && !hIn && !wMm && !hMm) {
-                inputs[9].value = '';
-                inputs[10].value = '';
-                inputs[11].value = '';
-                inputs[12].value = '';
-                row.cells[7].textContent = '0';
-                row.cells[9].textContent = '0.00';
+            renderPartyList();
+        }
+        
+        function renderPartyList() {
+            const partyList = document.getElementById('partyList');
+            partyList.innerHTML = '';
+            
+            parties.forEach(party => {
+                const partyItem = document.createElement('div');
+                partyItem.className = 'party-item';
+                partyItem.innerHTML = `
+                    <div class="name">${party.name}</div>
+                    <div class="details">${party.phone} | ${party.address.substring(0, 30)}...</div>
+                `;
+                partyItem.onclick = () => selectParty(party);
+                partyList.appendChild(partyItem);
+            });
+        }
+        
+        function selectParty(party) {
+            document.getElementById('billName').value = party.name;
+            document.getElementById('billAddress').value = party.address;
+            document.getElementById('billGST').value = party.gst;
+            document.getElementById('billPhone').value = party.phone;
+            
+            // Highlight selected party
+            document.querySelectorAll('.party-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.party-item').classList.add('active');
+            
+            // Copy to ship if checkbox is checked
+            if (document.getElementById('sameAsBill').checked) {
+                copyToShip();
+            }
+        }
+        
+        function searchParties() {
+            const searchTerm = document.getElementById('searchParty').value.toLowerCase();
+            const partyItems = document.querySelectorAll('.party-item');
+            
+            partyItems.forEach(item => {
+                const name = item.querySelector('.name').textContent.toLowerCase();
+                const details = item.querySelector('.details').textContent.toLowerCase();
+                if (name.includes(searchTerm) || details.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function showPartyModal() {
+            // Clear modal fields
+            document.getElementById('modalPartyName').value = '';
+            document.getElementById('modalContactPerson').value = '';
+            document.getElementById('modalAddress').value = '';
+            document.getElementById('modalPhone').value = '';
+            document.getElementById('modalEmail').value = '';
+            document.getElementById('modalGST').value = '';
+            document.getElementById('modalPAN').value = '';
+            
+            new bootstrap.Modal(document.getElementById('partyModal')).show();
+        }
+        
+        function saveParty() {
+            const party = {
+                id: parties.length > 0 ? Math.max(...parties.map(p => p.id)) + 1 : 1,
+                name: document.getElementById('modalPartyName').value,
+                contactPerson: document.getElementById('modalContactPerson').value,
+                address: document.getElementById('modalAddress').value,
+                phone: document.getElementById('modalPhone').value,
+                email: document.getElementById('modalEmail').value,
+                gst: document.getElementById('modalGST').value,
+                pan: document.getElementById('modalPAN').value,
+                created: new Date().toISOString()
+            };
+            
+            if (!party.name || !party.phone) {
+                alert('Party name and phone are required!');
                 return;
             }
             
-            // Calculate sizes and amounts
-            let width = wMm || convertToMm(wIn);
-            let height = hMm || convertToMm(hIn);
+            parties.push(party);
+            localStorage.setItem('saput_parties', JSON.stringify(parties));
             
-            // Apply +MM if enabled
-            if(document.getElementById('enableAddMM').checked) {
-                const addW = parseFloat(document.getElementById('addMMWidth').value) || 0;
-                const addH = parseFloat(document.getElementById('addMMHeight').value) || 0;
-                width = parseFloat(width) + addW;
-                height = parseFloat(height) + addH;
-            }
+            renderPartyList();
+            bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
             
-            // Apply wastage mode
-            const mode = document.getElementById('wastageMode').value;
-            if(mode === 'round') {
-                width = Math.round(width);
-                height = Math.round(height);
-            } else if(mode === 'evenin') {
-                width = Math.ceil(width / 25.4) * 25.4;
-                height = Math.ceil(height / 25.4) * 25.4;
-            } else if(mode === 'evencm') {
-                width = Math.ceil(width / 10) * 10;
-                height = Math.ceil(height / 10) * 10;
-            }
+            // Select the new party
+            selectParty(party);
             
-            // Update chargeable sizes
-            inputs[9].value = (width / 25.4).toFixed(2);
-            inputs[10].value = (height / 25.4).toFixed(2);
-            inputs[11].value = Math.round(width);
-            inputs[12].value = Math.round(height);
-            
-            // Calculate area
-            const uom = document.getElementById('uom').value;
-            let area = (width * height) / (uom === 'sqmt' ? 1000000 : 92903.04);
-            area = area * qty;
-            row.cells[7].textContent = area.toFixed(3);
-            
-            // Calculate amount
-            const amount = area * rate;
-            row.cells[9].textContent = amount.toFixed(2);
+            alert('Party saved successfully!');
         }
-
-        // Convert fraction to mm
-        function convertToMm(fraction) {
-            if(!fraction) return 0;
-            let decimal = 0;
-            if(fraction.includes(' ')) {
-                const parts = fraction.split(' ');
-                const whole = parseFloat(parts[0]) || 0;
-                const frac = parts[1];
-                if(frac.includes('/')) {
-                    const [n, d] = frac.split('/').map(Number);
-                    decimal = whole + (n / d);
-                } else {
-                    decimal = whole + parseFloat(frac);
-                }
-            } else if(fraction.includes('/')) {
-                const [n, d] = fraction.split('/').map(Number);
-                decimal = n / d;
-            } else {
-                decimal = parseFloat(fraction) || 0;
-            }
-            return decimal * 25.4;
-        }
-
-        // Calculate all rows
-        function calculateAllRows() {
-            const rows = document.querySelectorAll('#productTableBody tr');
-            rows.forEach((row, index) => calculateRow(index + 1));
-            calculateTotal();
-        }
-
-        // Calculate total summary
-        function calculateTotal() {
-            let itemCount = 0;
-            let totalArea = 0;
-            let totalAmount = 0;
-            
-            const rows = document.querySelectorAll('#productTableBody tr');
-            rows.forEach(row => {
-                const area = parseFloat(row.cells[7].textContent) || 0;
-                const amount = parseFloat(row.cells[9].textContent) || 0;
-                const desc = row.querySelector('input[placeholder="Description"]').value.trim();
-                
-                if(desc || area > 0) {
-                    itemCount++;
-                    totalArea += area;
-                    totalAmount += amount;
-                }
-            });
-            
-            // Additional charges
-            const packing = parseFloat(document.getElementById('packingCharges').value) || 0;
-            const freight = parseFloat(document.getElementById('freightCharges').value) || 0;
-            const other = parseFloat(document.getElementById('otherCharges').value) || 0;
-            const addCharges = packing + freight + other;
-            
-            // Update quick summary
-            document.getElementById('summaryItems').textContent = itemCount;
-            const uom = document.getElementById('uom').value === 'sqmt' ? 'Sq.Mt.' : 'Sq.Ft.';
-            document.getElementById('summaryArea').textContent = totalArea.toFixed(3) + ' ' + uom;
-            document.getElementById('summaryBasic').textContent = '₹ ' + totalAmount.toFixed(2);
-            document.getElementById('summaryGrand').textContent = '₹ ' + (totalAmount + addCharges).toFixed(2);
-            
-            // Update final summary
-            document.getElementById('totalArea').textContent = totalArea.toFixed(3) + ' ' + uom;
-            document.getElementById('basicAmount').textContent = '₹ ' + totalAmount.toFixed(2);
-            document.getElementById('additionalCharges').textContent = '₹ ' + addCharges.toFixed(2);
-            
-            // Calculate GST
-            const gstPercent = parseFloat(document.getElementById('gstPercent').value) || 0;
-            document.getElementById('gstLabel').textContent = gstPercent;
-            const subTotal = totalAmount + addCharges;
-            document.getElementById('subTotal').textContent = '₹ ' + subTotal.toFixed(2);
-            const gstAmount = (subTotal * gstPercent) / 100;
-            document.getElementById('gstAmount').textContent = '₹ ' + gstAmount.toFixed(2);
-            
-            // Calculate final total
-            const roundOff = parseFloat(document.getElementById('roundOff').value) || 0;
-            document.getElementById('roundOffAmount').textContent = '₹ ' + roundOff.toFixed(2);
-            const grandTotal = subTotal + gstAmount + roundOff;
-            document.getElementById('grandTotal').textContent = '₹ ' + grandTotal.toFixed(2);
-        }
-
-        // Utility functions
-        function toggleAddMM() {
-            const enabled = document.getElementById('enableAddMM').checked;
-            document.getElementById('mmSettings').style.display = enabled ? 'block' : 'none';
-            if(enabled) applyAddMMToAll();
-        }
-
-        function applyAddMMToAll() {
-            calculateAllRows();
-        }
-
-        function toggleWastage() {
-            calculateAllRows();
-        }
-
-        function selectParty(name, address, gst, phone) {
-            document.getElementById('billName').value = name;
-            document.getElementById('billAddress').value = address;
-            document.getElementById('billGST').value = gst || '';
-            document.getElementById('billPhone').value = phone || '';
-            if(document.getElementById('sameAddress').checked) copyAddress();
-        }
-
-        function copyAddress() {
-            if(document.getElementById('sameAddress').checked) {
+        
+        function copyToShip() {
+            if (document.getElementById('sameAsBill').checked) {
                 document.getElementById('shipName').value = document.getElementById('billName').value;
                 document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
                 document.getElementById('shipGST').value = document.getElementById('billGST').value;
                 document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
             }
         }
-
-        function scrollToFirstEmpty() {
-            const rows = document.querySelectorAll('#productTableBody tr');
-            for(let i = 0; i < rows.length; i++) {
-                const desc = rows[i].querySelector('input[placeholder="Description"]').value.trim();
-                if(!desc) {
-                    rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    rows[i].querySelector('input[placeholder="Description"]').focus();
-                    break;
+        
+        // PROFORMA FUNCTIONS
+        function generateProformaNumber() {
+            const year = new Date().getFullYear();
+            const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+            const count = (proformas.length + 1).toString().padStart(3, '0');
+            const piNumber = `PI-${year}${month}-${count}`;
+            
+            document.getElementById('proformaNo').value = piNumber;
+            document.getElementById('currentProforma').textContent = piNumber;
+            
+            return piNumber;
+        }
+        
+        function addNewRow() {
+            const table = document.getElementById('productTable');
+            const rowId = rowCounter++;
+            
+            const rowHTML = `
+                <tr id="row-${rowId}" data-id="${rowId}">
+                    <td>${rowId}</td>
+                    <td>
+                        <div class="size-input-group">
+                            <input type="number" class="width-feet" placeholder="Ft" value="4" min="0" onchange="calculateRow(${rowId})">
+                            <input type="number" class="width-inch" placeholder="In" value="0" min="0" max="11" onchange="calculateRow(${rowId})">
+                            <select class="fraction-select width-frac" onchange="calculateRow(${rowId})">
+                                <option value="0">0"</option>
+                                <option value="0.125">1/8"</option>
+                                <option value="0.25">1/4"</option>
+                                <option value="0.375">3/8"</option>
+                                <option value="0.5" selected>1/2"</option>
+                                <option value="0.625">5/8"</option>
+                                <option value="0.75">3/4"</option>
+                                <option value="0.875">7/8"</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="size-input-group">
+                            <input type="number" class="height-feet" placeholder="Ft" value="3" min="0" onchange="calculateRow(${rowId})">
+                            <input type="number" class="height-inch" placeholder="In" value="0" min="0" max="11" onchange="calculateRow(${rowId})">
+                            <select class="fraction-select height-frac" onchange="calculateRow(${rowId})">
+                                <option value="0">0"</option>
+                                <option value="0.125">1/8"</option>
+                                <option value="0.25" selected>1/4"</option>
+                                <option value="0.375">3/8"</option>
+                                <option value="0.5">1/2"</option>
+                                <option value="0.625">5/8"</option>
+                                <option value="0.75">3/4"</option>
+                                <option value="0.875">7/8"</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="size-input-group">
+                            <input type="number" class="mm-width" placeholder="W mm" readonly style="background: #f8f9fa;">
+                            <input type="number" class="mm-height" placeholder="H mm" readonly style="background: #f8f9fa;">
+                        </div>
+                    </td>
+                    <td><input type="number" class="qty" value="1" min="1" onchange="calculateRow(${rowId})"></td>
+                    <td><input type="number" class="rate" value="450" min="0" step="0.01" onchange="calculateRow(${rowId})"></td>
+                    <td>
+                        <div class="size-input-group">
+                            <input type="number" class="hole-qty" placeholder="Holes" value="0" min="0" onchange="calculateRow(${rowId})">
+                            <input type="number" class="cut-qty" placeholder="Cuts" value="0" min="0" onchange="calculateRow(${rowId})">
+                        </div>
+                    </td>
+                    <td class="area-cell">0.00</td>
+                    <td class="amount-cell">0.00</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="removeRow(${rowId})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            
+            table.insertAdjacentHTML('beforeend', rowHTML);
+            
+            // Calculate the new row
+            calculateRow(rowId);
+        }
+        
+        function calculateRow(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            if (!row) return;
+            
+            // Get inch values
+            const widthFeet = parseFloat(row.querySelector('.width-feet').value) || 0;
+            const widthInch = parseFloat(row.querySelector('.width-inch').value) || 0;
+            const widthFrac = parseFloat(row.querySelector('.width-frac').value) || 0;
+            
+            const heightFeet = parseFloat(row.querySelector('.height-feet').value) || 0;
+            const heightInch = parseFloat(row.querySelector('.height-inch').value) || 0;
+            const heightFrac = parseFloat(row.querySelector('.height-frac').value) || 0;
+            
+            const qty = parseFloat(row.querySelector('.qty').value) || 1;
+            const rate = parseFloat(row.querySelector('.rate').value) || 450;
+            const holeQty = parseFloat(row.querySelector('.hole-qty').value) || 0;
+            const cutQty = parseFloat(row.querySelector('.cut-qty').value) || 0;
+            
+            // Calculate total inches
+            const totalWidthInches = (widthFeet * 12) + widthInch + widthFrac;
+            const totalHeightInches = (heightFeet * 12) + heightInch + heightFrac;
+            
+            // Add MM if enabled
+            let addMMWidth = 0, addMMHeight = 0;
+            if (document.getElementById('enableAddMM').checked) {
+                addMMWidth = parseFloat(document.getElementById('addMMWidth').value) || 0;
+                addMMHeight = parseFloat(document.getElementById('addMMHeight').value) || 0;
+            }
+            
+            // Calculate MM values
+            const widthMM = Math.round((totalWidthInches * 25.4) + addMMWidth);
+            const heightMM = Math.round((totalHeightInches * 25.4) + addMMHeight);
+            
+            // Calculate area
+            const areaSqFt = (totalWidthInches * totalHeightInches) / 144;
+            const amount = areaSqFt * rate * qty;
+            
+            // Update row
+            row.querySelector('.mm-width').value = widthMM;
+            row.querySelector('.mm-height').value = heightMM;
+            row.querySelector('.area-cell').textContent = areaSqFt.toFixed(2);
+            row.querySelector('.amount-cell').textContent = amount.toFixed(2);
+            
+            // Store amount in data attribute
+            row.dataset.amount = amount;
+            row.dataset.area = areaSqFt;
+            
+            // Update summary
+            calculateSummary();
+            
+            return amount;
+        }
+        
+        function calculateAllRows() {
+            let totalAmount = 0;
+            let totalArea = 0;
+            let totalItems = 0;
+            
+            document.querySelectorAll('#productTable tr').forEach(row => {
+                const rowId = row.dataset.id;
+                if (rowId) {
+                    const amount = calculateRow(parseInt(rowId));
+                    totalAmount += amount || 0;
+                    totalArea += parseFloat(row.dataset.area) || 0;
+                    totalItems += parseFloat(row.querySelector('.qty').value) || 0;
                 }
+            });
+            
+            updateSummary(totalItems, totalArea, totalAmount);
+        }
+        
+        function removeRow(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            if (row && confirm('Delete this item?')) {
+                row.remove();
+                calculateSummary();
             }
         }
-
-        function addMoreRows(count) {
-            const current = document.querySelectorAll('#productTableBody tr').length;
-            generateProductRows(current + count);
-            alert(`Added ${count} rows. Total: ${current + count}`);
-        }
-
-        function clearRow(rowNum) {
-            if(confirm('Clear this row?')) {
-                const row = document.getElementById(`row-${rowNum}`);
-                const inputs = row.querySelectorAll('input');
-                inputs[0].value = '';
-                inputs[1].value = '';
-                inputs[2].value = '';
-                inputs[3].value = '';
-                inputs[4].value = '';
-                inputs[6].value = '1';
-                inputs[8].value = '0';
-                inputs[13].value = '';
-                row.cells[7].textContent = '0';
-                row.cells[9].textContent = '0.00';
-                calculateTotal();
-            }
-        }
-
+        
         function clearAllRows() {
-            if(confirm('Clear ALL rows?')) {
-                generateProductRows(500);
-                calculateTotal();
+            if (confirm('Clear all items?')) {
+                document.getElementById('productTable').innerHTML = '';
+                rowCounter = 1;
+                addNewRow();
+                calculateSummary();
             }
         }
-
-        function showPrintOptions() {
-            new bootstrap.Modal(document.getElementById('printOptionsModal')).show();
+        
+        // ADD MM FUNCTIONS
+        function toggleAddMM() {
+            const mmSettings = document.getElementById('mmSettings');
+            if (document.getElementById('enableAddMM').checked) {
+                mmSettings.style.display = 'block';
+            } else {
+                mmSettings.style.display = 'none';
+            }
+            calculateAllRows();
         }
-
-        function exportToExcel() {
-            alert('Excel export functionality would be implemented here');
+        
+        function applyAddMMToAll() {
+            calculateAllRows();
         }
-
+        
+        // SUMMARY CALCULATION
+        function calculateSummary() {
+            let totalItems = 0;
+            let totalArea = 0;
+            let totalAmount = 0;
+            
+            document.querySelectorAll('#productTable tr').forEach(row => {
+                const qty = parseFloat(row.querySelector('.qty')?.value) || 0;
+                const amount = parseFloat(row.dataset.amount) || 0;
+                const area = parseFloat(row.dataset.area) || 0;
+                
+                totalItems += qty;
+                totalArea += area;
+                totalAmount += amount;
+            });
+            
+            updateSummary(totalItems, totalArea, totalAmount);
+        }
+        
+        function updateSummary(items, area, basicAmount) {
+            // Calculate discount
+            const discountPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
+            const discountAmount = basicAmount * (discountPercent / 100);
+            const afterDiscount = basicAmount - discountAmount;
+            
+            // Calculate GST
+            const gstPercent = 18; // Can be changed in settings
+            const gstAmount = afterDiscount * (gstPercent / 100);
+            const grandTotal = afterDiscount + gstAmount;
+            
+            // Update quick summary
+            document.getElementById('summaryItems').textContent = items;
+            document.getElementById('summaryArea').textContent = area.toFixed(2) + ' Sq.Ft.';
+            document.getElementById('summaryBasic').textContent = '₹ ' + basicAmount.toFixed(2);
+            document.getElementById('summaryGST').textContent = '₹ ' + gstAmount.toFixed(2);
+            document.getElementById('summaryGrand').textContent = '₹ ' + grandTotal.toFixed(2);
+            
+            // Update invoice summary
+            document.getElementById('invoiceSubtotal').textContent = '₹ ' + basicAmount.toFixed(2);
+            document.getElementById('discountAmount').textContent = '₹ ' + discountAmount.toFixed(2);
+            document.getElementById('invoiceGST').textContent = '₹ ' + gstAmount.toFixed(2);
+            document.getElementById('invoiceGrandTotal').textContent = '₹ ' + grandTotal.toFixed(2);
+        }
+        
+        // SAVE PROFORMA
         function saveProforma() {
-            alert('Proforma saved successfully!');
+            const proforma = {
+                id: document.getElementById('proformaNo').value,
+                date: document.getElementById('proformaDate').value,
+                customer: {
+                    billTo: {
+                        name: document.getElementById('billName').value,
+                        address: document.getElementById('billAddress').value,
+                        gst: document.getElementById('billGST').value,
+                        phone: document.getElementById('billPhone').value
+                    },
+                    shipTo: {
+                        name: document.getElementById('shipName').value,
+                        address: document.getElementById('shipAddress').value,
+                        gst: document.getElementById('shipGST').value,
+                        phone: document.getElementById('shipPhone').value
+                    }
+                },
+                items: [],
+                summary: {},
+                created: new Date().toISOString(),
+                status: 'draft'
+            };
+            
+            // Collect items
+            document.querySelectorAll('#productTable tr').forEach(row => {
+                if (row.dataset.id) {
+                    const item = {
+                        widthFeet: row.querySelector('.width-feet').value,
+                        widthInch: row.querySelector('.width-inch').value,
+                        widthFrac: row.querySelector('.width-frac').value,
+                        heightFeet: row.querySelector('.height-feet').value,
+                        heightInch: row.querySelector('.height-inch').value,
+                        heightFrac: row.querySelector('.height-frac').value,
+                        mmWidth: row.querySelector('.mm-width').value,
+                        mmHeight: row.querySelector('.mm-height').value,
+                        qty: row.querySelector('.qty').value,
+                        rate: row.querySelector('.rate').value,
+                        holeQty: row.querySelector('.hole-qty').value,
+                        cutQty: row.querySelector('.cut-qty').value,
+                        area: row.querySelector('.area-cell').textContent,
+                        amount: row.querySelector('.amount-cell').textContent
+                    };
+                    proforma.items.push(item);
+                }
+            });
+            
+            // Add summary
+            proforma.summary = {
+                items: parseInt(document.getElementById('summaryItems').textContent) || 0,
+                area: document.getElementById('summaryArea').textContent,
+                basicAmount: parseFloat(document.getElementById('summaryBasic').textContent.replace('₹ ', '')) || 0,
+                gstAmount: parseFloat(document.getElementById('summaryGST').textContent.replace('₹ ', '')) || 0,
+                grandTotal: parseFloat(document.getElementById('summaryGrand').textContent.replace('₹ ', '')) || 0
+            };
+            
+            // Save to localStorage
+            try {
+                proformas = JSON.parse(localStorage.getItem('saput_proformas')) || [];
+                proformas.push(proforma);
+                localStorage.setItem('saput_proformas', JSON.stringify(proformas));
+                
+                alert('Proforma saved successfully!');
+                generateProformaNumber();
+                clearAllRows();
+            } catch (e) {
+                alert('Error saving proforma: ' + e.message);
+            }
         }
-
-        function showPartyModal() {
-            new bootstrap.Modal(document.getElementById('partyModal')).show();
+        
+        // LOAD PROFORMAS
+        function loadProformas() {
+            try {
+                proformas = JSON.parse(localStorage.getItem('saput_proformas')) || [];
+            } catch {
+                proformas = [];
+            }
         }
-
-        function saveParty() {
-            alert('Party saved successfully!');
-            bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
-        }
-
-        function loadReports() {
-            document.getElementById('reportsContent').innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header">Daily Sales</div>
-                            <div class="card-body">
-                                <h3 class="text-center">₹ 45,820.00</h3>
-                                <p class="text-center text-muted mb-0">Today's Total</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header">Monthly Sales</div>
-                            <div class="card-body">
-                                <h3 class="text-center">₹ 12,45,820.00</h3>
-                                <p class="text-center text-muted mb-0">This Month</p>
-                            </div>
-                        </div>
-                    </div>
+        
+        // REPORTS FUNCTIONS
+        function loadReportsData() {
+            loadProformas();
+            
+            // Calculate stats
+            const totalPIs = proformas.length;
+            const totalRevenue = proformas.reduce((sum, p) => sum + (p.summary?.grandTotal || 0), 0);
+            const pendingAmount = proformas.filter(p => p.status === 'pending')
+                .reduce((sum, p) => sum + (p.summary?.grandTotal || 0), 0);
+            const avgOrderValue = totalPIs > 0 ? totalRevenue / totalPIs : 0;
+            
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const pisThisMonth = proformas.filter(p => {
+                const piDate = new Date(p.date);
+                return piDate.getMonth() === currentMonth && piDate.getFullYear() === currentYear;
+            }).length;
+            
+            // Update stats
+            document.getElementById('reportsStats').innerHTML = `
+                <div class="stat-card" style="border-color: var(--primary-color);">
+                    <i class="fas fa-file-invoice" style="color: var(--primary-color);"></i>
+                    <h3>${totalPIs}</h3>
+                    <p class="mb-0">Total PIs</p>
                 </div>
-                <div class="text-center text-muted my-5">
-                    <i class="fas fa-chart-bar fa-3x mb-3"></i>
-                    <p>More detailed reports coming soon...</p>
+                <div class="stat-card" style="border-color: var(--success-color);">
+                    <i class="fas fa-rupee-sign" style="color: var(--success-color);"></i>
+                    <h3>₹${(totalRevenue / 1000).toFixed(1)}K</h3>
+                    <p class="mb-0">Total Revenue</p>
+                </div>
+                <div class="stat-card" style="border-color: var(--warning-color);">
+                    <i class="fas fa-clock" style="color: var(--warning-color);"></i>
+                    <h3>₹${(pendingAmount / 1000).toFixed(1)}K</h3>
+                    <p class="mb-0">Pending Amount</p>
+                </div>
+                <div class="stat-card" style="border-color: var(--secondary-color);">
+                    <i class="fas fa-chart-line" style="color: var(--secondary-color);"></i>
+                    <h3>₹${avgOrderValue.toFixed(0)}</h3>
+                    <p class="mb-0">Avg Order Value</p>
                 </div>
             `;
+            
+            // Update table
+            updateReportsTable();
         }
-
-        function showSettings() {
-            alert('Settings section would open here');
+        
+        function updateReportsTable() {
+            const table = document.getElementById('reportsTable');
+            if (!table) return;
+            
+            let html = `
+                <thead>
+                    <tr>
+                        <th>PI No.</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            proformas.slice(-10).reverse().forEach(pi => {
+                const totalItems = pi.items?.reduce((sum, item) => sum + parseInt(item.qty || 0), 0) || 0;
+                const status = pi.status || 'draft';
+                const statusClass = status === 'paid' ? 'badge bg-success' : 
+                                  status === 'pending' ? 'badge bg-warning' : 'badge bg-secondary';
+                
+                html += `
+                    <tr>
+                        <td>${pi.id}</td>
+                        <td>${new Date(pi.date).toLocaleDateString('en-IN')}</td>
+                        <td>${pi.customer?.billTo?.name || 'N/A'}</td>
+                        <td>${totalItems}</td>
+                        <td>₹${(pi.summary?.grandTotal || 0).toFixed(2)}</td>
+                        <td><span class="${statusClass}">${status.toUpperCase()}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewPI('${pi.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody>';
+            table.innerHTML = html;
         }
-
-        function manageParties() {
-            alert('Party management section would open here');
+        
+        function viewPI(piId) {
+            const pi = proformas.find(p => p.id === piId);
+            if (pi) {
+                // Fill form with PI data
+                document.getElementById('proformaNo').value = pi.id;
+                document.getElementById('proformaDate').value = pi.date;
+                
+                if (pi.customer?.billTo) {
+                    document.getElementById('billName').value = pi.customer.billTo.name || '';
+                    document.getElementById('billAddress').value = pi.customer.billTo.address || '';
+                    document.getElementById('billGST').value = pi.customer.billTo.gst || '';
+                    document.getElementById('billPhone').value = pi.customer.billTo.phone || '';
+                }
+                
+                if (pi.customer?.shipTo) {
+                    document.getElementById('shipName').value = pi.customer.shipTo.name || '';
+                    document.getElementById('shipAddress').value = pi.customer.shipTo.address || '';
+                    document.getElementById('shipGST').value = pi.customer.shipTo.gst || '';
+                    document.getElementById('shipPhone').value = pi.customer.shipTo.phone || '';
+                }
+                
+                // Clear current items and add PI items
+                document.getElementById('productTable').innerHTML = '';
+                rowCounter = 1;
+                
+                pi.items?.forEach(item => {
+                    addNewRow();
+                    const row = document.getElementById(`row-${rowCounter - 1}`);
+                    if (row) {
+                        row.querySelector('.width-feet').value = item.widthFeet || 0;
+                        row.querySelector('.width-inch').value = item.widthInch || 0;
+                        row.querySelector('.width-frac').value = item.widthFrac || 0;
+                        row.querySelector('.height-feet').value = item.heightFeet || 0;
+                        row.querySelector('.height-inch').value = item.heightInch || 0;
+                        row.querySelector('.height-frac').value = item.heightFrac || 0;
+                        row.querySelector('.qty').value = item.qty || 1;
+                        row.querySelector('.rate').value = item.rate || 450;
+                        row.querySelector('.hole-qty').value = item.holeQty || 0;
+                        row.querySelector('.cut-qty').value = item.cutQty || 0;
+                        calculateRow(rowCounter - 1);
+                    }
+                });
+                
+                // Switch to proforma view
+                showProforma();
+            }
         }
-
-        function showHelp() {
-            alert('Help documentation would open here');
+        
+        function exportReports() {
+            // Create Excel workbook
+            const wb = XLSX.utils.book_new();
+            
+            // Create data array
+            const data = proformas.map(pi => ({
+                'PI No.': pi.id,
+                'Date': pi.date,
+                'Customer': pi.customer?.billTo?.name || '',
+                'Items': pi.items?.length || 0,
+                'Area': pi.summary?.area || '0 Sq.Ft.',
+                'Amount': pi.summary?.grandTotal || 0,
+                'Status': pi.status || 'draft',
+                'Phone': pi.customer?.billTo?.phone || ''
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, "Proforma Reports");
+            
+            // Save file
+            const date = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `SAPUT_Reports_${date}.xlsx`);
         }
-
-        // Quotation functions (simplified for demo)
-        function printQuotation() {
+        
+        function printReports() {
             window.print();
         }
-
-        function saveQuotationPDF() {
-            alert('PDF would be generated here');
+        
+        function printProforma() {
+            // Simple print function - can be enhanced with proper formatting
+            window.print();
         }
-
-        // Initialize parties array
-        let parties = [];
+        
+        function newProforma() {
+            if (confirm('Create new proforma? Current data will be lost.')) {
+                generateProformaNumber();
+                clearAllRows();
+                document.getElementById('proformaDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('discountPercent').value = 0;
+                
+                // Clear customer if needed
+                // document.getElementById('billName').value = '';
+                // document.getElementById('billAddress').value = '';
+                // document.getElementById('billGST').value = '';
+                // document.getElementById('billPhone').value = '';
+            }
+        }
+        
+        function emailProforma() {
+            alert('Email functionality coming soon!');
+        }
+        
+        // Initialize dashboard as default
+        showDashboard();
     </script>
 </body>
 </html>
