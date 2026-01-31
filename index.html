@@ -3,680 +3,723 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.A.P.U.T. Glass Works</title>
+    <title>JP Glass Works - Complete ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* LIGHT COLOR THEME - EASY ON EYES */
+        /* LIGHT THEME - EASY ON EYES */
         :root {
-            --primary-light: #4a6fa5;
-            --primary-soft: #5d8bcd;
-            --secondary-light: #6c757d;
-            --success-light: #28a745;
+            --primary-blue: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --background: #f8fafc;
             --card-bg: #ffffff;
-            --text-primary: #2d3748;
-            --text-secondary: #718096;
-            --border-light: #e2e8f0;
-            --hover-bg: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --hover: #f1f5f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--background);
+            background: var(--background);
             color: var(--text-primary);
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* TOP HEADER WITH LOGO AND NAVIGATION */
+        /* FULL PAGE LOGO ON LOAD */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-logo {
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .logo-main {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .logo-sub {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        .powered-by {
+            position: absolute;
+            bottom: 30px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .powered-by span {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* MAIN CONTAINER */
+        #mainContainer {
+            display: none;
+        }
+
+        /* TOP HEADER */
         .top-header {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-bottom: 1px solid var(--border-light);
-            padding: 12px 0;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .logo-container {
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary-soft));
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-light));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
         }
 
         .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-light);
-            letter-spacing: 0.5px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-blue);
         }
 
-        .logo-subtext {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: -2px;
+        /* MODULE NAVIGATION - TOP ROW */
+        .module-nav {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding: 4px;
+            background: var(--hover);
+            border-radius: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        /* NAVIGATION TABS */
-        .nav-tabs-container {
-            background: white;
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .module-nav::-webkit-scrollbar {
+            height: 4px;
         }
 
-        .nav-tab {
-            padding: 8px 16px;
-            border: none;
+        .module-nav::-webkit-scrollbar-track {
             background: transparent;
+        }
+
+        .module-nav::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 2px;
+        }
+
+        .module-tab {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             color: var(--text-secondary);
             font-size: 13px;
             font-weight: 500;
-            border-radius: 6px;
             cursor: pointer;
+            white-space: nowrap;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            min-width: fit-content;
         }
 
-        .nav-tab:hover {
-            background: var(--hover-bg);
-            color: var(--primary-light);
+        .module-tab:hover {
+            background: var(--hover);
+            color: var(--primary-blue);
+            border-color: var(--primary-light);
         }
 
-        .nav-tab.active {
-            background: var(--primary-light);
+        .module-tab.active {
+            background: var(--primary-blue);
             color: white;
-            box-shadow: 0 2px 4px rgba(74, 111, 165, 0.2);
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
 
-        /* MAIN CONTENT */
-        .main-content {
-            padding: 20px 15px;
-            min-height: calc(100vh - 120px);
+        /* DASHBOARD GRID */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
 
-        /* MODULE CARDS */
-        .module-grid {
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .modules-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
         }
 
         .module-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
+            text-align: center;
             text-decoration: none;
             color: inherit;
         }
 
         .module-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             border-color: var(--primary-light);
         }
 
         .module-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            margin-bottom: 16px;
+            font-size: 24px;
             color: white;
         }
 
-        .icon-proforma { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .icon-orders { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .icon-customers { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .icon-items { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .icon-accounting { background: linear-gradient(135deg, #fa709a, #fee140); }
-        .icon-reports { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-        .icon-gst { background: linear-gradient(135deg, #d299c2, #fef9d7); }
-        .icon-dispatch { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+        .icon-proforma { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+        .icon-orders { background: linear-gradient(135deg, #059669, #10b981); }
+        .icon-customers { background: linear-gradient(135deg, #0ea5e9, #3b82f6); }
+        .icon-items { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+        .icon-accounting { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .icon-reports { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        .icon-gst { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .icon-dispatch { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+        .icon-quotation { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+        .icon-settings { background: linear-gradient(135deg, #64748b, #94a3b8); }
 
-        .module-info h6 {
-            font-size: 14px;
+        .module-title {
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 3px;
             color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
-        .module-info p {
-            font-size: 12px;
+        .module-desc {
+            font-size: 13px;
             color: var(--text-secondary);
-            margin: 0;
+            line-height: 1.4;
         }
 
-        /* FORM STYLES */
-        .form-control, .form-select {
-            border: 1px solid var(--border-light);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 14px;
-            transition: all 0.2s;
+        /* MODULE CONTENT PAGES */
+        .module-page {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* TABLE STYLES */
-        .data-table {
+        .module-header {
             background: white;
-            border-radius: 8px;
-            border: 1px solid var(--border-light);
-            overflow: hidden;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
         }
 
-        .data-table thead {
-            background: var(--hover-bg);
-            color: var(--text-primary);
+        .module-body {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            min-height: 500px;
         }
 
-        .data-table th {
-            font-weight: 600;
-            font-size: 13px;
-            padding: 12px 15px;
-            border-bottom: 2px solid var(--border-light);
-        }
-
-        .data-table td {
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--border-light);
-            font-size: 13px;
-        }
-
-        .data-table tr:hover {
-            background: var(--hover-bg);
-        }
-
-        /* BUTTONS */
-        .btn {
-            border-radius: 6px;
-            font-weight: 500;
-            padding: 8px 16px;
-            font-size: 13px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary-light);
-            border-color: var(--primary-light);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-soft);
-            border-color: var(--primary-soft);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline-primary {
-            color: var(--primary-light);
-            border-color: var(--primary-light);
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-light);
-            color: white;
-        }
-
-        /* CARD STYLES */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-
-        .card-header {
-            background: var(--hover-bg);
-            border-bottom: 1px solid var(--border-light);
-            padding: 15px 20px;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 15px;
-        }
-
-        .card-body {
+        /* POWERED BY FOOTER */
+        .powered-footer {
+            text-align: center;
             padding: 20px;
-        }
-
-        /* UTILITY CLASSES */
-        .text-muted-light {
             color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            background: white;
         }
 
-        .border-light {
-            border-color: var(--border-light) !important;
-        }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--hover-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+        .powered-footer span {
+            color: var(--primary-blue);
+            font-weight: 700;
         }
 
         /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .module-grid {
+        @media (max-width: 1024px) {
+            .modules-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .logo-text {
-                font-size: 18px;
+            .module-nav {
+                max-width: 100%;
             }
         }
 
-        @media (max-width: 576px) {
-            .module-grid {
+        @media (max-width: 768px) {
+            .modules-grid {
                 grid-template-columns: 1fr;
             }
             
-            .nav-tabs-container {
-                overflow-x: auto;
-                flex-wrap: nowrap;
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .module-tab {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .dashboard-title {
+                font-size: 24px;
             }
         }
 
-        /* ANIMATIONS */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* UTILITY */
+        .hidden {
+            display: none !important;
         }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
+        .text-center {
+            text-align: center;
         }
+
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mt-3 { margin-top: 1rem; }
+        .mt-4 { margin-top: 1.5rem; }
     </style>
 </head>
 <body>
-    <!-- TOP HEADER WITH LOGO AND NAVIGATION -->
-    <div class="top-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <!-- LOGO -->
-                <div class="col-md-3">
-                    <div class="logo-container">
-                        <div class="logo-icon">
-                            <i class="fas fa-glass-whiskey"></i>
-                        </div>
-                        <div>
-                            <div class="logo-text">S.A.P.U.T.</div>
-                            <div class="logo-subtext">Glass Works Enterprise</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NAVIGATION TABS -->
-                <div class="col-md-9">
-                    <div class="d-flex flex-wrap gap-2 nav-tabs-container">
-                        <button class="nav-tab active" onclick="showModule('dashboard')">
-                            <i class="fas fa-home"></i> Dashboard
-                        </button>
-                        <button class="nav-tab" onclick="showModule('proforma')">
-                            <i class="fas fa-file-invoice-dollar"></i> Proforma Invoice
-                        </button>
-                        <button class="nav-tab" onclick="showModule('orders')">
-                            <i class="fas fa-clipboard-list"></i> Order Management
-                        </button>
-                        <button class="nav-tab" onclick="showModule('customers')">
-                            <i class="fas fa-users"></i> Customers
-                        </button>
-                        <button class="nav-tab" onclick="showModule('items')">
-                            <i class="fas fa-box"></i> Item Master
-                        </button>
-                        <button class="nav-tab" onclick="showModule('accounting')">
-                            <i class="fas fa-calculator"></i> Accounting
-                        </button>
-                        <button class="nav-tab" onclick="showModule('reports')">
-                            <i class="fas fa-chart-bar"></i> Reports
-                        </button>
-                        <button class="nav-tab" onclick="showModule('gst')">
-                            <i class="fas fa-file-invoice"></i> GST Invoice
-                        </button>
-                        <button class="nav-tab" onclick="showModule('dispatch')">
-                            <i class="fas fa-truck"></i> Dispatch
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <!-- SPLASH SCREEN - LOGO ON LOAD -->
+    <div id="splashScreen">
+        <div class="splash-logo">
+            <div class="logo-main">JP</div>
+            <div class="logo-sub">Glass Works Enterprise</div>
         </div>
+        <div class="powered-by">Powered by <span>JP</span> Enterprise Solutions</div>
     </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <div class="main-content">
-        <!-- DASHBOARD MODULE -->
-        <div id="dashboard" class="fade-in">
-            <div class="container-fluid">
-                <h4 class="mb-4">Dashboard Overview</h4>
-                
-                <!-- QUICK STATS -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="mb-2">
-                                    <i class="fas fa-file-invoice-dollar fa-2x text-primary"></i>
-                                </div>
-                                <h5 id="todayProforma">0</h5>
-                                <p class="text-muted-light mb-0">Today's Proforma</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="mb-2">
-                                    <i class="fas fa-clipboard-check fa-2x text-success"></i>
-                                </div>
-                                <h5 id="pendingOrders">0</h5>
-                                <p class="text-muted-light mb-0">Pending Orders</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="mb-2">
-                                    <i class="fas fa-rupee-sign fa-2x text-warning"></i>
-                                </div>
-                                <h5 id="monthRevenue">₹0</h5>
-                                <p class="text-muted-light mb-0">Month Revenue</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="mb-2">
-                                    <i class="fas fa-users fa-2x text-info"></i>
-                                </div>
-                                <h5 id="totalCustomers">0</h5>
-                                <p class="text-muted-light mb-0">Total Customers</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- MAIN APP CONTAINER -->
+    <div id="mainContainer">
+        <!-- TOP HEADER -->
+        <div class="top-header">
+            <div class="header-content">
+                <!-- LOGO -->
+                <div class="main-logo">
+                    <div class="logo-icon">JP</div>
+                    <div class="logo-text">Glass Works</div>
                 </div>
 
-                <!-- ALL MODULES GRID -->
-                <h5 class="mb-3">Quick Access Modules</h5>
-                <div class="module-grid">
-                    <!-- PROFORMA INVOICE -->
-                    <a href="#" class="module-card" onclick="showModule('proforma')">
-                        <div class="module-icon icon-proforma">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Proforma Invoice</h6>
-                            <p>Create and manage invoices</p>
-                        </div>
-                    </a>
-
-                    <!-- ORDER MANAGEMENT -->
-                    <a href="#" class="module-card" onclick="showModule('orders')">
-                        <div class="module-icon icon-orders">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Order Management</h6>
-                            <p>Track and manage orders</p>
-                        </div>
-                    </a>
-
-                    <!-- CUSTOMER MANAGEMENT -->
-                    <a href="#" class="module-card" onclick="showModule('customers')">
-                        <div class="module-icon icon-customers">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Customer Management</h6>
-                            <p>Manage customer database</p>
-                        </div>
-                    </a>
-
-                    <!-- ITEM MASTER -->
-                    <a href="#" class="module-card" onclick="showModule('items')">
-                        <div class="module-icon icon-items">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Item Master</h6>
-                            <p>Product catalog and rates</p>
-                        </div>
-                    </a>
-
-                    <!-- ACCOUNTING -->
-                    <a href="#" class="module-card" onclick="showModule('accounting')">
-                        <div class="module-icon icon-accounting">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Accounting</h6>
-                            <p>Ledger and accounts</p>
-                        </div>
-                    </a>
-
-                    <!-- REPORTS -->
-                    <a href="#" class="module-card" onclick="showModule('reports')">
-                        <div class="module-icon icon-reports">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Reports</h6>
-                            <p>Analytics and reports</p>
-                        </div>
-                    </a>
-
-                    <!-- GST INVOICE -->
-                    <a href="#" class="module-card" onclick="showModule('gst')">
-                        <div class="module-icon icon-gst">
-                            <i class="fas fa-file-invoice"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>GST Invoice</h6>
-                            <p>Generate GST invoices</p>
-                        </div>
-                    </a>
-
-                    <!-- DISPATCH PLANNER -->
-                    <a href="#" class="module-card" onclick="showModule('dispatch')">
-                        <div class="module-icon icon-dispatch">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                        <div class="module-info">
-                            <h6>Dispatch Planner</h6>
-                            <p>Delivery scheduling</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFORMA INVOICE MODULE -->
-        <div id="proforma" class="container-fluid" style="display: none;">
-            <div class="card fade-in">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Proforma Invoice</h5>
-                    <div>
-                        <button class="btn btn-primary btn-sm" onclick="createNewProforma()">
-                            <i class="fas fa-plus"></i> New Invoice
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Simple form for now -->
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Proforma Invoice Module - Coming Soon
-                    </div>
-                    <button class="btn btn-secondary" onclick="showModule('dashboard')">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <!-- MODULE NAVIGATION - TOP ROW -->
+                <div class="module-nav">
+                    <button class="module-tab active" onclick="showDashboard()">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="module-tab" onclick="showModule('proforma')">
+                        <i class="fas fa-file-invoice-dollar"></i> Proforma Invoice
+                    </button>
+                    <button class="module-tab" onclick="showModule('quotation')">
+                        <i class="fas fa-file-alt"></i> Quotation
+                    </button>
+                    <button class="module-tab" onclick="showModule('orders')">
+                        <i class="fas fa-clipboard-list"></i> Order Management
+                    </button>
+                    <button class="module-tab" onclick="showModule('customers')">
+                        <i class="fas fa-users"></i> Customers
+                    </button>
+                    <button class="module-tab" onclick="showModule('items')">
+                        <i class="fas fa-box"></i> Item Master
+                    </button>
+                    <button class="module-tab" onclick="showModule('accounting')">
+                        <i class="fas fa-calculator"></i> Accounting
+                    </button>
+                    <button class="module-tab" onclick="showModule('reports')">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </button>
+                    <button class="module-tab" onclick="showModule('gst')">
+                        <i class="fas fa-file-invoice"></i> GST Invoice
+                    </button>
+                    <button class="module-tab" onclick="showModule('dispatch')">
+                        <i class="fas fa-truck"></i> Dispatch
+                    </button>
+                    <button class="module-tab" onclick="showModule('settings')">
+                        <i class="fas fa-cog"></i> Settings
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- OTHER MODULES SIMILARLY... -->
-        <div id="orders" class="container-fluid" style="display: none;">
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Order Management</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Order management content -->
-                </div>
+        <!-- DASHBOARD - DEFAULT VIEW -->
+        <div id="dashboard" class="dashboard-container">
+            <h1 class="dashboard-title">Welcome to JP Glass Works</h1>
+            <p class="dashboard-subtitle">Complete Glass Business Management System</p>
+            
+            <div class="modules-grid">
+                <!-- PROFORMA INVOICE -->
+                <a class="module-card" onclick="showModule('proforma')">
+                    <div class="module-icon icon-proforma">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="module-title">Proforma Invoice</div>
+                    <div class="module-desc">Create professional invoices with automatic calculations</div>
+                </a>
+
+                <!-- QUOTATION -->
+                <a class="module-card" onclick="showModule('quotation')">
+                    <div class="module-icon icon-quotation">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="module-title">Quotation</div>
+                    <div class="module-desc">Generate and manage customer quotations</div>
+                </a>
+
+                <!-- ORDER MANAGEMENT -->
+                <a class="module-card" onclick="showModule('orders')">
+                    <div class="module-icon icon-orders">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="module-title">Order Management</div>
+                    <div class="module-desc">Track and manage customer orders</div>
+                </a>
+
+                <!-- CUSTOMER MANAGEMENT -->
+                <a class="module-card" onclick="showModule('customers')">
+                    <div class="module-icon icon-customers">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="module-title">Customers</div>
+                    <div class="module-desc">Manage customer database and details</div>
+                </a>
+
+                <!-- ITEM MASTER -->
+                <a class="module-card" onclick="showModule('items')">
+                    <div class="module-icon icon-items">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="module-title">Item Master</div>
+                    <div class="module-desc">Manage products and pricing</div>
+                </a>
+
+                <!-- ACCOUNTING -->
+                <a class="module-card" onclick="showModule('accounting')">
+                    <div class="module-icon icon-accounting">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="module-title">Accounting</div>
+                    <div class="module-desc">Ledger, day book, and financial reports</div>
+                </a>
+
+                <!-- REPORTS -->
+                <a class="module-card" onclick="showModule('reports')">
+                    <div class="module-icon icon-reports">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="module-title">Reports</div>
+                    <div class="module-desc">Sales, inventory, and business analytics</div>
+                </a>
+
+                <!-- GST INVOICE -->
+                <a class="module-card" onclick="showModule('gst')">
+                    <div class="module-icon icon-gst">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="module-title">GST Invoice</div>
+                    <div class="module-desc">Generate GST compliant invoices</div>
+                </a>
+
+                <!-- DISPATCH -->
+                <a class="module-card" onclick="showModule('dispatch')">
+                    <div class="module-icon icon-dispatch">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="module-title">Dispatch</div>
+                    <div class="module-desc">Manage deliveries and shipments</div>
+                </a>
+
+                <!-- SETTINGS -->
+                <a class="module-card" onclick="showModule('settings')">
+                    <div class="module-icon icon-settings">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="module-title">Settings</div>
+                    <div class="module-desc">System configuration and preferences</div>
+                </a>
             </div>
         </div>
 
-        <div id="customers" class="container-fluid" style="display: none;">
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Customer Management</h5>
+        <!-- PROFORMA INVOICE MODULE -->
+        <div id="proforma" class="module-page">
+            <div class="module-header">
+                <h2><i class="fas fa-file-invoice-dollar me-2"></i>Proforma Invoice</h2>
+                <p class="mb-0 text-secondary">Create and manage professional invoices</p>
+            </div>
+            <div class="module-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Proforma Invoice Module - Ready to use
                 </div>
-                <div class="card-body">
-                    <!-- Customer management content -->
-                </div>
+                <button class="btn btn-primary" onclick="createNewInvoice()">
+                    <i class="fas fa-plus"></i> Create New Invoice
+                </button>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
             </div>
         </div>
 
-        <!-- Add similar divs for other modules -->
+        <!-- ADD OTHER MODULE PAGES HERE... -->
+        <!-- QUOTATION -->
+        <div id="quotation" class="module-page">
+            <div class="module-body text-center py-5">
+                <h4><i class="fas fa-file-alt"></i> Quotation Module</h4>
+                <p class="text-secondary">Coming Soon</p>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
 
+        <!-- ORDERS -->
+        <div id="orders" class="module-page">
+            <div class="module-body text-center py-5">
+                <h4><i class="fas fa-clipboard-list"></i> Order Management</h4>
+                <p class="text-secondary">Coming Soon</p>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- CUSTOMERS -->
+        <div id="customers" class="module-page">
+            <div class="module-body text-center py-5">
+                <h4><i class="fas fa-users"></i> Customer Management</h4>
+                <p class="text-secondary">Coming Soon</p>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- ITEMS -->
+        <div id="items" class="module-page">
+            <div class="module-body text-center py-5">
+                <h4><i class="fas fa-box"></i> Item Master</h4>
+                <p class="text-secondary">Coming Soon</p>
+                <button class="btn btn-secondary" onclick="showDashboard()">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- POWERED BY FOOTER -->
+        <div class="powered-footer">
+            Powered by <span>JP</span> Enterprise Solutions | © 2024 JP Glass Works
+        </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize - Show only dashboard
+        // INITIALIZE - SHOW LOGO THEN DASHBOARD
         document.addEventListener('DOMContentLoaded', function() {
-            showModule('dashboard');
-            updateDashboardStats();
-            
-            // Set active tab
-            setActiveTab('dashboard');
+            // Show splash screen for 2 seconds
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.getElementById('splashScreen').classList.add('hidden');
+                    document.getElementById('mainContainer').style.display = 'block';
+                    showDashboard();
+                }, 500);
+            }, 2000);
         });
 
-        // Show specific module
-        function showModule(moduleName) {
-            // Hide all modules
-            const modules = [
-                'dashboard', 'proforma', 'orders', 'customers', 
-                'items', 'accounting', 'reports', 'gst', 'dispatch'
-            ];
+        // SHOW DASHBOARD
+        function showDashboard() {
+            // Hide all module pages
+            document.querySelectorAll('.module-page').forEach(page => {
+                page.style.display = 'none';
+            });
             
-            modules.forEach(module => {
-                const element = document.getElementById(module);
-                if (element) {
-                    element.style.display = 'none';
-                }
+            // Show dashboard
+            document.getElementById('dashboard').style.display = 'block';
+            
+            // Update active tab
+            setActiveTab('dashboard');
+        }
+
+        // SHOW SPECIFIC MODULE
+        function showModule(moduleName) {
+            // Hide dashboard
+            document.getElementById('dashboard').style.display = 'none';
+            
+            // Hide all module pages
+            document.querySelectorAll('.module-page').forEach(page => {
+                page.style.display = 'none';
             });
             
             // Show selected module
-            const selectedModule = document.getElementById(moduleName);
-            if (selectedModule) {
-                selectedModule.style.display = 'block';
+            const module = document.getElementById(moduleName);
+            if (module) {
+                module.style.display = 'block';
             }
             
             // Update active tab
             setActiveTab(moduleName);
-            
-            // Update module-specific data
-            if (moduleName === 'dashboard') {
-                updateDashboardStats();
-            }
         }
 
-        // Set active navigation tab
+        // SET ACTIVE TAB
         function setActiveTab(moduleName) {
             // Remove active class from all tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
+            document.querySelectorAll('.module-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Add active class to clicked tab
-            const activeTab = document.querySelector(`[onclick="showModule('${moduleName}')"]`);
+            // Add active class to current tab
+            const activeTab = document.querySelector(`[onclick="show${moduleName === 'dashboard' ? 'Dashboard' : 'Module'}(\'${moduleName}\')"]`);
             if (activeTab) {
                 activeTab.classList.add('active');
             }
         }
 
-        // Update dashboard statistics
-        function updateDashboardStats() {
-            // Sample data - replace with actual data
-            document.getElementById('todayProforma').textContent = '12';
-            document.getElementById('pendingOrders').textContent = '8';
-            document.getElementById('monthRevenue').textContent = '₹1,25,000';
-            document.getElementById('totalCustomers').textContent = '45';
+        // CREATE NEW INVOICE
+        function createNewInvoice() {
+            alert('Creating new proforma invoice...\nThis feature will be implemented in next version.');
         }
 
-        // Create new proforma
-        function createNewProforma() {
-            alert('Creating new proforma invoice...');
-            // Add your proforma creation logic here
-        }
-
-        // Keyboard shortcuts
+        // KEYBOARD SHORTCUTS
         document.addEventListener('keydown', function(e) {
-            // Alt + D for Dashboard
-            if (e.altKey && e.key === 'd') {
-                e.preventDefault();
-                showModule('dashboard');
+            // Esc - Go to Dashboard
+            if (e.key === 'Escape') {
+                showDashboard();
             }
             
-            // Alt + P for Proforma
-            if (e.altKey && e.key === 'p') {
+            // Alt + 1 - Proforma
+            if (e.altKey && e.key === '1') {
                 e.preventDefault();
                 showModule('proforma');
             }
             
-            // Alt + O for Orders
-            if (e.altKey && e.key === 'o') {
+            // Alt + 2 - Orders
+            if (e.altKey && e.key === '2') {
                 e.preventDefault();
                 showModule('orders');
             }
+            
+            // Alt + D - Dashboard
+            if (e.altKey && e.key === 'd') {
+                e.preventDefault();
+                showDashboard();
+            }
         });
+
+        // LOADING SIMULATION FOR MODULES
+        function loadModuleData(moduleName) {
+            const modules = {
+                'proforma': 'Proforma Invoice data loaded',
+                'orders': 'Orders data loaded',
+                'customers': 'Customers data loaded',
+                'items': 'Items data loaded',
+                'accounting': 'Accounting data loaded',
+                'reports': 'Reports data loaded',
+                'gst': 'GST data loaded',
+                'dispatch': 'Dispatch data loaded'
+            };
+            
+            console.log(modules[moduleName] || 'Module loaded');
+        }
     </script>
 </body>
 </html>
