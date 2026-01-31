@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.A.P.U.T. Glass Works Pro</title>
+    <title>S.A.P.U.T. Glass Works Enterprise</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -13,6 +13,7 @@
             --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
+            --info: #17a2b8;
             --sidebar-bg: #f8f9fa;
         }
         
@@ -24,18 +25,23 @@
             font-size: 13px;
         }
         
-        /* COMPACT SIDEBAR */
+        /* SIDEBAR - CONDITIONAL */
         .sidebar-container {
-            width: 260px;
+            width: 280px;
             background: white;
             border-right: 1px solid #dee2e6;
             height: 100vh;
             position: fixed;
-            left: 0;
+            left: -280px;
             top: 0;
             overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             z-index: 1000;
+            transition: left 0.3s ease;
+        }
+        
+        .sidebar-container.active {
+            left: 0;
         }
         
         .sidebar-header {
@@ -43,46 +49,28 @@
             background: var(--primary);
             color: white;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .sidebar-content {
             padding: 15px;
         }
         
-        .form-group-sm {
-            margin-bottom: 12px;
-        }
-        
-        .form-group-sm label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 3px;
-            display: block;
-        }
-        
-        .form-control-xs {
-            height: 28px;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        
-        .btn-xs {
-            padding: 2px 8px;
-            font-size: 11px;
-            border-radius: 3px;
-            height: 24px;
-        }
-        
         /* MAIN CONTENT */
         .main-content {
-            margin-left: 260px;
+            margin-left: 0;
             padding: 15px;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
         
-        /* HEADER BAR */
+        .main-content.sidebar-active {
+            margin-left: 280px;
+        }
+        
+        /* HEADER */
         .header-bar {
             background: white;
             padding: 8px 15px;
@@ -95,6 +83,14 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
         
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
         .header-title {
             font-size: 16px;
             font-weight: 600;
@@ -104,48 +100,87 @@
             gap: 8px;
         }
         
-        .header-actions {
-            display: flex;
-            gap: 8px;
+        /* DASHBOARD */
+        .dashboard-container {
+            padding: 15px;
         }
         
-        /* CUSTOMER SECTION - COMPACT */
-        .customer-section {
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-color: var(--secondary);
+        }
+        
+        .module-card i {
+            font-size: 28px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .module-card h6 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        /* PROFORMA PAGE */
+        .proforma-container {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        /* CUSTOMER FORM */
+        .customer-form {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
-        .customer-box {
-            background: white;
+        .form-section {
+            background: #f8f9fa;
+            padding: 15px;
             border-radius: 6px;
-            padding: 12px;
             border: 1px solid #dee2e6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
         
-        .customer-header {
-            font-size: 12px;
+        .section-header {
+            font-size: 14px;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 8px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary);
         }
         
-        /* PRODUCT TABLE - EXCEL STYLE */
+        /* PRODUCT TABLE */
         .table-container {
-            background: white;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
             border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            margin-bottom: 15px;
-            max-height: 400px;
-            overflow-y: auto;
         }
         
         .data-table {
@@ -163,7 +198,7 @@
         }
         
         .data-table th {
-            padding: 8px 6px;
+            padding: 10px 8px;
             font-weight: 600;
             text-align: center;
             border-right: 1px solid rgba(255,255,255,0.1);
@@ -171,148 +206,126 @@
         }
         
         .data-table td {
-            padding: 4px 6px;
+            padding: 6px 8px;
             border: 1px solid #dee2e6;
             text-align: center;
             vertical-align: middle;
         }
         
-        .data-table input {
+        .data-table input, .data-table select {
             width: 100%;
             border: 1px solid #ced4da;
-            border-radius: 3px;
-            padding: 3px 5px;
-            font-size: 11px;
-            height: 26px;
-            text-align: center;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 12px;
+            height: 28px;
         }
         
-        .data-table input:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-        }
-        
-        /* SIZE INPUT STYLES */
+        /* SIZE INPUTS */
         .size-input-group {
             display: flex;
-            gap: 3px;
+            gap: 4px;
         }
         
         .size-input-group input {
-            flex: 1;
+            text-align: center;
+        }
+        
+        /* CHARGES PANEL */
+        .charges-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .charges-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .charges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .charge-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         /* TOTAL SECTION */
         .total-section {
             background: white;
-            border-radius: 6px;
-            padding: 12px;
             border: 1px solid #dee2e6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
         }
         
         .total-row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #f1f1f1;
-            font-size: 12px;
         }
         
         .total-row:last-child {
             border-bottom: none;
             font-weight: 600;
+            font-size: 14px;
             color: var(--danger);
         }
         
-        /* DASHBOARD */
-        .dashboard-container {
-            padding: 15px;
-        }
-        
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
+        /* ADMIN PANEL */
+        .admin-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
             margin-top: 20px;
         }
         
-        .module-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #dee2e6;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        /* ACCOUNT SECTION */
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
         }
         
-        .module-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-            border-color: var(--secondary);
-        }
-        
-        .module-card i {
-            font-size: 24px;
-            color: var(--secondary);
-            margin-bottom: 8px;
-        }
-        
-        .module-card h6 {
-            font-size: 13px;
-            font-weight: 600;
-            margin: 0;
-            color: var(--primary);
-        }
-        
-        /* ATTENDANCE SYSTEM */
-        .attendance-container {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .attendance-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        /* REPORTS */
-        .reports-container {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .customer-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .module-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         /* PRINT STYLES */
         @media print {
             .sidebar-container,
-            .header-bar .header-actions,
-            .no-print {
+            .header-bar,
+            .no-print,
+            .charges-panel,
+            .section-header {
                 display: none !important;
             }
             
             .main-content {
-                margin-left: 0;
-                padding: 0;
+                margin-left: 0 !important;
+                padding: 0 !important;
             }
             
-            .table-container {
-                max-height: none;
+            .proforma-container {
                 box-shadow: none;
-                border: 1px solid #000;
-            }
-            
-            .data-table {
-                font-size: 10px;
+                border: none;
             }
             
             .data-table th {
@@ -322,161 +335,107 @@
             }
         }
         
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .sidebar-container {
-                width: 100%;
-                height: auto;
-                position: static;
-                margin-bottom: 15px;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .customer-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .module-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-        
         /* UTILITIES */
-        .text-sm { font-size: 11px; }
-        .text-xs { font-size: 10px; }
+        .text-sm { font-size: 12px; }
+        .text-xs { font-size: 11px; }
         .fw-600 { font-weight: 600; }
         .cursor-pointer { cursor: pointer; }
+        .w-100 { width: 100%; }
+        .mb-1 { margin-bottom: 5px; }
+        .mb-2 { margin-bottom: 10px; }
+        .mb-3 { margin-bottom: 15px; }
+        .mt-1 { margin-top: 5px; }
+        .mt-2 { margin-top: 10px; }
+        .mt-3 { margin-top: 15px; }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR -->
-    <div class="sidebar-container">
+    <!-- SIDEBAR (Only shows in Proforma) -->
+    <div class="sidebar-container" id="sidebar">
         <div class="sidebar-header">
-            <h6 class="mb-0"><i class="fas fa-industry me-2"></i>S.A.P.U.T.</h6>
+            <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
+            <button class="btn btn-sm btn-light" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
         <div class="sidebar-content">
             <!-- PI SETTINGS -->
-            <div class="form-group-sm">
-                <label>PI Number</label>
-                <input type="text" class="form-control form-control-xs" id="piNumber" value="PI-001" readonly>
+            <div class="mb-3">
+                <label class="form-label text-sm">PI Number</label>
+                <input type="text" class="form-control form-control-sm" id="piNumber" value="PI-001" readonly>
             </div>
             
-            <div class="form-group-sm">
-                <label>Date</label>
-                <input type="date" class="form-control form-control-xs" id="piDate">
+            <div class="mb-3">
+                <label class="form-label text-sm">Date</label>
+                <input type="date" class="form-control form-control-sm" id="piDate">
             </div>
             
-            <div class="form-group-sm">
-                <label>UOM</label>
-                <select class="form-control form-control-xs" id="uom">
-                    <option value="sqft">Sq. Ft.</option>
-                    <option value="sqmt">Sq. Mt.</option>
+            <div class="mb-3">
+                <label class="form-label text-sm">UOM</label>
+                <select class="form-select form-select-sm" id="uom">
+                    <option value="sqft">Square Feet</option>
+                    <option value="sqmt">Square Meters</option>
                 </select>
             </div>
             
-            <div class="form-group-sm">
-                <label>Wastage</label>
-                <select class="form-control form-control-xs" id="wastageMode">
-                    <option value="none">No Wastage</option>
-                    <option value="round">Round Up</option>
-                    <option value="evenin">Even Inches</option>
-                </select>
+            <!-- RATE CALCULATION -->
+            <div class="mb-3">
+                <label class="form-label text-sm">Base Rate (₹/sq.ft)</label>
+                <input type="number" class="form-control form-control-sm" id="baseRate" value="155" onchange="calculateRate()">
             </div>
             
-            <!-- ADD MM -->
-            <div class="form-group-sm">
-                <div class="form-check form-check-inline">
+            <div class="mb-3">
+                <label class="form-label text-sm">Calculated Rate (₹/sq.mt)</label>
+                <input type="text" class="form-control form-control-sm" id="calculatedRate" value="1413.91" readonly>
+            </div>
+            
+            <!-- ADD MM SETTINGS -->
+            <div class="mb-3">
+                <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="enableAddMM">
-                    <label class="form-check-label text-sm" for="enableAddMM">Add MM</label>
+                    <label class="form-check-label text-sm">Add MM to Chargable Size</label>
                 </div>
             </div>
             
-            <div id="mmSettings" style="display: none; margin-top: 10px;">
+            <div id="mmSettings" style="display: none;">
                 <div class="row g-2 mb-2">
                     <div class="col-6">
-                        <input type="number" class="form-control form-control-xs" id="addMMWidth" placeholder="Width MM" value="3">
+                        <label class="form-label text-sm">Width (+MM)</label>
+                        <input type="number" class="form-control form-control-sm" id="addMMWidth" value="3">
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control form-control-xs" id="addMMHeight" placeholder="Height MM" value="3">
+                        <label class="form-label text-sm">Height (+MM)</label>
+                        <input type="number" class="form-control form-control-sm" id="addMMHeight" value="3">
                     </div>
                 </div>
-                <button class="btn btn-xs btn-secondary w-100" onclick="applyAddMMToAll()">Apply All</button>
             </div>
             
-            <!-- PARTY SELECTION -->
-            <div class="form-group-sm">
-                <label>Select Party</label>
-                <select class="form-control form-control-xs" id="partySelect" onchange="selectParty()">
-                    <option value="">Select Party</option>
-                </select>
-                <button class="btn btn-xs btn-success w-100 mt-1" onclick="addNewParty()">
-                    <i class="fas fa-plus fa-xs me-1"></i> New Party
-                </button>
+            <!-- SHOW IN PRINT -->
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="showChargable" checked>
+                    <label class="form-check-label text-sm">Show Chargable Size in Print</label>
+                </div>
             </div>
             
             <!-- QUICK ACTIONS -->
-            <div class="form-group-sm">
-                <button class="btn btn-xs btn-primary w-100 mb-1" onclick="addNewRow()">
-                    <i class="fas fa-plus fa-xs me-1"></i> Add Row
+            <div class="mb-3">
+                <button class="btn btn-sm btn-primary w-100 mb-1" onclick="addNewRow()">
+                    <i class="fas fa-plus me-1"></i> Add Row
                 </button>
-                <button class="btn btn-xs btn-warning w-100 mb-1" onclick="calculateAll()">
-                    <i class="fas fa-calculator fa-xs me-1"></i> Calculate All
+                <button class="btn btn-sm btn-success w-100 mb-1" onclick="calculateAll()">
+                    <i class="fas fa-calculator me-1"></i> Calculate All
                 </button>
-                <button class="btn btn-xs btn-danger w-100" onclick="clearAll()">
-                    <i class="fas fa-trash fa-xs me-1"></i> Clear All
+                <button class="btn btn-sm btn-danger w-100" onclick="clearAll()">
+                    <i class="fas fa-trash me-1"></i> Clear All
                 </button>
             </div>
             
-            <!-- QUICK SUMMARY -->
-            <div class="total-section mt-3">
-                <div class="total-row">
-                    <span>Items:</span>
-                    <span id="totalItems">0</span>
-                </div>
-                <div class="total-row">
-                    <span>Area:</span>
-                    <span id="totalArea">0 Sq.Ft.</span>
-                </div>
-                <div class="total-row">
-                    <span>Amount:</span>
-                    <span id="totalAmount">₹0.00</span>
-                </div>
-                <div class="total-row">
-                    <span>Total:</span>
-                    <span id="totalGrand">₹0.00</span>
-                </div>
-            </div>
-            
-            <!-- NAVIGATION -->
-            <div class="mt-3">
-                <button class="btn btn-xs btn-outline-primary w-100 mb-1" onclick="showDashboard()">
-                    <i class="fas fa-home fa-xs me-1"></i> Dashboard
-                </button>
-                <button class="btn btn-xs btn-outline-success w-100 mb-1" onclick="showReports()">
-                    <i class="fas fa-chart-bar fa-xs me-1"></i> Reports
-                </button>
-                <button class="btn btn-xs btn-outline-warning w-100" onclick="showAttendance()">
-                    <i class="fas fa-calendar-check fa-xs me-1"></i> Attendance
+            <!-- GST INVOICE -->
+            <div class="mb-3">
+                <button class="btn btn-sm btn-warning w-100" onclick="createGSTInvoice()">
+                    <i class="fas fa-file-invoice me-1"></i> Create GST Invoice
                 </button>
             </div>
         </div>
@@ -484,240 +443,463 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
-        <!-- DEFAULT: DASHBOARD -->
-        <div id="dashboardSection">
-            <div class="header-bar">
-                <div class="header-title">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-sm btn-primary" onclick="showProforma()">
-                        <i class="fas fa-plus me-1"></i> New PI
-                    </button>
-                </div>
+        <!-- HEADER -->
+        <div class="header-bar">
+            <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-title" id="pageTitle">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
             </div>
-            
+            <div class="header-actions">
+                <span class="badge bg-primary me-2" id="userRole">Admin</span>
+                <button class="btn btn-sm btn-outline-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboardSection">
             <div class="module-grid">
+                <!-- PROFORMA & QUOTATION -->
                 <div class="module-card" onclick="showProforma()">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <h6>Create Proforma</h6>
+                    <p class="text-xs text-muted mt-1">Create proforma invoices</p>
                 </div>
+                
                 <div class="module-card" onclick="showQuotation()">
                     <i class="fas fa-file-alt"></i>
                     <h6>Create Quotation</h6>
+                    <p class="text-xs text-muted mt-1">Generate quotations</p>
                 </div>
-                <div class="module-card" onclick="showReports()">
-                    <i class="fas fa-chart-bar"></i>
-                    <h6>Reports</h6>
+                
+                <!-- CUSTOMER MANAGEMENT -->
+                <div class="module-card" onclick="showCustomerManagement()">
+                    <i class="fas fa-users"></i>
+                    <h6>Customers Management</h6>
+                    <p class="text-xs text-muted mt-1">Manage customers</p>
                 </div>
+                
+                <!-- ACCOUNTING -->
+                <div class="module-card" onclick="showAccounting()">
+                    <i class="fas fa-calculator"></i>
+                    <h6>Accounting</h6>
+                    <p class="text-xs text-muted mt-1">Accounts & Ledger</p>
+                </div>
+                
+                <!-- ATTENDANCE -->
                 <div class="module-card" onclick="showAttendance()">
                     <i class="fas fa-calendar-check"></i>
                     <h6>Attendance</h6>
+                    <p class="text-xs text-muted mt-1">Employee attendance</p>
                 </div>
-                <div class="module-card" onclick="showCustomers()">
-                    <i class="fas fa-users"></i>
-                    <h6>Customers</h6>
-                </div>
-                <div class="module-card" onclick="showProducts()">
+                
+                <!-- ITEM MASTER -->
+                <div class="module-card" onclick="showItemMaster()">
                     <i class="fas fa-box"></i>
-                    <h6>Products</h6>
+                    <h6>Item Master</h6>
+                    <p class="text-xs text-muted mt-1">Manage products</p>
                 </div>
+                
+                <!-- USER MANAGEMENT -->
+                <div class="module-card" onclick="showUserManagement()">
+                    <i class="fas fa-user-cog"></i>
+                    <h6>User Management</h6>
+                    <p class="text-xs text-muted mt-1">Create users</p>
+                </div>
+                
+                <!-- ADMIN PANEL -->
+                <div class="module-card" onclick="showAdminPanel()">
+                    <i class="fas fa-shield-alt"></i>
+                    <h6>Admin Panel</h6>
+                    <p class="text-xs text-muted mt-1">System administration</p>
+                </div>
+                
+                <!-- REPORTS -->
+                <div class="module-card" onclick="showReports()">
+                    <i class="fas fa-chart-bar"></i>
+                    <h6>Reports</h6>
+                    <p class="text-xs text-muted mt-1">View reports</p>
+                </div>
+                
+                <!-- SETTINGS -->
                 <div class="module-card" onclick="showSettings()">
                     <i class="fas fa-cog"></i>
                     <h6>Settings</h6>
+                    <p class="text-xs text-muted mt-1">System settings</p>
                 </div>
-                <div class="module-card" onclick="showHelp()">
-                    <i class="fas fa-question-circle"></i>
-                    <h6>Help</h6>
+                
+                <!-- GST INVOICE -->
+                <div class="module-card" onclick="showGSTInvoice()">
+                    <i class="fas fa-file-invoice"></i>
+                    <h6>GST Invoice</h6>
+                    <p class="text-xs text-muted mt-1">Create GST invoices</p>
                 </div>
             </div>
         </div>
 
         <!-- PROFORMA SECTION -->
         <div id="proformaSection" style="display: none;">
-            <div class="header-bar">
-                <div class="header-title">
-                    <i class="fas fa-file-invoice-dollar"></i> Proforma Invoice
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-sm btn-success" onclick="saveProforma()">
-                        <i class="fas fa-save me-1"></i> Save
-                    </button>
-                    <button class="btn btn-sm btn-primary" onclick="printProforma()">
-                        <i class="fas fa-print me-1"></i> Print
-                    </button>
-                    <button class="btn btn-sm btn-warning" onclick="showDashboard()">
-                        <i class="fas fa-times me-1"></i> Close
-                    </button>
-                </div>
-            </div>
-            
-            <!-- CUSTOMER DETAILS -->
-            <div class="customer-section">
-                <div class="customer-box">
-                    <div class="customer-header">
-                        <span>BILL TO</span>
-                        <i class="fas fa-user-tie text-primary"></i>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control form-control-xs" id="billName" placeholder="Name" value="Raj Glass House">
-                    </div>
-                    <div class="mb-2">
-                        <textarea class="form-control form-control-xs" id="billAddress" rows="1" placeholder="Address">123, Main Market, Delhi</textarea>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <input type="text" class="form-control form-control-xs" id="billGST" placeholder="GSTIN" value="07AABCU9603R1ZX">
+            <div class="proforma-container">
+                <!-- CUSTOMER DETAILS -->
+                <div class="customer-form">
+                    <!-- BILL TO -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-user-tie me-2"></i>Bill To
                         </div>
-                        <div class="col-6">
-                            <input type="text" class="form-control form-control-xs" id="billPhone" placeholder="Phone" value="9876543210">
+                        <div class="row g-2 mb-2">
+                            <div class="col-12">
+                                <select class="form-select form-select-sm" id="customerSelect" onchange="loadCustomer()">
+                                    <option value="">Select Customer</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-sm" id="billName" placeholder="Customer Name">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12">
+                                <textarea class="form-control form-control-sm" id="billAddress" rows="2" placeholder="Address"></textarea>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billCity" placeholder="City">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billPincode" placeholder="Pincode">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billState" placeholder="State">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billGST" placeholder="GSTIN">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billPhone" placeholder="Contact No.">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="billSalesPerson" placeholder="Sales Person">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SHIP TO -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-truck me-2"></i>Ship To
+                            <div class="form-check form-check-inline float-end">
+                                <input class="form-check-input" type="checkbox" id="sameAsBill" onchange="copyToShip()">
+                                <label class="form-check-label text-sm">Same as Bill</label>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-sm" id="shipName" placeholder="Customer Name">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12">
+                                <textarea class="form-control form-control-sm" id="shipAddress" rows="2" placeholder="Address"></textarea>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="shipCity" placeholder="City">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="shipPincode" placeholder="Pincode">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="shipState" placeholder="State">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control form-control-sm" id="shipGST" placeholder="GSTIN">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-sm" id="shipPhone" placeholder="Contact No.">
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="customer-box">
-                    <div class="customer-header">
-                        <span>SHIP TO</span>
-                        <i class="fas fa-truck text-success"></i>
+                <!-- PRODUCT TABLE -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th width="30">#</th>
+                                <th width="120">Item</th>
+                                <th width="100">Actual Width (Inches)</th>
+                                <th width="100">Actual Height (Inches)</th>
+                                <th width="100">Chargable Width (MM)</th>
+                                <th width="100">Chargable Height (MM)</th>
+                                <th width="80">Qty</th>
+                                <th width="100">Rate (₹/sq.ft)</th>
+                                <th width="80">Hole Qty</th>
+                                <th width="80">Cut Qty</th>
+                                <th width="100">Amount (₹)</th>
+                                <th width="40" class="no-print">Del</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTable">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- OTHER CHARGES PANEL -->
+                <div class="charges-panel">
+                    <div class="charges-header">
+                        <h6 class="mb-0"><i class="fas fa-receipt me-2"></i>Other Charges</h6>
+                        <button class="btn btn-sm btn-success" onclick="addCharge()">
+                            <i class="fas fa-plus me-1"></i> Add Charge
+                        </button>
                     </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="sameAsBill" onchange="copyToShip()">
-                        <label class="form-check-label text-sm">Same as Bill To</label>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control form-control-xs" id="shipName" placeholder="Name">
-                    </div>
-                    <div class="mb-2">
-                        <textarea class="form-control form-control-xs" id="shipAddress" rows="1" placeholder="Address"></textarea>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <input type="text" class="form-control form-control-xs" id="shipGST" placeholder="GSTIN">
-                        </div>
-                        <div class="col-6">
-                            <input type="text" class="form-control form-control-xs" id="shipPhone" placeholder="Phone">
-                        </div>
+                    <div class="charges-grid" id="chargesGrid">
+                        <!-- Charges will be added here -->
                     </div>
                 </div>
-            </div>
-            
-            <!-- PRODUCT TABLE -->
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th width="30">#</th>
-                            <th width="120">Width (Inches)</th>
-                            <th width="120">Height (Inches)</th>
-                            <th width="120">Size (MM)</th>
-                            <th width="60">Qty</th>
-                            <th width="80">Rate</th>
-                            <th width="80">Hole</th>
-                            <th width="80">Cut</th>
-                            <th width="80">Area</th>
-                            <th width="100">Amount</th>
-                            <th width="40" class="no-print">Del</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productTable">
-                        <!-- Rows will be added here -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- TOTALS -->
-            <div class="total-section">
-                <div class="total-row">
-                    <span>Subtotal:</span>
-                    <span id="subtotalAmount">₹0.00</span>
+                
+                <!-- TOTALS -->
+                <div class="total-section">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalAmount">₹0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Other Charges:</span>
+                        <span id="otherCharges">₹0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Discount:</span>
+                        <span>
+                            <input type="number" id="discountPercent" value="0" min="0" max="100" style="width: 50px;"> %
+                            <span id="discountAmount">₹0.00</span>
+                        </span>
+                    </div>
+                    <div class="total-row">
+                        <span>GST (18%):</span>
+                        <span id="gstAmount">₹0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>GRAND TOTAL:</span>
+                        <span id="grandTotal">₹0.00</span>
+                    </div>
                 </div>
-                <div class="total-row">
-                    <span>Discount:</span>
-                    <span>
-                        <input type="number" id="discountPercent" value="0" min="0" max="100" style="width: 40px; padding: 1px;"> %
-                        <span id="discountAmount" class="ms-2">₹0.00</span>
-                    </span>
-                </div>
-                <div class="total-row">
-                    <span>GST (18%):</span>
-                    <span id="gstAmount">₹0.00</span>
-                </div>
-                <div class="total-row">
-                    <span>GRAND TOTAL:</span>
-                    <span id="grandTotal">₹0.00</span>
+                
+                <!-- ACTION BUTTONS -->
+                <div class="d-flex justify-content-between mt-3">
+                    <div>
+                        <button class="btn btn-primary me-2" onclick="saveProforma()">
+                            <i class="fas fa-save me-1"></i> Save PI
+                        </button>
+                        <button class="btn btn-success me-2" onclick="printProforma()">
+                            <i class="fas fa-print me-1"></i> Print
+                        </button>
+                        <button class="btn btn-warning" onclick="createGSTInvoice()">
+                            <i class="fas fa-file-invoice me-1"></i> GST Invoice
+                        </button>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-secondary" onclick="showDashboard()">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- REPORTS SECTION -->
-        <div id="reportsSection" style="display: none;">
-            <div class="header-bar">
-                <div class="header-title">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-sm btn-primary" onclick="exportReports()">
-                        <i class="fas fa-download me-1"></i> Export
+        <!-- CUSTOMER MANAGEMENT -->
+        <div id="customerManagementSection" style="display: none;">
+            <div class="proforma-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Customers Management</h5>
+                    <button class="btn btn-primary" onclick="addNewCustomer()">
+                        <i class="fas fa-plus me-1"></i> Add Customer
                     </button>
                 </div>
-            </div>
-            
-            <div class="reports-container">
-                <h6 class="mb-3">PI Reports</h6>
-                <div class="table-responsive">
+                
+                <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>PI No.</th>
-                                <th>Date</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>GSTIN</th>
+                                <th>Sales Person</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="reportsTable">
-                            <!-- Reports will load here -->
+                        <tbody id="customerTable">
+                            <!-- Customers will load here -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ATTENDANCE SECTION -->
-        <div id="attendanceSection" style="display: none;">
-            <div class="header-bar">
-                <div class="header-title">
-                    <i class="fas fa-calendar-check"></i> Attendance System
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-sm btn-primary" onclick="markAttendance()">
-                        <i class="fas fa-check me-1"></i> Mark Today
-                    </button>
+        <!-- ACCOUNTING SECTION -->
+        <div id="accountingSection" style="display: none;">
+            <div class="proforma-container">
+                <h5 class="mb-3"><i class="fas fa-calculator me-2"></i>Accounting</h5>
+                
+                <div class="account-grid">
+                    <div class="form-section">
+                        <div class="section-header">Day Book</div>
+                        <div class="table-container" style="max-height: 300px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Particulars</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dayBookTable">
+                                    <!-- Day book entries -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="section-header">Ledger</div>
+                        <div class="mb-3">
+                            <select class="form-select form-select-sm" id="ledgerSelect">
+                                <option value="">Select Account</option>
+                            </select>
+                        </div>
+                        <div class="table-container" style="max-height: 300px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Particulars</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledgerTable">
+                                    <!-- Ledger entries -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="attendance-container">
-                <div class="attendance-header">
-                    <h6 class="mb-0">Employee Attendance</h6>
-                    <input type="month" class="form-control form-control-xs" style="width: 150px;" id="attendanceMonth">
+        </div>
+
+        <!-- USER MANAGEMENT -->
+        <div id="userManagementSection" style="display: none;">
+            <div class="proforma-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i>User Management</h5>
+                    <button class="btn btn-primary" onclick="addNewUser()">
+                        <i class="fas fa-plus me-1"></i> Add User
+                    </button>
                 </div>
                 
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Emp ID</th>
+                                <th>User ID</th>
                                 <th>Name</th>
-                                <th>Date</th>
-                                <th>In Time</th>
-                                <th>Out Time</th>
+                                <th>Username</th>
+                                <th>Role</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="attendanceTable">
-                            <!-- Attendance will load here -->
+                        <tbody id="userTable">
+                            <!-- Users will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div id="adminPanelSection" style="display: none;">
+            <div class="admin-panel">
+                <h5 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Admin Panel</h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-section mb-3">
+                            <div class="section-header">Database Backup</div>
+                            <button class="btn btn-success w-100 mb-2" onclick="backupData()">
+                                <i class="fas fa-database me-2"></i> Backup Data
+                            </button>
+                            <button class="btn btn-warning w-100" onclick="restoreData()">
+                                <i class="fas fa-redo me-2"></i> Restore Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-section mb-3">
+                            <div class="section-header">System Logs</div>
+                            <div class="table-container" style="max-height: 200px;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>User</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="systemLogs">
+                                        <!-- Logs will load here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ITEM MASTER -->
+        <div id="itemMasterSection" style="display: none;">
+            <div class="proforma-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-box me-2"></i>Item Master</h5>
+                    <button class="btn btn-primary" onclick="addNewItem()">
+                        <i class="fas fa-plus me-1"></i> Add Item
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Rate (₹/sq.ft)</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemTable">
+                            <!-- Items will load here -->
                         </tbody>
                     </table>
                 </div>
@@ -726,64 +908,107 @@
     </div>
 
     <!-- MODALS -->
-    <!-- Party Modal -->
-    <div class="modal fade" id="partyModal" tabindex="-1">
-        <div class="modal-dialog modal-sm">
+    <!-- Customer Modal -->
+    <div class="modal fade" id="customerModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title mb-0">Add Party</h6>
+                <div class="modal-header">
+                    <h6 class="modal-title">Add Customer</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label text-sm">Name</label>
-                        <input type="text" class="form-control form-control-xs" id="modalPartyName">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label text-sm">Phone</label>
-                        <input type="text" class="form-control form-control-xs" id="modalPartyPhone">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label text-sm">Address</label>
-                        <textarea class="form-control form-control-xs" id="modalPartyAddress" rows="2"></textarea>
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control form-control-sm" id="modalCustName" placeholder="Customer Name">
+                        </div>
+                        <div class="col-12">
+                            <textarea class="form-control form-control-sm" id="modalCustAddress" rows="2" placeholder="Address"></textarea>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustCity" placeholder="City">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustPincode" placeholder="Pincode">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustState" placeholder="State">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustPhone" placeholder="Contact No.">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustGST" placeholder="GSTIN">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" id="modalCustSalesPerson" placeholder="Sales Person">
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer py-2">
-                    <button type="button" class="btn btn-xs btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-xs btn-primary" onclick="saveParty()">Save</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveCustomer()">Save</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div class="modal fade" id="settingsModal" tabindex="-1">
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header py-2">
-                    <h6 class="modal-title mb-0">Settings</h6>
+                <div class="modal-header">
+                    <h6 class="modal-title">Add User</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label text-sm">Company Name</label>
-                        <input type="text" class="form-control form-control-xs" value="S.A.P.U.T. Glass Works">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-sm">Address</label>
-                        <input type="text" class="form-control form-control-xs" value="Karnal, Haryana - 132001">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-sm">Phone</label>
-                        <input type="text" class="form-control form-control-xs" value="1111111111">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-sm">Email</label>
-                        <input type="email" class="form-control form-control-xs" value="jperp1001@gmail.com">
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control form-control-sm" placeholder="Full Name">
+                        </div>
+                        <div class="col-12">
+                            <input type="text" class="form-control form-control-sm" placeholder="Username">
+                        </div>
+                        <div class="col-12">
+                            <input type="password" class="form-control form-control-sm" placeholder="Password">
+                        </div>
+                        <div class="col-12">
+                            <select class="form-select form-select-sm">
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="manager">Manager</option>
+                                <option value="sales">Sales</option>
+                                <option value="account">Account</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer py-2">
-                    <button type="button" class="btn btn-xs btn-primary" data-bs-dismiss="modal">Save</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charge Modal -->
+    <div class="modal fade" id="chargeModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Add Charge</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm" id="chargeName" placeholder="Charge Name">
+                    </div>
+                    <div class="mb-2">
+                        <input type="number" class="form-control form-control-sm" id="chargeAmount" placeholder="Amount">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveCharge()">Add</button>
                 </div>
             </div>
         </div>
@@ -791,13 +1016,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize Variables
+        // Global Variables
         let currentRow = 1;
-        let parties = [];
+        let customers = [];
+        let users = [];
+        let items = [];
         let proformas = [];
-        let attendance = [];
+        let charges = [];
+        let currentUser = { role: 'admin' };
         
-        // Initialize on Load
+        // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
             initApp();
         });
@@ -807,13 +1035,14 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('piDate').value = today;
             
-            // Generate PI number
-            generatePINumber();
+            // Calculate initial rate
+            calculateRate();
             
             // Load data
-            loadParties();
+            loadCustomers();
+            loadUsers();
+            loadItems();
             loadProformas();
-            loadAttendance();
             
             // Add initial row
             addNewRow();
@@ -829,107 +1058,181 @@
             // Add MM checkbox
             document.getElementById('enableAddMM').addEventListener('change', function() {
                 document.getElementById('mmSettings').style.display = this.checked ? 'block' : 'none';
+                calculateAll();
             });
+            
+            // Base rate change
+            document.getElementById('baseRate').addEventListener('input', calculateRate);
             
             // Discount input
             document.getElementById('discountPercent').addEventListener('input', calculateSummary);
             
-            // Party select
-            document.getElementById('partySelect').addEventListener('change', selectParty);
-            
-            // Same as Bill checkbox
-            document.getElementById('sameAsBill').addEventListener('change', copyToShip);
+            // Charges
+            document.getElementById('addMMWidth').addEventListener('input', calculateAll);
+            document.getElementById('addMMHeight').addEventListener('input', calculateAll);
+        }
+        
+        // RATE CALCULATION: 155 ÷ 18% × 10.764 = 1413.91
+        function calculateRate() {
+            const baseRate = parseFloat(document.getElementById('baseRate').value) || 155;
+            const calculatedRate = (baseRate / 0.18) * 10.764;
+            document.getElementById('calculatedRate').value = calculatedRate.toFixed(2);
+            calculateAll();
+        }
+        
+        // SIDEBAR TOGGLE
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('sidebar-active');
         }
         
         // NAVIGATION
         function showDashboard() {
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-tachometer-alt"></i> Dashboard';
+            toggleSidebar(false);
         }
         
         function showProforma() {
             hideAllSections();
             document.getElementById('proformaSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-file-invoice-dollar"></i> Proforma Invoice';
+            toggleSidebar(true);
         }
         
-        function showReports() {
+        function showCustomerManagement() {
             hideAllSections();
-            document.getElementById('reportsSection').style.display = 'block';
-            loadReportsData();
+            document.getElementById('customerManagementSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-users"></i> Customers Management';
+            loadCustomerTable();
+            toggleSidebar(false);
         }
         
-        function showAttendance() {
+        function showAccounting() {
             hideAllSections();
-            document.getElementById('attendanceSection').style.display = 'block';
-            loadAttendanceData();
+            document.getElementById('accountingSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-calculator"></i> Accounting';
+            toggleSidebar(false);
+        }
+        
+        function showUserManagement() {
+            hideAllSections();
+            document.getElementById('userManagementSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-user-cog"></i> User Management';
+            loadUserTable();
+            toggleSidebar(false);
+        }
+        
+        function showAdminPanel() {
+            hideAllSections();
+            document.getElementById('adminPanelSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-shield-alt"></i> Admin Panel';
+            toggleSidebar(false);
+        }
+        
+        function showItemMaster() {
+            hideAllSections();
+            document.getElementById('itemMasterSection').style.display = 'block';
+            document.getElementById('pageTitle').innerHTML = '<i class="fas fa-box"></i> Item Master';
+            loadItemTable();
+            toggleSidebar(false);
         }
         
         function showQuotation() {
             alert('Quotation module coming soon!');
         }
         
-        function showCustomers() {
-            alert('Customer management module coming soon!');
+        function showAttendance() {
+            alert('Attendance module coming soon!');
         }
         
-        function showProducts() {
-            alert('Product management module coming soon!');
+        function showReports() {
+            alert('Reports module coming soon!');
         }
         
         function showSettings() {
-            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+            alert('Settings module coming soon!');
         }
         
-        function showHelp() {
-            alert('Help documentation coming soon!');
+        function showGSTInvoice() {
+            alert('GST Invoice module coming soon!');
         }
         
         function hideAllSections() {
             document.getElementById('dashboardSection').style.display = 'none';
             document.getElementById('proformaSection').style.display = 'none';
-            document.getElementById('reportsSection').style.display = 'none';
-            document.getElementById('attendanceSection').style.display = 'none';
+            document.getElementById('customerManagementSection').style.display = 'none';
+            document.getElementById('accountingSection').style.display = 'none';
+            document.getElementById('userManagementSection').style.display = 'none';
+            document.getElementById('adminPanelSection').style.display = 'none';
+            document.getElementById('itemMasterSection').style.display = 'none';
         }
         
-        // PARTY MANAGEMENT
-        function loadParties() {
+        // CUSTOMER MANAGEMENT
+        function loadCustomers() {
             try {
-                parties = JSON.parse(localStorage.getItem('saput_parties')) || [];
+                customers = JSON.parse(localStorage.getItem('saput_customers')) || [];
             } catch {
-                parties = [];
+                customers = [];
             }
             
-            // Default parties
-            if (parties.length === 0) {
-                parties = [
-                    { id: 1, name: 'Raj Glass House', phone: '9876543210', address: '123, Main Market, Delhi', gst: '07AABCU9603R1ZX' },
-                    { id: 2, name: 'Shyam Glass Works', phone: '9876543211', address: '456, Industrial Area', gst: '06ABCDE1234F1Z5' },
-                    { id: 3, name: 'Modern Glass', phone: '9876543212', address: '789, Sector 5', gst: '' }
+            // Sample customers if none
+            if (customers.length === 0) {
+                customers = [
+                    {
+                        id: 1,
+                        name: 'Raj Glass House',
+                        address: '123, Main Market, Delhi',
+                        city: 'Delhi',
+                        pincode: '110001',
+                        state: 'Delhi',
+                        phone: '9876543210',
+                        gst: '07AABCU9603R1ZX',
+                        salesPerson: 'Ramesh Kumar'
+                    },
+                    {
+                        id: 2,
+                        name: 'Shyam Glass Works',
+                        address: '456, Industrial Area, Noida',
+                        city: 'Noida',
+                        pincode: '201301',
+                        state: 'UP',
+                        phone: '9876543211',
+                        gst: '06ABCDE1234F1Z5',
+                        salesPerson: 'Suresh Singh'
+                    }
                 ];
-                localStorage.setItem('saput_parties', JSON.stringify(parties));
+                localStorage.setItem('saput_customers', JSON.stringify(customers));
             }
             
-            // Populate party select
-            const partySelect = document.getElementById('partySelect');
-            partySelect.innerHTML = '<option value="">Select Party</option>';
-            parties.forEach(party => {
+            // Populate customer select
+            const customerSelect = document.getElementById('customerSelect');
+            customerSelect.innerHTML = '<option value="">Select Customer</option>';
+            customers.forEach(cust => {
                 const option = document.createElement('option');
-                option.value = party.id;
-                option.textContent = `${party.name} (${party.phone})`;
-                partySelect.appendChild(option);
+                option.value = cust.id;
+                option.textContent = `${cust.name} (${cust.city})`;
+                customerSelect.appendChild(option);
             });
         }
         
-        function selectParty() {
-            const partyId = document.getElementById('partySelect').value;
-            if (!partyId) return;
+        function loadCustomer() {
+            const custId = document.getElementById('customerSelect').value;
+            if (!custId) return;
             
-            const party = parties.find(p => p.id == partyId);
-            if (party) {
-                document.getElementById('billName').value = party.name;
-                document.getElementById('billAddress').value = party.address;
-                document.getElementById('billGST').value = party.gst || '';
-                document.getElementById('billPhone').value = party.phone;
+            const customer = customers.find(c => c.id == custId);
+            if (customer) {
+                document.getElementById('billName').value = customer.name;
+                document.getElementById('billAddress').value = customer.address;
+                document.getElementById('billCity').value = customer.city;
+                document.getElementById('billPincode').value = customer.pincode;
+                document.getElementById('billState').value = customer.state;
+                document.getElementById('billPhone').value = customer.phone;
+                document.getElementById('billGST').value = customer.gst;
+                document.getElementById('billSalesPerson').value = customer.salesPerson;
                 
                 if (document.getElementById('sameAsBill').checked) {
                     copyToShip();
@@ -937,64 +1240,166 @@
             }
         }
         
-        function addNewParty() {
-            document.getElementById('modalPartyName').value = '';
-            document.getElementById('modalPartyPhone').value = '';
-            document.getElementById('modalPartyAddress').value = '';
-            new bootstrap.Modal(document.getElementById('partyModal')).show();
+        function addNewCustomer() {
+            new bootstrap.Modal(document.getElementById('customerModal')).show();
         }
         
-        function saveParty() {
-            const name = document.getElementById('modalPartyName').value;
-            const phone = document.getElementById('modalPartyPhone').value;
-            const address = document.getElementById('modalPartyAddress').value;
+        function saveCustomer() {
+            const customer = {
+                id: customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1,
+                name: document.getElementById('modalCustName').value,
+                address: document.getElementById('modalCustAddress').value,
+                city: document.getElementById('modalCustCity').value,
+                pincode: document.getElementById('modalCustPincode').value,
+                state: document.getElementById('modalCustState').value,
+                phone: document.getElementById('modalCustPhone').value,
+                gst: document.getElementById('modalCustGST').value,
+                salesPerson: document.getElementById('modalCustSalesPerson').value,
+                created: new Date().toISOString()
+            };
             
-            if (!name || !phone) {
+            if (!customer.name || !customer.phone) {
                 alert('Name and Phone are required!');
                 return;
             }
             
-            const newParty = {
-                id: parties.length > 0 ? Math.max(...parties.map(p => p.id)) + 1 : 1,
-                name: name,
-                phone: phone,
-                address: address,
-                gst: '',
-                created: new Date().toISOString()
-            };
+            customers.push(customer);
+            localStorage.setItem('saput_customers', JSON.stringify(customers));
             
-            parties.push(newParty);
-            localStorage.setItem('saput_parties', JSON.stringify(parties));
+            loadCustomers();
+            bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
             
-            // Update select
-            loadParties();
-            
-            // Select the new party
-            document.getElementById('partySelect').value = newParty.id;
-            selectParty();
-            
-            bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
+            alert('Customer saved successfully!');
         }
         
-        function copyToShip() {
-            if (document.getElementById('sameAsBill').checked) {
-                document.getElementById('shipName').value = document.getElementById('billName').value;
-                document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
-                document.getElementById('shipGST').value = document.getElementById('billGST').value;
-                document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
+        function loadCustomerTable() {
+            const table = document.getElementById('customerTable');
+            table.innerHTML = '';
+            
+            customers.forEach(cust => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>C${cust.id.toString().padStart(3, '0')}</td>
+                    <td>${cust.name}</td>
+                    <td>${cust.city}</td>
+                    <td>${cust.phone}</td>
+                    <td>${cust.gst || '-'}</td>
+                    <td>${cust.salesPerson || '-'}</td>
+                    <td>
+                        <button class="btn btn-xs btn-primary me-1" onclick="editCustomer(${cust.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger" onclick="deleteCustomer(${cust.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+        }
+        
+        // USER MANAGEMENT
+        function loadUsers() {
+            try {
+                users = JSON.parse(localStorage.getItem('saput_users')) || [];
+            } catch {
+                users = [];
+            }
+            
+            // Default admin user
+            if (users.length === 0) {
+                users = [
+                    {
+                        id: 1,
+                        name: 'Admin User',
+                        username: 'admin',
+                        password: 'admin123',
+                        role: 'admin',
+                        status: 'active'
+                    }
+                ];
+                localStorage.setItem('saput_users', JSON.stringify(users));
             }
         }
         
-        // PROFORMA FUNCTIONS
-        function generatePINumber() {
-            const year = new Date().getFullYear();
-            const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
-            const count = (proformas.length + 1).toString().padStart(3, '0');
-            const piNumber = `PI-${year}${month}-${count}`;
-            document.getElementById('piNumber').value = piNumber;
-            return piNumber;
+        function addNewUser() {
+            new bootstrap.Modal(document.getElementById('userModal')).show();
         }
         
+        function loadUserTable() {
+            const table = document.getElementById('userTable');
+            table.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>U${user.id.toString().padStart(3, '0')}</td>
+                    <td>${user.name}</td>
+                    <td>${user.username}</td>
+                    <td><span class="badge bg-${user.role === 'admin' ? 'danger' : 'primary'}">${user.role}</span></td>
+                    <td><span class="badge bg-success">${user.status}</span></td>
+                    <td>
+                        <button class="btn btn-xs btn-warning me-1">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+        }
+        
+        // ITEM MASTER
+        function loadItems() {
+            try {
+                items = JSON.parse(localStorage.getItem('saput_items')) || [];
+            } catch {
+                items = [];
+            }
+            
+            // Default items
+            if (items.length === 0) {
+                items = [
+                    { id: 1, code: 'GLASS001', description: 'Clear Glass 6mm', type: 'Glass', rate: 450, stock: 100 },
+                    { id: 2, code: 'GLASS002', description: 'Toughened Glass 10mm', type: 'Glass', rate: 650, stock: 50 },
+                    { id: 3, code: 'GLASS003', description: 'Laminated Glass 10mm', type: 'Glass', rate: 850, stock: 30 }
+                ];
+                localStorage.setItem('saput_items', JSON.stringify(items));
+            }
+        }
+        
+        function addNewItem() {
+            alert('Add Item feature coming soon!');
+        }
+        
+        function loadItemTable() {
+            const table = document.getElementById('itemTable');
+            table.innerHTML = '';
+            
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.code}</td>
+                    <td>${item.description}</td>
+                    <td>${item.type}</td>
+                    <td>₹${item.rate}/sq.ft</td>
+                    <td>${item.stock} sq.ft</td>
+                    <td>
+                        <button class="btn btn-xs btn-primary me-1">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+        }
+        
+        // PROFORMA FUNCTIONS
         function addNewRow() {
             const table = document.getElementById('productTable');
             const rowId = currentRow++;
@@ -1003,26 +1408,23 @@
                 <tr id="row-${rowId}">
                     <td>${rowId}</td>
                     <td>
-                        <div class="size-input-group">
-                            <input type="text" class="width-inches" placeholder="16 6/8" value="16 6/8" onchange="calculateRow(${rowId})">
-                        </div>
+                        <select class="form-select form-select-sm" onchange="loadItemRate(this, ${rowId})">
+                            <option value="">Select Item</option>
+                            ${items.map(item => `<option value="${item.id}">${item.description}</option>`).join('')}
+                        </select>
                     </td>
                     <td>
-                        <div class="size-input-group">
-                            <input type="text" class="height-inches" placeholder="77 5/8" value="77 5/8" onchange="calculateRow(${rowId})">
-                        </div>
+                        <input type="text" class="form-control form-control-sm actual-width" placeholder="16 6/8" value="16 6/8" onchange="calculateRow(${rowId})">
                     </td>
                     <td>
-                        <div class="size-input-group">
-                            <input type="number" class="width-mm" placeholder="Width mm" value="1200" onchange="calculateRowFromMM(${rowId})">
-                            <input type="number" class="height-mm" placeholder="Height mm" value="2212" onchange="calculateRowFromMM(${rowId})">
-                        </div>
+                        <input type="text" class="form-control form-control-sm actual-height" placeholder="77 5/8" value="77 5/8" onchange="calculateRow(${rowId})">
                     </td>
-                    <td><input type="number" class="qty" value="1" min="1" onchange="calculateRow(${rowId})"></td>
-                    <td><input type="number" class="rate" value="450" min="0" onchange="calculateRow(${rowId})"></td>
-                    <td><input type="number" class="hole" value="0" min="0" onchange="calculateRow(${rowId})"></td>
-                    <td><input type="number" class="cut" value="0" min="0" onchange="calculateRow(${rowId})"></td>
-                    <td class="area">0.00</td>
+                    <td class="chargable-width">0</td>
+                    <td class="chargable-height">0</td>
+                    <td><input type="number" class="form-control form-control-sm qty" value="1" min="1" onchange="calculateRow(${rowId})"></td>
+                    <td><input type="number" class="form-control form-control-sm rate" value="450" onchange="calculateRow(${rowId})"></td>
+                    <td><input type="number" class="form-control form-control-sm hole" value="0" min="0" onchange="calculateRow(${rowId})"></td>
+                    <td><input type="number" class="form-control form-control-sm cut" value="0" min="0" onchange="calculateRow(${rowId})"></td>
                     <td class="amount">0.00</td>
                     <td class="no-print">
                         <button class="btn btn-xs btn-danger" onclick="deleteRow(${rowId})">
@@ -1036,11 +1438,13 @@
             calculateRow(rowId);
         }
         
-        function deleteRow(rowId) {
-            const row = document.getElementById(`row-${rowId}`);
-            if (row && confirm('Delete this row?')) {
-                row.remove();
-                calculateAll();
+        function loadItemRate(select, rowId) {
+            const itemId = select.value;
+            const item = items.find(i => i.id == itemId);
+            if (item) {
+                const row = document.getElementById(`row-${rowId}`);
+                row.querySelector('.rate').value = item.rate;
+                calculateRow(rowId);
             }
         }
         
@@ -1048,40 +1452,36 @@
             const row = document.getElementById(`row-${rowId}`);
             if (!row) return 0;
             
-            // Get inch values (format: "16 6/8")
-            const widthInchesText = row.querySelector('.width-inches').value;
-            const heightInchesText = row.querySelector('.height-inches').value;
+            // Parse actual size (format: "16 6/8")
+            const actualWidthText = row.querySelector('.actual-width').value;
+            const actualHeightText = row.querySelector('.actual-height').value;
             
-            const widthInches = parseInches(widthInchesText);
-            const heightInches = parseInches(heightInchesText);
+            const actualWidthInches = parseInches(actualWidthText);
+            const actualHeightInches = parseInches(actualHeightText);
             
-            const qty = parseFloat(row.querySelector('.qty').value) || 1;
-            const rate = parseFloat(row.querySelector('.rate').value) || 450;
-            const hole = parseFloat(row.querySelector('.hole').value) || 0;
-            const cut = parseFloat(row.querySelector('.cut').value) || 0;
+            // Calculate chargable size (with +MM if enabled)
+            let chargableWidthMM = Math.round(actualWidthInches * 25.4);
+            let chargableHeightMM = Math.round(actualHeightInches * 25.4);
             
-            // Calculate MM values
-            const widthMM = Math.round(widthInches * 25.4);
-            const heightMM = Math.round(heightInches * 25.4);
-            
-            // Update MM fields
-            row.querySelector('.width-mm').value = widthMM;
-            row.querySelector('.height-mm').value = heightMM;
-            
-            // Add MM if enabled
             if (document.getElementById('enableAddMM').checked) {
                 const addWidthMM = parseFloat(document.getElementById('addMMWidth').value) || 0;
                 const addHeightMM = parseFloat(document.getElementById('addMMHeight').value) || 0;
-                row.querySelector('.width-mm').value = widthMM + addWidthMM;
-                row.querySelector('.height-mm').value = heightMM + addHeightMM;
+                chargableWidthMM += addWidthMM;
+                chargableHeightMM += addHeightMM;
             }
             
-            // Calculate area in sq.ft
-            const areaSqFt = (widthInches * heightInches) / 144;
+            // Update chargable size display
+            row.querySelector('.chargable-width').textContent = chargableWidthMM;
+            row.querySelector('.chargable-height').textContent = chargableHeightMM;
+            
+            // Calculate area and amount
+            const qty = parseFloat(row.querySelector('.qty').value) || 1;
+            const rate = parseFloat(row.querySelector('.rate').value) || 450;
+            
+            const areaSqFt = (actualWidthInches * actualHeightInches) / 144;
             const amount = areaSqFt * rate * qty;
             
             // Update row
-            row.querySelector('.area').textContent = areaSqFt.toFixed(2);
             row.querySelector('.amount').textContent = amount.toFixed(2);
             
             // Store data
@@ -1094,36 +1494,10 @@
             return amount;
         }
         
-        function calculateRowFromMM(rowId) {
-            const row = document.getElementById(`row-${rowId}`);
-            if (!row) return;
-            
-            const widthMM = parseFloat(row.querySelector('.width-mm').value) || 0;
-            const heightMM = parseFloat(row.querySelector('.height-mm').value) || 0;
-            
-            // Convert MM to inches
-            const widthInches = widthMM / 25.4;
-            const heightInches = heightMM / 25.4;
-            
-            // Convert to feet-inches-fraction format
-            const widthFormatted = formatInches(widthInches);
-            const heightFormatted = formatInches(heightInches);
-            
-            // Update inch fields
-            row.querySelector('.width-inches').value = widthFormatted;
-            row.querySelector('.height-inches').value = heightFormatted;
-            
-            // Recalculate
-            calculateRow(rowId);
-        }
-        
         function parseInches(text) {
             if (!text) return 0;
-            
-            // Format: "16 6/8" or "16.75" or "16"
             text = text.trim();
             
-            // Check for fraction format
             if (text.includes(' ')) {
                 const parts = text.split(' ');
                 const whole = parseFloat(parts[0]) || 0;
@@ -1136,104 +1510,112 @@
                 return whole + parseFloat(fraction);
             }
             
-            // Decimal format
             return parseFloat(text) || 0;
         }
         
-        function formatInches(inches) {
-            const feet = Math.floor(inches / 12);
-            const remainingInches = inches % 12;
-            const wholeInches = Math.floor(remainingInches);
-            const fractionInches = remainingInches - wholeInches;
-            
-            // Convert fraction to nearest 1/8
-            const fractions = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
-            let closestFraction = 0;
-            let minDiff = 1;
-            
-            fractions.forEach(frac => {
-                const diff = Math.abs(fractionInches - frac);
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    closestFraction = frac;
-                }
-            });
-            
-            if (closestFraction === 0) {
-                return `${feet} ${wholeInches}`;
+        function deleteRow(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            if (row && confirm('Delete this row?')) {
+                row.remove();
+                calculateAll();
             }
-            
-            const fractionText = getFractionText(closestFraction);
-            return `${feet} ${wholeInches} ${fractionText}`;
-        }
-        
-        function getFractionText(fraction) {
-            const fractions = {
-                0.125: '1/8',
-                0.25: '1/4',
-                0.375: '3/8',
-                0.5: '1/2',
-                0.625: '5/8',
-                0.75: '3/4',
-                0.875: '7/8'
-            };
-            return fractions[fraction] || '';
-        }
-        
-        function applyAddMMToAll() {
-            document.querySelectorAll('#productTable tr').forEach((row, index) => {
-                if (row.id && row.id.startsWith('row-')) {
-                    calculateRow(parseInt(row.id.replace('row-', '')));
-                }
-            });
         }
         
         function calculateAll() {
             let totalAmount = 0;
-            let totalArea = 0;
-            let totalItems = 0;
             
             document.querySelectorAll('#productTable tr').forEach(row => {
                 if (row.id && row.id.startsWith('row-')) {
                     const rowId = parseInt(row.id.replace('row-', ''));
-                    const amount = calculateRow(rowId);
-                    totalAmount += amount || 0;
-                    totalArea += parseFloat(row.dataset.area) || 0;
-                    totalItems += parseFloat(row.querySelector('.qty').value) || 0;
+                    totalAmount += calculateRow(rowId) || 0;
                 }
             });
-            
-            // Update quick summary
-            document.getElementById('totalItems').textContent = totalItems;
-            document.getElementById('totalArea').textContent = totalArea.toFixed(2) + ' Sq.Ft.';
-            document.getElementById('totalAmount').textContent = '₹' + totalAmount.toFixed(2);
             
             calculateSummary();
         }
         
+        // OTHER CHARGES
+        function addCharge() {
+            new bootstrap.Modal(document.getElementById('chargeModal')).show();
+        }
+        
+        function saveCharge() {
+            const name = document.getElementById('chargeName').value;
+            const amount = parseFloat(document.getElementById('chargeAmount').value) || 0;
+            
+            if (!name) {
+                alert('Please enter charge name');
+                return;
+            }
+            
+            const chargeId = charges.length + 1;
+            charges.push({ id: chargeId, name, amount });
+            
+            // Add to charges grid
+            const chargesGrid = document.getElementById('chargesGrid');
+            const chargeHTML = `
+                <div class="charge-item" id="charge-${chargeId}">
+                    <input type="text" class="form-control form-control-sm" value="${name}" readonly style="flex: 2;">
+                    <input type="number" class="form-control form-control-sm charge-amount" value="${amount}" onchange="updateCharge(${chargeId}, this.value)" style="flex: 1;">
+                    <button class="btn btn-xs btn-danger" onclick="removeCharge(${chargeId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            chargesGrid.insertAdjacentHTML('beforeend', chargeHTML);
+            
+            bootstrap.Modal.getInstance(document.getElementById('chargeModal')).hide();
+            calculateSummary();
+        }
+        
+        function updateCharge(id, amount) {
+            const charge = charges.find(c => c.id === id);
+            if (charge) {
+                charge.amount = parseFloat(amount) || 0;
+                calculateSummary();
+            }
+        }
+        
+        function removeCharge(id) {
+            charges = charges.filter(c => c.id !== id);
+            document.getElementById(`charge-${id}`).remove();
+            calculateSummary();
+        }
+        
+        // SUMMARY CALCULATION
         function calculateSummary() {
             let subtotal = 0;
             
+            // Calculate from product rows
             document.querySelectorAll('#productTable tr').forEach(row => {
                 if (row.id && row.id.startsWith('row-')) {
                     subtotal += parseFloat(row.dataset.amount) || 0;
                 }
             });
             
+            // Add other charges
+            let otherChargesTotal = 0;
+            charges.forEach(charge => {
+                otherChargesTotal += charge.amount || 0;
+            });
+            
+            const totalBeforeDiscount = subtotal + otherChargesTotal;
+            
+            // Calculate discount
             const discountPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
-            const discountAmount = subtotal * (discountPercent / 100);
-            const afterDiscount = subtotal - discountAmount;
+            const discountAmount = totalBeforeDiscount * (discountPercent / 100);
+            const afterDiscount = totalBeforeDiscount - discountAmount;
+            
+            // Calculate GST (18%)
             const gstAmount = afterDiscount * 0.18;
             const grandTotal = afterDiscount + gstAmount;
             
-            // Update invoice summary
+            // Update display
             document.getElementById('subtotalAmount').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('otherCharges').textContent = '₹' + otherChargesTotal.toFixed(2);
             document.getElementById('discountAmount').textContent = '₹' + discountAmount.toFixed(2);
             document.getElementById('gstAmount').textContent = '₹' + gstAmount.toFixed(2);
             document.getElementById('grandTotal').textContent = '₹' + grandTotal.toFixed(2);
-            
-            // Update quick summary total
-            document.getElementById('totalGrand').textContent = '₹' + grandTotal.toFixed(2);
         }
         
         function clearAll() {
@@ -1242,6 +1624,18 @@
                 currentRow = 1;
                 addNewRow();
                 calculateSummary();
+            }
+        }
+        
+        function copyToShip() {
+            if (document.getElementById('sameAsBill').checked) {
+                document.getElementById('shipName').value = document.getElementById('billName').value;
+                document.getElementById('shipAddress').value = document.getElementById('billAddress').value;
+                document.getElementById('shipCity').value = document.getElementById('billCity').value;
+                document.getElementById('shipPincode').value = document.getElementById('billPincode').value;
+                document.getElementById('shipState').value = document.getElementById('billState').value;
+                document.getElementById('shipGST').value = document.getElementById('billGST').value;
+                document.getElementById('shipPhone').value = document.getElementById('billPhone').value;
             }
         }
         
@@ -1254,17 +1648,25 @@
                     billTo: {
                         name: document.getElementById('billName').value,
                         address: document.getElementById('billAddress').value,
+                        city: document.getElementById('billCity').value,
+                        pincode: document.getElementById('billPincode').value,
+                        state: document.getElementById('billState').value,
                         gst: document.getElementById('billGST').value,
-                        phone: document.getElementById('billPhone').value
+                        phone: document.getElementById('billPhone').value,
+                        salesPerson: document.getElementById('billSalesPerson').value
                     },
                     shipTo: {
                         name: document.getElementById('shipName').value,
                         address: document.getElementById('shipAddress').value,
+                        city: document.getElementById('shipCity').value,
+                        pincode: document.getElementById('shipPincode').value,
+                        state: document.getElementById('shipState').value,
                         gst: document.getElementById('shipGST').value,
                         phone: document.getElementById('shipPhone').value
                     }
                 },
                 items: [],
+                charges: [...charges],
                 totals: {},
                 created: new Date().toISOString(),
                 status: 'draft'
@@ -1274,26 +1676,25 @@
             document.querySelectorAll('#productTable tr').forEach(row => {
                 if (row.id && row.id.startsWith('row-')) {
                     const item = {
-                        widthInches: row.querySelector('.width-inches').value,
-                        heightInches: row.querySelector('.height-inches').value,
-                        widthMM: row.querySelector('.width-mm').value,
-                        heightMM: row.querySelector('.height-mm').value,
+                        description: row.querySelector('select').selectedOptions[0]?.text || '',
+                        actualWidth: row.querySelector('.actual-width').value,
+                        actualHeight: row.querySelector('.actual-height').value,
+                        chargableWidth: row.querySelector('.chargable-width').textContent,
+                        chargableHeight: row.querySelector('.chargable-height').textContent,
                         qty: row.querySelector('.qty').value,
                         rate: row.querySelector('.rate').value,
                         hole: row.querySelector('.hole').value,
                         cut: row.querySelector('.cut').value,
-                        area: row.querySelector('.area').textContent,
                         amount: row.querySelector('.amount').textContent
                     };
                     proforma.items.push(item);
                 }
             });
             
-            // Add totals
+            // Save totals
             proforma.totals = {
-                items: parseInt(document.getElementById('totalItems').textContent) || 0,
-                area: document.getElementById('totalArea').textContent,
                 subtotal: document.getElementById('subtotalAmount').textContent.replace('₹', ''),
+                otherCharges: document.getElementById('otherCharges').textContent.replace('₹', ''),
                 discount: document.getElementById('discountAmount').textContent.replace('₹', ''),
                 gst: document.getElementById('gstAmount').textContent.replace('₹', ''),
                 grandTotal: document.getElementById('grandTotal').textContent.replace('₹', '')
@@ -1308,9 +1709,20 @@
                 alert('Proforma saved successfully!');
                 generatePINumber();
                 clearAll();
+                charges = [];
+                document.getElementById('chargesGrid').innerHTML = '';
             } catch (e) {
                 alert('Error saving proforma');
             }
+        }
+        
+        function generatePINumber() {
+            const year = new Date().getFullYear();
+            const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+            const count = (proformas.length + 1).toString().padStart(3, '0');
+            const piNumber = `PI-${year}${month}-${count}`;
+            document.getElementById('piNumber').value = piNumber;
+            return piNumber;
         }
         
         function loadProformas() {
@@ -1321,150 +1733,47 @@
             }
         }
         
-        // PRINT FUNCTION
+        // PRINT & GST INVOICE
         function printProforma() {
             window.print();
         }
         
-        // REPORTS
-        function loadReportsData() {
-            loadProformas();
-            
-            const table = document.getElementById('reportsTable');
-            table.innerHTML = '';
-            
-            proformas.slice(-20).reverse().forEach(pi => {
-                const totalItems = pi.items?.length || 0;
-                const totalAmount = pi.totals?.grandTotal || 0;
-                const status = pi.status || 'draft';
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${pi.id}</td>
-                    <td>${new Date(pi.date).toLocaleDateString('en-IN')}</td>
-                    <td>${pi.customer?.billTo?.name || 'N/A'}</td>
-                    <td>₹${parseFloat(totalAmount).toFixed(2)}</td>
-                    <td><span class="badge bg-${status === 'paid' ? 'success' : 'warning'}">${status}</span></td>
-                    <td>
-                        <button class="btn btn-xs btn-primary" onclick="viewPI('${pi.id}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
+        function createGSTInvoice() {
+            alert('GST Invoice creation feature coming soon!');
         }
         
-        function viewPI(piId) {
-            const pi = proformas.find(p => p.id === piId);
-            if (pi) {
-                // Fill the form
-                document.getElementById('piNumber').value = pi.id;
-                document.getElementById('piDate').value = pi.date;
-                
-                if (pi.customer?.billTo) {
-                    document.getElementById('billName').value = pi.customer.billTo.name;
-                    document.getElementById('billAddress').value = pi.customer.billTo.address;
-                    document.getElementById('billGST').value = pi.customer.billTo.gst;
-                    document.getElementById('billPhone').value = pi.customer.billTo.phone;
-                }
-                
-                if (pi.customer?.shipTo) {
-                    document.getElementById('shipName').value = pi.customer.shipTo.name;
-                    document.getElementById('shipAddress').value = pi.customer.shipTo.address;
-                    document.getElementById('shipGST').value = pi.customer.shipTo.gst;
-                    document.getElementById('shipPhone').value = pi.customer.shipTo.phone;
-                }
-                
-                // Clear and add items
-                document.getElementById('productTable').innerHTML = '';
-                currentRow = 1;
-                
-                pi.items?.forEach(item => {
-                    addNewRow();
-                    const row = document.getElementById(`row-${currentRow - 1}`);
-                    if (row) {
-                        row.querySelector('.width-inches').value = item.widthInches;
-                        row.querySelector('.height-inches').value = item.heightInches;
-                        row.querySelector('.width-mm').value = item.widthMM;
-                        row.querySelector('.height-mm').value = item.heightMM;
-                        row.querySelector('.qty').value = item.qty;
-                        row.querySelector('.rate').value = item.rate;
-                        row.querySelector('.hole').value = item.hole;
-                        row.querySelector('.cut').value = item.cut;
-                        calculateRow(currentRow - 1);
-                    }
-                });
-                
-                showProforma();
+        // ADMIN FUNCTIONS
+        function backupData() {
+            const data = {
+                customers: customers,
+                users: users,
+                items: items,
+                proformas: proformas,
+                backupDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `SAPUT_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Data backup completed!');
+        }
+        
+        function restoreData() {
+            alert('Data restore feature coming soon!');
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.reload();
             }
         }
-        
-        function exportReports() {
-            alert('Export feature coming soon!');
-        }
-        
-        // ATTENDANCE SYSTEM
-        function loadAttendance() {
-            try {
-                attendance = JSON.parse(localStorage.getItem('saput_attendance')) || [];
-            } catch {
-                attendance = [];
-            }
-        }
-        
-        function loadAttendanceData() {
-            const table = document.getElementById('attendanceTable');
-            table.innerHTML = '';
-            
-            // Sample attendance data
-            const sampleData = [
-                { id: 1, name: 'Ramesh Kumar', date: '2023-12-01', inTime: '09:00', outTime: '18:00', status: 'Present' },
-                { id: 2, name: 'Suresh Singh', date: '2023-12-01', inTime: '09:15', outTime: '18:30', status: 'Present' },
-                { id: 3, name: 'Mahesh Yadav', date: '2023-12-01', inTime: '09:30', outTime: '17:45', status: 'Present' },
-                { id: 4, name: 'Rajesh Sharma', date: '2023-12-01', inTime: '', outTime: '', status: 'Absent' }
-            ];
-            
-            sampleData.forEach(emp => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>EMP${emp.id.toString().padStart(3, '0')}</td>
-                    <td>${emp.name}</td>
-                    <td>${emp.date}</td>
-                    <td>${emp.inTime}</td>
-                    <td>${emp.outTime}</td>
-                    <td><span class="badge bg-${emp.status === 'Present' ? 'success' : 'danger'}">${emp.status}</span></td>
-                    <td>
-                        <button class="btn btn-xs btn-warning">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-        }
-        
-        function markAttendance() {
-            const today = new Date().toISOString().split('T')[0];
-            const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-            
-            // Add attendance record
-            attendance.push({
-                empId: 'EMP001',
-                name: 'Current User',
-                date: today,
-                inTime: time,
-                outTime: '',
-                status: 'Present'
-            });
-            
-            localStorage.setItem('saput_attendance', JSON.stringify(attendance));
-            alert('Attendance marked for today at ' + time);
-            loadAttendanceData();
-        }
-        
-        // Initialize app
-        initApp();
     </script>
 </body>
 </html>
